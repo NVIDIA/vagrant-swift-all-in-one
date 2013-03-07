@@ -1,0 +1,3 @@
+[submodule "swift-solo"]
+	path = swift-solo
+	url = git@github.com:orion/swift-solo.git
