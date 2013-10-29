@@ -1,20 +1,11 @@
-
-Vagrant::Config.run do |config|
-  config.vm.define :saio do |sconfig|
-    sconfig.vm.box = "precise_768MB_8GBx2"
-    sconfig.vm.network :hostonly, "192.168.22.66"
-    sconfig.vm.customize ["modifyvm", :id, "--memory", 768]
-    sconfig.vm.customize ["modifyvm", :id, "--cpus", 1]
-    sconfig.vm.customize ["modifyvm", :id, "--macaddress1", "0800270ae780"]
-
-    config.vm.provision :shell, :path => "bootstrap.sh"
-
-    config.vm.provision :chef_solo do |chef|
-      chef.cookbooks_path = "swift-solo/chef/cookbooks"
-      chef.add_recipe("swift::default")
-      cfg = JSON.parse(File.read("swift-solo/chef/swift.json"))
-      cfg.delete("recipes")
-      chef.json = cfg
-    end
+Vagrant.configure("2") do |config|
+  config.vm.hostname = "swift"
+  config.vm.box = "swift-all-in-one"
+  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+  config.vm.provider :virtualbox do |vb|
+    vb.name = "swift-%d" % Time.now
+  end
+  config.vm.provision :chef_solo do |chef|
+    chef.add_recipe "swift"
   end
 end

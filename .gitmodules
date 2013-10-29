@@ -1,3 +1,6 @@
-[submodule "swift-solo"]
-	path = swift-solo
-	url = git@github.com:orion/swift-solo.git
+[submodule "swift"]
+	path = swift
+	url = git@github.com:openstack/swift.git
+[submodule "python-swiftclient"]
+	path = python-swiftclient
+	url = git@github.com:openstack/python-swiftclient.git
