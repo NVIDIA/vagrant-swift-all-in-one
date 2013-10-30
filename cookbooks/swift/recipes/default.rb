@@ -15,7 +15,7 @@ required_packages = [
   "python-setuptools", "python-coverage", "python-dev", "python-nose",
   "python-simplejson", "python-xattr",  "python-eventlet", "python-greenlet",
   "python-pastedeploy", "python-netifaces", "python-pip", "python-dnspython",
-  "python-mock",
+  "python-mock", "ipython",
 ]
 required_packages.each do |pkg|
   package pkg do
@@ -58,7 +58,7 @@ execute "mount" do
   not_if "mountpoint /mnt/swift-disk"
 end
 
-(1..4).each do |i|
+(1..node['disks']).each do |i|
   disk_path = "/mnt/swift-disk/sdb#{i}"
   node_path = "/srv/node#{i}"
   srv_path = node_path + "/sdb#{i}"
@@ -89,7 +89,7 @@ end
   end
 end
 
-(1..4).each do |i|
+(1..node['nodes']).each do |i|
   recon_cache_path = "/var/cache/swift/node#{i}"
   directory recon_cache_path do
     owner "vagrant"
@@ -163,21 +163,15 @@ cookbook_file "/etc/swift/proxy-server.conf" do
 end
 
 
-["object", "container", "account"].each_with_index do |server, p|
-  directory "/etc/swift/#{server}-server" do
-    owner "vagrant"
-    group "vagrant"
-    action :delete
-    recursive true
-  end
-  directory "/etc/swift/#{server}-server" do
+["object", "container", "account"].each_with_index do |service, p|
+  directory "/etc/swift/#{service}-server" do
     owner "vagrant"
     group "vagrant"
     action :create
   end
-  (1..4).each do |i|
-    template "/etc/swift/#{server}-server/#{i}.conf" do
-      source "etc/swift/#{server}-server.conf.erb"
+  (1..node['nodes']).each do |i|
+    template "/etc/swift/#{service}-server/#{i}.conf" do
+      source "etc/swift/#{service}-server.conf.erb"
       owner "vagrant"
       group "vagrant"
       variables({
@@ -197,25 +191,30 @@ end
 
 # rings
 
-["object", "container", "account"].each_with_index do |server, p|
-  execute "#{server}.builder-create" do
-    command "sudo -u vagrant swift-ring-builder #{server}.builder create 10 3 1"
-    creates "/etc/swift/#{server}.builder"
+["object", "container", "account"].each_with_index do |service, p|
+  execute "#{service}.builder-create" do
+    command "sudo -u vagrant swift-ring-builder #{service}.builder create " \
+      "#{node['part_power']} #{node['replicas']} 1"
+    creates "/etc/swift/#{service}.builder"
     cwd "/etc/swift"
   end
-  (1..4).each do |i|
-    execute "#{server}.builder-add-sdb#{i}" do
-      command "sudo -u vagrant swift-ring-builder #{server}.builder add " \
-        "r1z#{i}-127.0.0.1:60#{i}#{p}/sdb#{i} 1 && " \
-        "rm -f /etc/swift/#{server}.ring.gz || true"
-      not_if "swift-ring-builder /etc/swift/#{server}.builder search /sdb#{i}"
+  (1..node['disks']).each do |i|
+    j = ((i - 1) % node['nodes']) + 1
+    z = ((i - 1) % node['zones']) + 1
+    r = ((z - 1) % node['regions']) + 1
+    execute "#{service}.builder-add-sdb#{i}" do
+      command "sudo -u vagrant swift-ring-builder #{service}.builder add " \
+        "r#{r}z#{z}-127.0.0.1:60#{j}#{p}/sdb#{i} 1 && " \
+        "rm -f /etc/swift/#{service}.ring.gz || true"
+      not_if "swift-ring-builder /etc/swift/#{service}.builder search /sdb#{i}"
       cwd "/etc/swift"
     end
   end
-  execute "#{server}.builder-rebalance" do
-    command "sudo -u vagrant swift-ring-builder #{server}.builder write_ring"
-    not_if "sudo -u vagrant swift-ring-builder /etc/swift/#{server}.builder rebalance"
-    creates "/etc/swift/#{server}.ring.gz"
+
+  execute "#{service}.builder-rebalance" do
+    command "sudo -u vagrant swift-ring-builder #{service}.builder write_ring"
+    not_if "sudo -u vagrant swift-ring-builder /etc/swift/#{service}.builder rebalance"
+    creates "/etc/swift/#{service}.ring.gz"
     cwd "/etc/swift"
   end
 end
