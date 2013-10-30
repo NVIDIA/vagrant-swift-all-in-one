@@ -226,8 +226,16 @@ execute "startmain" do
   command "sudo -u vagrant swift-init start main"
 end
 
-# swift command line env setup
+# setup environment
 
+execute "update-path" do
+  command "echo 'export PATH=$PATH:/vagrant/bin' >> /home/vagrant/.profile"
+  not_if "grep /vagrant/bin /home/vagrant/.profile"
+  action :run
+end
+
+# swift command line env setup
+#
 {
   "ST_AUTH" => "http://localhost:8080/auth/v1.0",
   "ST_USER" => "test:tester",

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+swift-init all stop
+find /var/log/swift -type f -delete
+find /var/cache/swift* -type f -name *.recon -delete
+sudo umount /mnt/swift-disk
+sudo rm -f /var/lib/swift/disk
+sudo rm -f /var/log/debug /var/log/messages /var/log/rsyncd.log /var/log/syslog
+sudo service rsyslog restart
+sudo service memcached restart
+sudo chef-solo -c /tmp/vagrant-chef-*/solo.rb -o swift
