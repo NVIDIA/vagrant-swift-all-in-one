@@ -3,4 +3,4 @@ export REPLICAS=3
 export REGIONS=1
 export ZONES=4
 export NODES=4
-export DISKS=8
+export DISKS=4
