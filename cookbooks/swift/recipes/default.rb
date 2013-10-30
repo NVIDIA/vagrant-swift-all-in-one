@@ -151,18 +151,18 @@ directory "/etc/swift" do
   action :create
 end
 
-cookbook_file "/etc/swift/swift.conf" do
-  source "etc/swift/swift.conf"
-  owner "vagrant"
-  group "vagrant"
+[
+  'swift',
+  'proxy-server',
+  'test',
+  'dispersion',
+].each do |filename|
+  cookbook_file "/etc/swift/#{filename}.conf" do
+    source "etc/swift/#{filename}.conf"
+    owner "vagrant"
+    group "vagrant"
+  end
 end
-
-cookbook_file "/etc/swift/proxy-server.conf" do
-  source "etc/swift/proxy-server.conf"
-  owner "vagrant"
-  group "vagrant"
-end
-
 
 ["object", "container", "account"].each_with_index do |service, p|
   directory "/etc/swift/#{service}-server" do
@@ -182,12 +182,6 @@ end
       })
     end
   end
-end
-
-cookbook_file "/etc/swift/test.conf" do
-  source "etc/swift/test.conf"
-  owner "vagrant"
-  group "vagrant"
 end
 
 # rings
