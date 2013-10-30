@@ -8,6 +8,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision :chef_solo do |chef|
     chef.add_recipe "swift"
     chef.json = {
+      "extra_packages" => (ENV['EXTRA_PACKAGES'] || '').split(','),
       "part_power" => Integer(ENV['PART_POWER'] || 10),
       "replicas" => Integer(ENV['REPLICAS'] || 3),
       "regions" => Integer(ENV['REGIONS'] || 1),

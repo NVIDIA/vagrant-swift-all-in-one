@@ -1,3 +1,4 @@
+export EXTRA_PACKAGES=ipython,vim
 export PART_POWER=10
 export REPLICAS=3
 export REGIONS=1
