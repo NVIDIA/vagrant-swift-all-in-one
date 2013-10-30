@@ -15,9 +15,10 @@ required_packages = [
   "python-setuptools", "python-coverage", "python-dev", "python-nose",
   "python-simplejson", "python-xattr",  "python-eventlet", "python-greenlet",
   "python-pastedeploy", "python-netifaces", "python-pip", "python-dnspython",
-  "python-mock", "ipython",
+  "python-mock",
 ]
-required_packages.each do |pkg|
+extra_packages = node['extra_packages']
+(required_packages + extra_packages).each do |pkg|
   package pkg do
     action :install
   end
