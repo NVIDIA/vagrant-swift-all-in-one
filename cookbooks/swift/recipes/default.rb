@@ -60,8 +60,9 @@ execute "mount" do
 end
 
 (1..node['disks']).each do |i|
+  j = ((i - 1) % node['nodes']) + 1
   disk_path = "/mnt/swift-disk/sdb#{i}"
-  node_path = "/srv/node#{i}"
+  node_path = "/srv/node#{j}"
   srv_path = node_path + "/sdb#{i}"
   directory disk_path do
     owner "vagrant"
@@ -156,6 +157,7 @@ end
   'proxy-server',
   'test',
   'dispersion',
+  'bench',
 ].each do |filename|
   cookbook_file "/etc/swift/#{filename}.conf" do
     source "etc/swift/#{filename}.conf"
