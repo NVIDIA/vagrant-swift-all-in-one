@@ -207,7 +207,6 @@ end
       cwd "/etc/swift"
     end
   end
-
   execute "#{service}.builder-rebalance" do
     command "sudo -u vagrant swift-ring-builder #{service}.builder write_ring"
     not_if "sudo -u vagrant swift-ring-builder /etc/swift/#{service}.builder rebalance"
