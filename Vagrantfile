@@ -1,9 +1,10 @@
 Vagrant.configure("2") do |config|
-  config.vm.hostname = "swift"
+  config.ssh.forward_agent = true
+  config.vm.hostname = "saio"
   config.vm.box = "swift-all-in-one"
   config.vm.box_url = "http://files.vagrantup.com/precise64.box"
   config.vm.provider :virtualbox do |vb|
-    vb.name = "swift-%d" % Time.now
+    vb.name = "swift-aio-%s" % Time.now.strftime("%Y%m%d")
   end
   config.vm.provision :chef_solo do |chef|
     chef.add_recipe "swift"
