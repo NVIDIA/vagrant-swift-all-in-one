@@ -138,6 +138,14 @@ execute "python-swiftclient-install" do
   action :run
 end
 
+execute "pip-eventlet-install" do
+  # memcache unit test fails without eventlet >= 0.14.0
+  cwd "/vagrant/"
+  command "pip install eventlet --upgrade"
+  #creates "/usr/local/lib/python2.7/dist-packages/eventlet.egg-info"
+  action :run
+end
+
 execute "python-swift-install" do
   cwd "/vagrant/swift"
   command "python setup.py develop && pip install -r test-requirements.txt"
