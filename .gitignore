@@ -1,2 +1,4 @@
 .vagrant
 localrc
+swift
+python-swiftclient

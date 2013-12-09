@@ -118,23 +118,24 @@ end
 
 # python install
 
-bash "fix-git-relative-submodules" do
+execute "git python-swiftclient" do
   cwd "/vagrant"
-  code <<-EOF
-  for project in $(ls .git/modules); do
-    sed -i "s|worktree = .*|worktree = ../../../${project}|g" \
-       .git/modules/${project}/config
-  done
-  rm */.git
-  git submodule update
-  EOF
-  not_if "cd /vagrant/swift && git status"
+  command "git clone git://github.com/openstack/python-swiftclient.git"
+  creates "/vagrant/python-swiftclient"
+  action :run
+end
+
+execute "git swift" do
+  cwd "/vagrant"
+  command "git clone git://github.com/openstack/swift.git"
+  creates "/vagrant/swift"
+  action :run
 end
 
 execute "python-swiftclient-install" do
   cwd "/vagrant/python-swiftclient"
   command "pip install -e . && pip install -r test-requirements.txt"
-  creates "/usr/local/lib/python2.7/dist-packages/python-swiftclient.egg-link"
+  # creates "/usr/local/lib/python2.7/dist-packages/python-swiftclient.egg-link"
   action :run
 end
 

@@ -1,8 +1,0 @@
-[submodule "swift"]
-	path = swift
-	url = git@github.com:openstack/swift.git
-	branch = master
-[submodule "python-swiftclient"]
-	path = python-swiftclient
-	url = git@github.com:openstack/python-swiftclient.git
-	branch = master
