@@ -3,6 +3,7 @@ Vagrant.configure("2") do |config|
   config.vm.hostname = "saio"
   config.vm.box = "swift-all-in-one"
   config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+  config.vm.network :private_network, ip: ENV['IP'] || "192.168.8.80"
   config.vm.provider :virtualbox do |vb|
     vb.name = "swift-aio-%s" % Time.now.strftime("%Y%m%d")
   end

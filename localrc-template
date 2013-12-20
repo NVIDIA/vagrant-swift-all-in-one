@@ -1,3 +1,4 @@
+export IP=192.168.8.80
 export EXTRA_PACKAGES=ipython,vim
 export PART_POWER=10
 export REPLICAS=3
