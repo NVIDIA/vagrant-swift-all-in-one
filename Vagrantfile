@@ -11,6 +11,7 @@ Vagrant.configure("2") do |config|
     chef.add_recipe "swift"
     chef.json = {
       "extra_packages" => (ENV['EXTRA_PACKAGES'] || '').split(','),
+      "storage_policies" => (ENV['STORAGE_POLICIES'] || '').split(','),
       "part_power" => Integer(ENV['PART_POWER'] || 10),
       "replicas" => Integer(ENV['REPLICAS'] || 3),
       "regions" => Integer(ENV['REGIONS'] || 1),
