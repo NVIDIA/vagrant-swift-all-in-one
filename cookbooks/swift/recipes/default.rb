@@ -2,7 +2,16 @@ execute "clean-up" do
   command "rm /home/vagrant/postinstall.sh || true"
 end
 
-# packages
+# deadsnakes for py2.6
+execute "deadsnakes key" do
+  command "sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys DB82666C"
+  action :run
+end
+
+cookbook_file "/etc/apt/sources.list.d/fkrull-deadsnakes-precise.list" do
+  source "etc/apt/sources.list.d/fkrull-deadsnakes-precise.list"
+  mode 0644
+end
 
 execute "apt-get-update" do
   command "apt-get update && touch /tmp/.apt-get-update"
@@ -10,12 +19,14 @@ execute "apt-get-update" do
   action :run
 end
 
+# packages
 required_packages = [
   "curl", "gcc", "memcached", "rsync", "sqlite3", "xfsprogs", "git-core",
-  "python-setuptools", "python-coverage", "python-dev", "python-nose",
-  "python-simplejson", "python-xattr",  "python-eventlet", "python-greenlet",
-  "python-pastedeploy", "python-netifaces", "python-pip", "python-dnspython",
-  "python-mock",
+  "build-essential", "python-dev", "libffi-dev", "python-setuptools",
+  "python-coverage", "python-dev", "python-nose", "python-simplejson",
+  "python-xattr", "python-eventlet", "python-greenlet", "python-pastedeploy",
+  "python-netifaces", "python-pip", "python-dnspython", "python-mock",
+  "python2.6", "python2.6-dev",
 ]
 extra_packages = node['extra_packages']
 (required_packages + extra_packages).each do |pkg|
@@ -144,6 +155,10 @@ execute "python-swift-install" do
   command "python setup.py develop && pip install -r test-requirements.txt"
   # creates "/usr/local/lib/python2.7/dist-packages/swift.egg-link"
   action :run
+end
+
+execute "install tox" do
+  command "pip install tox"
 end
 
 # configs
