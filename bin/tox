@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e
+if ! [ -e setup.py ]; then
+    echo 'ERROR: setup.py not found'
+    exit 1
+fi
+sed -i '/envlist/ a\
+toxworkdir = /home/vagrant/.tox-swift
+' tox.ini
+cp setup.py _setup.py
+cat > setup.py <<EOF
+import os
+import shutil
+os.link = shutil.copy
+import _setup
+_setup
+EOF
+set +e
+tox $@
+error=$?
+rm _setup.py
+git checkout setup.py tox.ini
+exit $error

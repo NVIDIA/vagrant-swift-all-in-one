@@ -161,6 +161,16 @@ execute "install tox" do
   command "pip install tox"
 end
 
+[
+  'swift',
+  'python-swiftclient',
+].each do |dirname|
+  execute "ln #{dirname}" do
+    command "ln -s /vagrant/#{dirname} /home/vagrant/#{dirname}"
+    creates "/home/vagrant/#{dirname}"
+  end
+end
+
 # configs
 directory "/etc/swift" do
   owner "vagrant"
@@ -276,7 +286,7 @@ end
 # setup environment
 
 execute "update-path" do
-  command "echo 'export PATH=$PATH:/vagrant/bin' >> /home/vagrant/.profile"
+  command "echo 'export PATH=/vagrant/bin:$PATH' >> /home/vagrant/.profile"
   not_if "grep /vagrant/bin /home/vagrant/.profile"
   action :run
 end
