@@ -12,6 +12,7 @@ Vagrant.configure("2") do |config|
     chef.json = {
       "extra_packages" => (ENV['EXTRA_PACKAGES'] || '').split(','),
       "storage_policies" => (ENV['STORAGE_POLICIES'] || '').split(','),
+      "object_sync_method" => (ENV['OBJECT_SYNC_METHOD'] || 'rsync'),
       "part_power" => Integer(ENV['PART_POWER'] || 10),
       "replicas" => Integer(ENV['REPLICAS'] || 3),
       "regions" => Integer(ENV['REGIONS'] || 1),

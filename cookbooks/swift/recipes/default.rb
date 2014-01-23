@@ -215,6 +215,7 @@ end
          :srv_path => "/srv/node#{i}",
          :bind_port => "60#{i}#{p}",
          :recon_cache_path => "/var/cache/swift/node#{i}",
+         :sync_method => node['object_sync_method'],
       })
     end
   end
