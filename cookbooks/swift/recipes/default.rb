@@ -295,7 +295,7 @@ end
 # swift command line env setup
 #
 {
-  "ST_AUTH" => "http://localhost:8080/auth/v1.0",
+  "ST_AUTH" => "http://saio:8080/auth/v1.0",
   "ST_USER" => "test:tester",
   "ST_KEY" => "testing",
 }.each do |var, value|
