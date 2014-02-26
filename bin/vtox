@@ -1,4 +1,5 @@
 #!/bin/bash
+# tox wrapper for vagrant
 set -e
 if ! [ -e setup.py ]; then
     echo 'ERROR: setup.py not found'
