@@ -6,6 +6,7 @@ end
 execute "deadsnakes key" do
   command "sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys DB82666C"
   action :run
+  not_if "sudo apt-key list | grep 'Launchpad Old Python Versions'"
 end
 
 cookbook_file "/etc/apt/sources.list.d/fkrull-deadsnakes-precise.list" do
