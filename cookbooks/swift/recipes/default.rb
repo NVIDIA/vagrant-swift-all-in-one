@@ -16,7 +16,9 @@ end
 
 execute "apt-get-update" do
   command "apt-get update && touch /tmp/.apt-get-update"
-  creates "/tmp/.apt-get-update"
+  if not node['full_reprovision']:
+    creates "/tmp/.apt-get-update"
+  end
   action :run
 end
 
@@ -147,19 +149,27 @@ end
 execute "python-swiftclient-install" do
   cwd "/vagrant/python-swiftclient"
   command "pip install -e . && pip install -r test-requirements.txt"
-  # creates "/usr/local/lib/python2.7/dist-packages/python-swiftclient.egg-link"
+  if not node['full_reprovision']:
+    creates "/usr/local/lib/python2.7/dist-packages/python-swiftclient.egg-link"
+  end
   action :run
 end
 
 execute "python-swift-install" do
   cwd "/vagrant/swift"
   command "python setup.py develop && pip install -r test-requirements.txt"
-  # creates "/usr/local/lib/python2.7/dist-packages/swift.egg-link"
+  if not node['full_reprovision']:
+    creates "/usr/local/lib/python2.7/dist-packages/swift.egg-link"
+  end
   action :run
 end
 
 execute "install tox" do
   command "pip install tox"
+  if not node['full_reprovision']:
+    creates "/usr/local/lib/python2.7/dist-packages/tox"
+  end
+  action :run
 end
 
 [

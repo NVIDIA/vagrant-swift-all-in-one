@@ -10,6 +10,9 @@ Vagrant.configure("2") do |config|
   config.vm.provision :chef_solo do |chef|
     chef.add_recipe "swift"
     chef.json = {
+      "full_reprovision" => (
+              ENV['FULL_REPROVISION'] || 'false'
+          ).downcase == 'true',
       "extra_packages" => (ENV['EXTRA_PACKAGES'] || '').split(','),
       "storage_policies" => (ENV['STORAGE_POLICIES'] || '').split(','),
       "object_sync_method" => (ENV['OBJECT_SYNC_METHOD'] || 'rsync'),
