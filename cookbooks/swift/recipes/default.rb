@@ -203,6 +203,7 @@ end
   'test',
   'dispersion',
   'bench',
+  'object-expirer',
 ].each do |filename|
   cookbook_file "/etc/swift/#{filename}.conf" do
     source "etc/swift/#{filename}.conf"
