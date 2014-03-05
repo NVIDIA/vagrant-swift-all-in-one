@@ -97,6 +97,7 @@ end
 
 [
   "/var/run/swift",
+  "/var/cache/swift",
 ].each do |d|
   directory d do
     owner "vagrant"
