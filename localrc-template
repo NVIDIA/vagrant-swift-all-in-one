@@ -7,5 +7,5 @@ export REGIONS=1
 export ZONES=4
 export NODES=4
 export DISKS=4
-export STORAGE_POLICIES=
+export STORAGE_POLICIES= # e.g. gold,silver
 export OBJECT_SYNC_METHOD=rsync  # or ssync
