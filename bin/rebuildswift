@@ -1,6 +1,6 @@
 #!/bin/bash
 /vagrant/bin/cleanswift
-rm -fr /etc/swift
+rm -fr /etc/swift/*
 rm -f /etc/swift/*.builder /etc/swift/*.ring.gz \
   /etc/swift/backups/*.builder /etc/swift/backups/*.ring.gz
 cd /tmp/vagrant-chef-*/

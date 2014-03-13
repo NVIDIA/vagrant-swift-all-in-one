@@ -23,8 +23,9 @@ You should be able to run most tests without too much fuss.
  1. `.functests`
  1. `.probetests`
  1. `vtox -e pep8`
- 1. `vtox -e py26`
  1. `vtox -e py27`
+ 1. `vtox -e py26`
+ 1. `vtox  # run all gate checks`
 
 localrc-template
 ========================
