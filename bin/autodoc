@@ -14,30 +14,32 @@ DOCROOT = '/vagrant/swift/doc/'
 def iter_path_mtime(source_dir):
     for root, dirs, files in os.walk(source_dir):
         for filename in files:
-            if not filename.endswith('.rst'):
+            if filename.rsplit('.', 1)[-1] not in ('rst', 'py'):
                 continue
             full_path = os.path.join(root, filename)
             current_mtime = os.path.getmtime(full_path)
             yield full_path, current_mtime
 
 
-def watch_changed_files(source_dir):
+def watch_changed_files(*source_dirs):
     last_changed_time = {}
     while True:
         full_pass_has_changes = False
-        for path, mtime in iter_path_mtime(source_dir):
-            if (path in last_changed_time and
-                last_changed_time[path] < mtime):
-                yield path
-                full_pass_has_changes = True
-                last_changed_time = {}
-            last_changed_time[path] = mtime
+        for source_dir in source_dirs:
+            for path, mtime in iter_path_mtime(source_dir):
+                if (path in last_changed_time and
+                    last_changed_time[path] < mtime):
+                    yield path
+                    full_pass_has_changes = True
+                    last_changed_time = {}
+                last_changed_time[path] = mtime
         if not full_pass_has_changes:
             time.sleep(3)
 
 
 def main():
     source_dir = os.path.join(DOCROOT, 'source')
+    code_dir = os.path.join(DOCROOT, '../swift')
     build_dir = os.path.join(DOCROOT, 'build/html')
     os.chdir(build_dir)
     rv = os.system('sphinx-build -b html %s %s' % (source_dir, build_dir))
@@ -49,7 +51,7 @@ def main():
     os.system('swift upload --changed doc . > /dev/null')
     print 'done...'
     os.system('swift stat -v doc index.html | grep URL')
-    for filename in watch_changed_files(source_dir):
+    for filename in watch_changed_files(source_dir, code_dir):
         print '%s has CHANGED!' % filename
         print 'rebuilding...'
         os.system('sphinx-build -q -b html %s %s' % (source_dir, build_dir))
