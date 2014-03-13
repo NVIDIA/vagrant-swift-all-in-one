@@ -6,6 +6,7 @@ Vagrant.configure("2") do |config|
   config.vm.network :private_network, ip: ENV['IP'] || "192.168.8.80"
   config.vm.provider :virtualbox do |vb|
     vb.name = "swift-aio-%s" % Time.now.strftime("%Y%m%d")
+    vb.memory = 768
   end
   config.vm.provision :chef_solo do |chef|
     chef.add_recipe "swift"
