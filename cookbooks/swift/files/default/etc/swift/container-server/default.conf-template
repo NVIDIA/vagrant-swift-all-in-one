@@ -1,14 +1,7 @@
 [DEFAULT]
-devices = <%= @srv_path %>
 mount_check = false
 disable_fallocate = true
-bind_port = <%= @bind_port %>
 workers = 1
-user = vagrant
-log_name = container-<%= @bind_port %>
-log_facility = LOG_LOCAL2
-recon_cache_path = <%= @recon_cache_path %>
-eventlet_debug = true
 
 [pipeline:main]
 pipeline = recon container-server

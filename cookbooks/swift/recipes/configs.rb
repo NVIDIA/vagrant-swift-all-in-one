@@ -32,35 +32,103 @@ template "/etc/swift/swift.conf" do
 end
 
 [
-  'proxy-server',
-  'test',
-  'dispersion',
-  'bench',
-  'object-expirer',
+  'test.conf',
+  'dispersion.conf',
+  'bench.conf',
+  'base.conf-template',
 ].each do |filename|
-  cookbook_file "/etc/swift/#{filename}.conf" do
-    source "etc/swift/#{filename}.conf"
+  cookbook_file "/etc/swift/#{filename}" do
+    source "etc/swift/#{filename}"
+    owner "vagrant"
+    group "vagrant"
+  end
+end
+
+# proxies
+
+directory "/etc/swift/proxy-server" do
+  owner "vagrant"
+  group "vagrant"
+end
+
+cookbook_file "/etc/swift/proxy-server/default.conf-template" do
+  source "etc/swift/proxy-server/default.conf-template"
+  owner "vagrant"
+  group "vagrant"
+end
+
+[
+  "proxy-server",
+  "proxy-noauth",
+].each do |proxy|
+  proxy_conf_dir = "etc/swift/proxy-server/#{proxy}.conf.d"
+  directory proxy_conf_dir do
+    owner "vagrant"
+    group "vagrant"
+    action :create
+  end
+  link "/#{proxy_conf_dir}/00_base.conf" do
+    to "/etc/swift/base.conf-template"
+    owner "vagrant"
+    group "vagrant"
+  end
+  link "/#{proxy_conf_dir}/10_default.conf" do
+    to "/etc/swift/proxy-server/default.conf-template"
+    owner "vagrant"
+    group "vagrant"
+  end
+  cookbook_file "#{proxy_conf_dir}/20_settings.conf" do
+    source "#{proxy_conf_dir}/20_settings.conf"
     owner "vagrant"
     group "vagrant"
   end
 end
 
 ["object", "container", "account"].each_with_index do |service, p|
-  directory "/etc/swift/#{service}-server" do
+  service_dir = "etc/swift/#{service}-server"
+  directory "/#{service_dir}" do
     owner "vagrant"
     group "vagrant"
     action :create
   end
+  if service == "object" then
+    template "/#{service_dir}/default.conf-template" do
+      source "#{service_dir}/default.conf-template.erb"
+      owner "vagrant"
+      group "vagrant"
+      variables({:sync_method => node['object_sync_method']})
+    end
+  else
+    cookbook_file "/#{service_dir}/default.conf-template" do
+      source "#{service_dir}/default.conf-template"
+      owner "vagrant"
+      group "vagrant"
+    end
+  end
   (1..node['nodes']).each do |i|
-    template "/etc/swift/#{service}-server/#{i}.conf" do
-      source "etc/swift/#{service}-server.conf.erb"
+    conf_dir = "#{service_dir}/#{i}.conf.d"
+    directory "/#{conf_dir}" do
+      owner "vagrant"
+      group "vagrant"
+    end
+    link "/#{conf_dir}/00_base.conf" do
+      to "/etc/swift/base.conf-template"
+      owner "vagrant"
+      group "vagrant"
+    end
+    link "/#{conf_dir}/10_default.conf" do
+      to "/#{service_dir}/default.conf-template"
+      owner "vagrant"
+      group "vagrant"
+    end
+    template "/#{conf_dir}/20_settings.conf" do
+      source "#{service_dir}/settings.conf.erb"
       owner "vagrant"
       group "vagrant"
       variables({
          :srv_path => "/srv/node#{i}",
          :bind_port => "60#{i}#{p}",
          :recon_cache_path => "/var/cache/swift/node#{i}",
-         :sync_method => node['object_sync_method'],
       })
     end
   end

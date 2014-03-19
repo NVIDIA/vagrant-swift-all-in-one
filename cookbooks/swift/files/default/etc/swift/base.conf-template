@@ -1,0 +1,4 @@
+[DEFAULT]
+user = vagrant
+eventlet_debug = true
+log_level = DEBUG
