@@ -41,11 +41,11 @@ def main():
     source_dir = os.path.join(DOCROOT, 'source')
     code_dir = os.path.join(DOCROOT, '../swift')
     build_dir = os.path.join(DOCROOT, 'build/html')
-    os.chdir(build_dir)
     rv = os.system('sphinx-build -b html %s %s' % (source_dir, build_dir))
     if rv != 0:
         # bail on build fail
         return rv
+    os.chdir(build_dir)
     os.system('swift post doc -r .r:*')
     print 'uploading...'
     os.system('swift upload --changed doc . > /dev/null')
