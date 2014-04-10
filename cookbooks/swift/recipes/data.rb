@@ -10,7 +10,7 @@
 end
 
 execute "create sparse file" do
-  command "truncate -s 3GB /var/lib/swift/disk"
+  command "truncate -s #{node['loopback_gb']}GB /var/lib/swift/disk"
   creates "/var/lib/swift/disk"
   action :run
 end

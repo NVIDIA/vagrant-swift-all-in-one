@@ -1,4 +1,5 @@
 export FULL_REPROVISION=false
+export LOOPBACK_GB=4  # how much storage your swift has
 export IP=192.168.8.80
 export EXTRA_PACKAGES=ipython,vim,screen
 export PART_POWER=10
