@@ -1,29 +1,52 @@
-Vagrant.configure("2") do |config|
-  config.ssh.forward_agent = true
-  config.vm.hostname = "saio"
-  config.vm.box = "swift-all-in-one"
-  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
-  config.vm.network :private_network, ip: ENV['IP'] || "192.168.8.80"
-  config.vm.provider :virtualbox do |vb|
-    vb.name = "swift-aio-%s" % Time.now.strftime("%Y%m%d")
-    vb.memory = 768
-  end
-  config.vm.provision :chef_solo do |chef|
-    chef.add_recipe "swift"
-    chef.json = {
-      "full_reprovision" => (
-              ENV['FULL_REPROVISION'] || 'false'
-          ).downcase == 'true',
-      "loopback_gb" => Integer(ENV['LOOPBACK_GB'] || 4),
-      "extra_packages" => (ENV['EXTRA_PACKAGES'] || '').split(','),
-      "storage_policies" => (ENV['STORAGE_POLICIES'] || '').split(','),
-      "object_sync_method" => (ENV['OBJECT_SYNC_METHOD'] || 'rsync'),
-      "part_power" => Integer(ENV['PART_POWER'] || 10),
-      "replicas" => Integer(ENV['REPLICAS'] || 3),
-      "regions" => Integer(ENV['REGIONS'] || 1),
-      "zones" => Integer(ENV['ZONES'] || 4),
-      "nodes" => Integer(ENV['NODES'] || 4),
-      "disks" => Integer(ENV['DISKS'] || 4),
-    }
+require 'ipaddr'
+
+base_ip = IPAddr.new(ENV['IP'] || "192.168.8.80")
+hosts = {
+  'default' => base_ip.to_s
+}
+extra_vms = Integer(ENV['EXTRA_VMS'] || 0)
+(1..extra_vms).each do |i|
+  base_ip = base_ip.succ
+  hosts["node#{i}"] = base_ip.to_s
+end
+
+local_config = {
+  "full_reprovision" => (
+        ENV['FULL_REPROVISION'] || 'false'
+    ).downcase == 'true',
+  "loopback_gb" => Integer(ENV['LOOPBACK_GB'] || 4),
+  "extra_packages" => (ENV['EXTRA_PACKAGES'] || '').split(','),
+  "storage_policies" => (ENV['STORAGE_POLICIES'] || '').split(','),
+  "object_sync_method" => (ENV['OBJECT_SYNC_METHOD'] || 'rsync'),
+  "part_power" => Integer(ENV['PART_POWER'] || 10),
+  "replicas" => Integer(ENV['REPLICAS'] || 3),
+  "regions" => Integer(ENV['REGIONS'] || 1),
+  "zones" => Integer(ENV['ZONES'] || 4),
+  "nodes" => Integer(ENV['NODES'] || 4),
+  "disks" => Integer(ENV['DISKS'] || 4),
+}
+
+
+Vagrant.configure("2") do |global_config|
+  global_config.ssh.forward_agent = true
+  hosts.each do |vm_name, ip|
+    global_config.vm.define vm_name do |config|
+      hostname = vm_name
+      if hostname == 'default' then
+          hostname = 'saio'
+      end
+      config.vm.hostname = hostname
+      config.vm.box = "swift-all-in-one"
+      config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+      config.vm.network :private_network, ip: ip
+      config.vm.provider :virtualbox do |vb|
+        vb.name = "vagrant-#{hostname}-#{Time.now.strftime("%Y%m%d")}"
+        vb.memory = 768
+      end
+      config.vm.provision :chef_solo do |chef|
+        chef.add_recipe "swift"
+        chef.json = local_config
+      end
+    end
   end
 end
