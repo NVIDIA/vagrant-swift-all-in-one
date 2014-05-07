@@ -10,8 +10,14 @@ execute "enable-rsync" do
   action :run
 end
 
-service "rsync" do
-  action :start
+[
+  "rsync",
+  "memcached",
+  "rsyslog",
+].each do |daemon|
+  service daemon do
+    action :start
+  end
 end
 
 # swift
@@ -36,6 +42,7 @@ end
   'dispersion.conf',
   'bench.conf',
   'base.conf-template',
+  'container-sync-realms.conf'
 ].each do |filename|
   cookbook_file "/etc/swift/#{filename}" do
     source "etc/swift/#{filename}"

@@ -25,6 +25,10 @@ use = egg:swift#dlo
 [filter:tempurl] 
 use = egg:swift#tempurl 
 
+[filter:container_sync]
+use = egg:swift#container_sync
+current = //TEST/SAIO
+
 [app:proxy-server]
 use = egg:swift#proxy
 allow_account_management = true
