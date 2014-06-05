@@ -6,5 +6,7 @@ swift_hash_path_suffix = changeme
 
 [storage-policy:<%= i %>]
 name = <%= name %>
+<% if i == 0 %>
+default = yes
 <% end %>
-
+<% end %>
