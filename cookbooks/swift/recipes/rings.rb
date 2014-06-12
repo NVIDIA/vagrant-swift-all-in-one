@@ -27,7 +27,7 @@
   end
 end
 
-node['storage_policies'].each_with_index do |name, p|
+node['storage_policies'].drop(1).each_with_index do |name, p|
   service = "object-#{p + 1}"
   execute "#{service}.builder-create" do
     command "sudo -u vagrant swift-ring-builder #{service}.builder create " \
@@ -54,4 +54,3 @@ node['storage_policies'].each_with_index do |name, p|
     cwd "/etc/swift"
   end
 end
-
