@@ -2,21 +2,21 @@
 
 execute "git python-swiftclient" do
   cwd "/vagrant"
-  command "git clone git://github.com/openstack/python-swiftclient.git"
+  command "git clone #{node['swiftclient_repo']}"
   creates "/vagrant/python-swiftclient"
   action :run
 end
 
 execute "git swift-bench" do
   cwd "/vagrant"
-  command "git clone git://github.com/openstack/swift-bench.git"
+  command "git clone #{node['swift_bench_repo']}"
   creates "/vagrant/swift-bench"
   action :run
 end
 
 execute "git swift" do
   cwd "/vagrant"
-  command "git clone git://github.com/openstack/swift.git"
+  command "git clone #{node['swift_repo']}"
   creates "/vagrant/swift"
   action :run
 end

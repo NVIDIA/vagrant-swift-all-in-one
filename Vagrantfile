@@ -10,6 +10,8 @@ extra_vms = Integer(ENV['EXTRA_VMS'] || 0)
   hosts["node#{i}"] = base_ip.to_s
 end
 
+current_datetime = Time.now.strftime("%Y%m%d-%H%M%S")
+
 local_config = {
   "full_reprovision" => (
         ENV['FULL_REPROVISION'] || 'false'
@@ -24,6 +26,9 @@ local_config = {
   "zones" => Integer(ENV['ZONES'] || 4),
   "nodes" => Integer(ENV['NODES'] || 4),
   "disks" => Integer(ENV['DISKS'] || 4),
+  "swift_repo" => (ENV['SWIFT_REPO'] || 'git://github.com/openstack/swift.git'),
+  "swiftclient_repo" => (ENV['SWIFTCLIENT_REPO'] || 'git://github.com/openstack/python-swiftclient.git'),
+  "swift_bench_repo" => (ENV['SWIFTBENCH_REPO'] || 'git://github.com/openstack/swift-bench.git'),
 }
 
 
@@ -40,7 +45,7 @@ Vagrant.configure("2") do |global_config|
       config.vm.box_url = "http://files.vagrantup.com/precise64.box"
       config.vm.network :private_network, ip: ip
       config.vm.provider :virtualbox do |vb|
-        vb.name = "vagrant-#{hostname}-#{Time.now.strftime("%Y%m%d")}"
+        vb.name = "vagrant-#{hostname}-#{current_datetime}"
         vb.memory = 768
       end
       config.vm.provision :chef_solo do |chef|
