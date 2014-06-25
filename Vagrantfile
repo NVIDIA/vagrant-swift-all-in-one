@@ -26,6 +26,9 @@ local_config = {
   "zones" => Integer(ENV['ZONES'] || 4),
   "nodes" => Integer(ENV['NODES'] || 4),
   "disks" => Integer(ENV['DISKS'] || 4),
+  "swift_repo" => (ENV['SWIFT_REPO'] || 'git://github.com/openstack/swift.git'),
+  "swiftclient_repo" => (ENV['SWIFTCLIENT_REPO'] || 'git://github.com/openstack/python-swiftclient.git'),
+  "swift_bench_repo" => (ENV['SWIFTBENCH_REPO'] || 'git://github.com/openstack/swift-bench.git'),
 }
 
 
