@@ -157,3 +157,20 @@ cookbook_file "/etc/swift/object-expirer.conf.d/20_settings.conf" do
   owner "vagrant"
   group "vagrant"
 end
+
+# container-reconciler
+directory "/etc/swift/container-reconciler.conf.d" do
+  owner "vagrant"
+  group "vagrant"
+  action :create
+end
+link "/etc/swift/container-reconciler.conf.d/00_base.conf" do
+  to "/etc/swift/base.conf-template"
+  owner "vagrant"
+  group "vagrant"
+end
+cookbook_file "/etc/swift/container-reconciler.conf.d/20_settings.conf" do
+  source "etc/swift/container-reconciler.conf.d/20_settings.conf"
+  owner "vagrant"
+  group "vagrant"
+end
