@@ -29,7 +29,7 @@ required_packages = [
   "python-coverage", "python-dev", "python-nose", "python-simplejson",
   "python-xattr", "python-eventlet", "python-greenlet", "python-pastedeploy",
   "python-netifaces", "python-pip", "python-dnspython", "python-mock",
-  "python2.6", "python2.6-dev",
+  "python2.6", "python2.6-dev", "libxml2-dev", "libxml2", "libxslt1-dev",
 ]
 extra_packages = node['extra_packages']
 (required_packages + extra_packages).each do |pkg|
