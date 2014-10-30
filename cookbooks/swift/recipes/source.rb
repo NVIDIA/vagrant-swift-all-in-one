@@ -21,6 +21,13 @@ execute "git swift" do
   action :run
 end
 
+execute "git swift-specs" do
+  cwd "/vagrant"
+  command "git clone #{node['swift_specs_repo']}"
+  creates "/vagrant/swift-specs"
+  action :run
+end
+
 execute "python-swiftclient-install" do
   cwd "/vagrant/python-swiftclient"
   command "pip install -e . && pip install -r test-requirements.txt"

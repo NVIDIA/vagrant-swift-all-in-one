@@ -29,6 +29,7 @@ local_config = {
   "swift_repo" => (ENV['SWIFT_REPO'] || 'git://github.com/openstack/swift.git'),
   "swiftclient_repo" => (ENV['SWIFTCLIENT_REPO'] || 'git://github.com/openstack/python-swiftclient.git'),
   "swift_bench_repo" => (ENV['SWIFTBENCH_REPO'] || 'git://github.com/openstack/swift-bench.git'),
+  "swift_specs_repo" => (ENV['SWIFTSPECS_REPO'] || 'git://github.com/openstack/swift-specs.git'),
 }
 
 

@@ -14,3 +14,4 @@ export OBJECT_SYNC_METHOD=rsync  # or ssync
 export SWIFT_REPO=git://github.com/openstack/swift.git
 export SWIFTCLIENT_REPO=git://github.com/openstack/python-swiftclient.git
 export SWIFTBENCH_REPO=git://github.com/openstack/swift-bench.git
+export SWIFTSPECS_REPO=git://github.com/openstack/swift-specs.git

@@ -3,3 +3,4 @@ localrc
 /swift
 /python-swiftclient
 /swift-bench
+/swift-specs
