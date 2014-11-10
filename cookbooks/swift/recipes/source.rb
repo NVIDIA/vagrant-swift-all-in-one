@@ -55,6 +55,12 @@ execute "python-swift-install" do
   action :run
 end
 
+execute "swift-specs-install" do
+  cwd "/vagrant/swift-specs"
+  command "pip install -r requirements.txt"
+  action :run
+end
+
 execute "install tox" do
   command "pip install tox"
   if not node['full_reprovision']:

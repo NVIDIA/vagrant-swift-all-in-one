@@ -1,14 +1,31 @@
 #!/usr/bin/env python
 
+import argparse
 import os
+import Queue
 import sys
-import time
+import threading
 
-import BaseHTTPServer
-import SimpleHTTPServer
-import SocketServer
+PROJECTS = {
+    'swift': {
+        'root': '/vagrant/swift/doc/',
+        'dir': ['../swift'],
+    },
+    'swift-specs': {
+        'root': '/vagrant/swift-specs/doc/',
+        'dir': ['../specs'],
+    },
+}
 
-DOCROOT = '/vagrant/swift/doc/'
+parser = argparse.ArgumentParser()
+parser.add_argument('-r', '--root', default=None,
+                    help="the root of the doc tree")
+parser.add_argument('--dir', action='append', default=[],
+                    help="extra dirs to append, if relative path, "
+                    "it's relative to the root")
+parser.add_argument('project', nargs='?', default='swift',
+                    choices=PROJECTS.keys(),
+                    help="use defaults for pre-configured projects")
 
 
 def iter_path_mtime(source_dir):
@@ -21,26 +38,37 @@ def iter_path_mtime(source_dir):
             yield full_path, current_mtime
 
 
-def watch_changed_files(*source_dirs):
+def watch_changed_files(q, *source_dirs):
     last_changed_time = {}
     while True:
         full_pass_has_changes = False
         for source_dir in source_dirs:
             for path, mtime in iter_path_mtime(source_dir):
                 if (path in last_changed_time and
-                    last_changed_time[path] < mtime):
+                        last_changed_time[path] < mtime):
                     yield path
                     full_pass_has_changes = True
                     last_changed_time = {}
                 last_changed_time[path] = mtime
         if not full_pass_has_changes:
-            time.sleep(3)
+            # sleep for three seconds (or till user hits enter...)
+            try:
+                q.get(timeout=1.0)
+            except Queue.Empty:
+                pass
+            else:
+                yield 'User says path...'
 
 
 def main():
-    source_dir = os.path.join(DOCROOT, 'source')
-    code_dir = os.path.join(DOCROOT, '../swift')
-    build_dir = os.path.join(DOCROOT, 'build/html')
+    options = parser.parse_args()
+    root = options.root or PROJECTS[options.project]['root']
+    source_dir = os.path.join(root, 'source')
+    build_dir = os.path.join(root, 'build/html')
+    montior_paths = PROJECTS[options.project]['dir'] + options.dir
+    extra_dirs = [os.path.join(root, path) for path in montior_paths]
+
+    # intial build
     rv = os.system('sphinx-build -b html %s %s' % (source_dir, build_dir))
     if rv != 0:
         # bail on build fail
@@ -51,7 +79,16 @@ def main():
     os.system('swift upload --changed doc . > /dev/null')
     print 'done...'
     os.system('swift stat -v doc index.html | grep URL')
-    for filename in watch_changed_files(source_dir, code_dir):
+    # we're gunna let the user hit enter to rebuild immediately
+    q = Queue.Queue()
+
+    def get_input():
+        while True:
+            q.put(raw_input())
+    continue_thread = threading.Thread(target=get_input)
+    continue_thread.daemon = True
+    continue_thread.start()
+    for filename in watch_changed_files(q, source_dir, *extra_dirs):
         print '%s has CHANGED!' % filename
         print 'rebuilding...'
         os.system('sphinx-build -q -b html %s %s' % (source_dir, build_dir))
