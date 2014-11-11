@@ -9,7 +9,7 @@ import threading
 PROJECTS = {
     'swift': {
         'root': '/vagrant/swift/doc/',
-        'dir': ['../swift'],
+        'dir': ['../swift', 'saio'],
     },
     'swift-specs': {
         'root': '/vagrant/swift-specs/doc/',
