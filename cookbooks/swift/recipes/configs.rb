@@ -34,6 +34,7 @@ template "/etc/swift/swift.conf" do
   group "vagrant"
   variables({
     :storage_policies => node['storage_policies'],
+    :ec_policy => node['ec_policy'],
   })
 end
 

@@ -1,6 +1,6 @@
 # rings
 
-["object", "container", "account"].each_with_index do |service, p|
+["container", "account"].each_with_index do |service, p|
   execute "#{service}.builder-create" do
     command "sudo -u vagrant swift-ring-builder #{service}.builder create " \
       "#{node['part_power']} #{node['replicas']} 1"
@@ -12,7 +12,7 @@
     z = ((i - 1) % node['zones']) + 1
     r = ((z - 1) % node['regions']) + 1
     execute "#{service}.builder-add-sdb#{i}" do
-      dsl = "r#{r}z#{z}-127.0.0.1:60#{j}#{p}/sdb#{i}"
+      dsl = "r#{r}z#{z}-127.0.0.1:60#{j}#{p + 1}/sdb#{i}"
       command "sudo -u vagrant swift-ring-builder #{service}.builder add " \
         "#{dsl} 1 && rm -f /etc/swift/#{service}.ring.gz || true"
       not_if "swift-ring-builder /etc/swift/#{service}.builder search #{dsl}"
@@ -27,11 +27,19 @@
   end
 end
 
-node['storage_policies'].drop(1).each_with_index do |name, p|
-  service = "object-#{p + 1}"
+node['storage_policies'].each_with_index do |name, p|
+  service = "object"
+  if p >= 1 then
+    service += "-#{p}"
+  end
+  if name == node['ec_policy'] then
+    replicas = 9
+  else
+    replicas = node['replicas']
+  end
   execute "#{service}.builder-create" do
     command "sudo -u vagrant swift-ring-builder #{service}.builder create " \
-      "#{node['part_power']} #{node['replicas']} 1"
+      "#{node['part_power']} #{replicas} 1"
     creates "/etc/swift/#{service}.builder"
     cwd "/etc/swift"
   end
