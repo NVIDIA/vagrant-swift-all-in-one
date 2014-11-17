@@ -13,7 +13,7 @@ PROJECTS = {
     },
     'swift-specs': {
         'root': '/vagrant/swift-specs/doc/',
-        'dir': ['../specs'],
+        'dir': ['../'],
     },
 }
 
