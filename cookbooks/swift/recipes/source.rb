@@ -31,7 +31,7 @@ end
 execute "python-swiftclient-install" do
   cwd "/vagrant/python-swiftclient"
   command "pip install -e . && pip install -r test-requirements.txt"
-  if not node['full_reprovision']:
+  if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/python-swiftclient.egg-link"
   end
   action :run
@@ -49,7 +49,7 @@ end
 execute "python-swift-install" do
   cwd "/vagrant/swift"
   command "python setup.py develop && pip install -r test-requirements.txt"
-  if not node['full_reprovision']:
+  if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/swift.egg-link"
   end
   action :run
@@ -63,7 +63,7 @@ end
 
 execute "install tox" do
   command "pip install tox"
-  if not node['full_reprovision']:
+  if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/tox"
   end
   action :run

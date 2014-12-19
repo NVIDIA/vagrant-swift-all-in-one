@@ -18,7 +18,7 @@ local_config = {
     ).downcase == 'true',
   "loopback_gb" => Integer(ENV['LOOPBACK_GB'] || 4),
   "extra_packages" => (ENV['EXTRA_PACKAGES'] || '').split(','),
-  "storage_policies" => (ENV['STORAGE_POLICIES'] || '').split(','),
+  "storage_policies" => (ENV['STORAGE_POLICIES'] || 'default').split(','),
   "ec_policy" => (ENV['EC_POLICY'] || ''),
   "object_sync_method" => (ENV['OBJECT_SYNC_METHOD'] || 'rsync'),
   "part_power" => Integer(ENV['PART_POWER'] || 10),

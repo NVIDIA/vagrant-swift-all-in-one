@@ -16,7 +16,7 @@ end
 
 execute "apt-get-update" do
   command "apt-get update && touch /tmp/.apt-get-update"
-  if not node['full_reprovision']:
+  if not node['full_reprovision']
     creates "/tmp/.apt-get-update"
   end
   action :run
