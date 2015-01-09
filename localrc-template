@@ -12,6 +12,7 @@ export DISKS=4
 export STORAGE_POLICIES=default # e.g. gold,silver
 export EC_POLICY= # e.g. silver
 export OBJECT_SYNC_METHOD=rsync  # or ssync
+export POST_AS_COPY=true  # or false
 export SWIFT_REPO=git://github.com/openstack/swift.git
 export SWIFTCLIENT_REPO=git://github.com/openstack/python-swiftclient.git
 export SWIFTBENCH_REPO=git://github.com/openstack/swift-bench.git

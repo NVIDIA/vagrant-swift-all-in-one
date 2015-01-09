@@ -59,10 +59,13 @@ directory "/etc/swift/proxy-server" do
   group "vagrant"
 end
 
-cookbook_file "/etc/swift/proxy-server/default.conf-template" do
-  source "etc/swift/proxy-server/default.conf-template"
+template "/etc/swift/proxy-server/default.conf-template" do
+  source "etc/swift/proxy-server/default.conf-template.erb"
   owner "vagrant"
   group "vagrant"
+  variables({
+    :post_as_copy => node['post_as_copy'],
+  })
 end
 
 [

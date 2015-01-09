@@ -13,14 +13,13 @@ end
 current_datetime = Time.now.strftime("%Y%m%d-%H%M%S")
 
 local_config = {
-  "full_reprovision" => (
-        ENV['FULL_REPROVISION'] || 'false'
-    ).downcase == 'true',
+  "full_reprovision" => (ENV['FULL_REPROVISION'] || 'false').downcase == 'true',
   "loopback_gb" => Integer(ENV['LOOPBACK_GB'] || 4),
   "extra_packages" => (ENV['EXTRA_PACKAGES'] || '').split(','),
   "storage_policies" => (ENV['STORAGE_POLICIES'] || 'default').split(','),
   "ec_policy" => (ENV['EC_POLICY'] || ''),
   "object_sync_method" => (ENV['OBJECT_SYNC_METHOD'] || 'rsync'),
+  "post_as_copy" => (ENV['POST_AS_COPY'] || 'true').downcase == 'true',
   "part_power" => Integer(ENV['PART_POWER'] || 10),
   "replicas" => Integer(ENV['REPLICAS'] || 3),
   "regions" => Integer(ENV['REGIONS'] || 1),

@@ -40,7 +40,7 @@ end
 execute "swift-bench-install" do
   cwd "/vagrant/swift-bench"
   command "pip install -e . && pip install -r test-requirements.txt"
-  if not node['full_reprovision']:
+  if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/swift-bench.egg-link"
   end
   action :run

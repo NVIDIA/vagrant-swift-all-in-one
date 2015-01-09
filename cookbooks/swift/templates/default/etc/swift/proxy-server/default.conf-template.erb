@@ -22,8 +22,8 @@ use = egg:swift#slo
 [filter:dlo]
 use = egg:swift#dlo
 
-[filter:tempurl] 
-use = egg:swift#tempurl 
+[filter:tempurl]
+use = egg:swift#tempurl
 
 [filter:container_sync]
 use = egg:swift#container_sync
@@ -33,3 +33,4 @@ current = //TEST/SAIO
 use = egg:swift#proxy
 allow_account_management = true
 account_autocreate = true
+object_post_as_copy = <%= @post_as_copy %>
