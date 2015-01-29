@@ -1,5 +1,14 @@
 require 'ipaddr'
 
+DEFAULT_BOX = "swift-all-in-one"
+
+vagrant_boxes = {
+  DEFAULT_BOX => "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/14.04/providers/virtualbox.box",
+  "precise" => "http://files.vagrantup.com/precise64.box",
+  "trusty" => "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/14.04/providers/virtualbox.box",
+}
+vagrant_box = (ENV['VAGRANT_BOX'] || DEFAULT_BOX)
+
 base_ip = IPAddr.new(ENV['IP'] || "192.168.8.80")
 hosts = {
   'default' => base_ip.to_s
@@ -39,11 +48,13 @@ Vagrant.configure("2") do |global_config|
     global_config.vm.define vm_name do |config|
       hostname = vm_name
       if hostname == 'default' then
-          hostname = 'saio'
+        hostname = 'saio'
       end
       config.vm.hostname = hostname
-      config.vm.box = "swift-all-in-one"
-      config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+      config.vm.box = vagrant_box
+      if vagrant_boxes.key? vagrant_box
+        config.vm.box_url = vagrant_boxes[vagrant_box]
+      end
       config.vm.network :private_network, ip: ip
       config.vm.provider :virtualbox do |vb|
         vb.name = "vagrant-#{hostname}-#{current_datetime}"

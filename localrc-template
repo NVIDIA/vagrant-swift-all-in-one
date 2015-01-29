@@ -1,3 +1,4 @@
+export VAGRANT_BOX=swift-all-in-one  # trusty, precise, etc.
 export FULL_REPROVISION=false
 export LOOPBACK_GB=4  # how much storage your swift has
 export IP=192.168.8.80
