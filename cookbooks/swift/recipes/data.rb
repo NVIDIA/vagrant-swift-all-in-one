@@ -91,3 +91,9 @@ end
   end
 end
 
+# make vagrant able to read /var/log/syslog
+group "adm" do
+  action :modify
+  members "vagrant"
+  append true
+end
