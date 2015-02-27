@@ -39,10 +39,24 @@ A few things are configurable, see `localrc-template`.
  1. `vagrant ssh`
  1. `rebuildswift`
 
-other things you may need to run, and when
-===========================================
- 1. if you've changed your localconf, then `vagrant provision` on the host to reconfigure swift
- 2. if you've halted your VM, you'll need to `vagrant up --provision` on the host
- 2. if you need to revert manual changes to swift's configuration, then `rebuildswift`
- 3. if you need to just erase data in swift, then `resetswift`
- 4. if you just changed branches you need to `reinstallswift`
+ninja-dev-tricks
+================
+
+A few scripts are available to make your dev life easier.
+
+ 1. `vagrant up --provision` will bring up your VM in working order (useful
+    when your VM is halted)
+ 1. `source localrc; vagrant provision` on your host to push the new Chef bits
+    in place (useful if you change localrc)
+ 1. `rebuildswift` to reapply everything like it would be at the end of Chef
+    time (useful to revert local config changes)
+ 1. `resetswift` will wipe the drives and leave any local config changes in
+    place (useful just to clean out Swift data)
+ 1. `reinstallswift` will make sure all of the bin scripts are installed
+    correctly and restart the main swift processes (useful if you change
+    branches)
+ 1. `autodoc [swift-specs]` will build the sphinx docs and watch files for
+    changes, and upload them to a public container on your vm so you can
+    review them
+ 1. `vtox` will hack the local tox.ini and setup.py so you can run tox tests
+    successfully on the swift repo in the `/vagrant` directory
