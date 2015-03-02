@@ -52,9 +52,13 @@ local_config = {
   "nodes" => Integer(ENV['NODES'] || 4),
   "disks" => Integer(ENV['DISKS'] || 4),
   "swift_repo" => (ENV['SWIFT_REPO'] || 'git://github.com/openstack/swift.git'),
+  "swift_repo_branch" => (ENV['SWIFT_REPO_BRANCH'] || 'master'),
   "swiftclient_repo" => (ENV['SWIFTCLIENT_REPO'] || 'git://github.com/openstack/python-swiftclient.git'),
+  "swiftclient_repo_branch" => (ENV['SWIFTCLIENT_REPO_BRANCH'] || 'master'),
   "swift_bench_repo" => (ENV['SWIFTBENCH_REPO'] || 'git://github.com/openstack/swift-bench.git'),
+  "swift_bench_repo_branch" => (ENV['SWIFTBENCH_REPO_BRANCH'] || 'master'),
   "swift_specs_repo" => (ENV['SWIFTSPECS_REPO'] || 'git://github.com/openstack/swift-specs.git'),
+  "swift_specs_repo_branch" => (ENV['SWIFTSPECS_REPO_BRANCH'] || 'master'),
 }
 
 

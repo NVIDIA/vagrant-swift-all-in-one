@@ -15,6 +15,7 @@ export EC_POLICY= # e.g. silver
 export OBJECT_SYNC_METHOD=rsync  # or ssync
 export POST_AS_COPY=true  # or false
 export SWIFT_REPO=git://github.com/openstack/swift.git
+export SWIFT_REPO_BRANCH=master
 export SWIFTCLIENT_REPO=git://github.com/openstack/python-swiftclient.git
 export SWIFTBENCH_REPO=git://github.com/openstack/swift-bench.git
 export SWIFTSPECS_REPO=git://github.com/openstack/swift-specs.git
