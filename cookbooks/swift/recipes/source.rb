@@ -18,28 +18,28 @@
 
 execute "git python-swiftclient" do
   cwd "/vagrant"
-  command "git clone #{node['swiftclient_repo']}"
+  command "git clone -b #{node['swiftclient_repo_branch']} #{node['swiftclient_repo']}"
   creates "/vagrant/python-swiftclient"
   action :run
 end
 
 execute "git swift-bench" do
   cwd "/vagrant"
-  command "git clone #{node['swift_bench_repo']}"
+  command "git clone -b #{node['swift_bench_repo_branch']} #{node['swift_bench_repo']}"
   creates "/vagrant/swift-bench"
   action :run
 end
 
 execute "git swift" do
   cwd "/vagrant"
-  command "git clone #{node['swift_repo']}"
+  command "git clone -b #{node['swift_repo_branch']} #{node['swift_repo']}"
   creates "/vagrant/swift"
   action :run
 end
 
 execute "git swift-specs" do
   cwd "/vagrant"
-  command "git clone #{node['swift_specs_repo']}"
+  command "git clone -b #{node['swift_specs_repo_branch']} #{node['swift_specs_repo']}"
   creates "/vagrant/swift-specs"
   action :run
 end
