@@ -49,7 +49,13 @@ execute "mount" do
   not_if "mountpoint /mnt/swift-disk"
 end
 
-(1..node['disks']).each do |i|
+if node['ec_policy'].empty? then
+  num_disks = node['disks']
+else
+  num_disks = [node['disks'], node['ec_disks']].max
+end
+
+(1..num_disks).each do |i|
   j = ((i - 1) % node['nodes']) + 1
   disk_path = "/mnt/swift-disk/sdb#{i}"
   node_path = "/srv/node#{j}"

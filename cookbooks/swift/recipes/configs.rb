@@ -51,6 +51,7 @@ template "/etc/swift/swift.conf" do
   variables({
     :storage_policies => node['storage_policies'],
     :ec_policy => node['ec_policy'],
+    :ec_replicas => node['ec_replicas'],
   })
 end
 

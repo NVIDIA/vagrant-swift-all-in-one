@@ -1,6 +1,5 @@
 .vagrant
-localrc
-localrc.*
+localrc*
 /swift
 /python-swiftclient
 /swift-bench

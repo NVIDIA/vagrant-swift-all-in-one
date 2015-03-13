@@ -49,9 +49,11 @@ node['storage_policies'].each_with_index do |name, p|
     service += "-#{p}"
   end
   if name == node['ec_policy'] then
-    replicas = 9
+    replicas = node['ec_replicas']
+    num_disks = node['ec_disks']
   else
     replicas = node['replicas']
+    num_disks = node['disks']
   end
   execute "#{service}.builder-create" do
     command "sudo -u vagrant swift-ring-builder #{service}.builder create " \
@@ -59,7 +61,7 @@ node['storage_policies'].each_with_index do |name, p|
     creates "/etc/swift/#{service}.builder"
     cwd "/etc/swift"
   end
-  (1..node['disks']).each do |i|
+  (1..num_disks).each do |i|
     j = ((i - 1) % node['nodes']) + 1
     z = ((i - 1) % node['zones']) + 1
     r = ((z - 1) % node['regions']) + 1
