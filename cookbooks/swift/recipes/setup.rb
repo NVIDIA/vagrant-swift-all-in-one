@@ -64,11 +64,23 @@ execute "update-path" do
 end
 
 # swift command line env setup
-#
+
 {
   "ST_AUTH" => "http://#{node['hostname']}:8080/auth/v1.0",
   "ST_USER" => "test:tester",
   "ST_KEY" => "testing",
+}.each do |var, value|
+  execute "swift-env-#{var}" do
+    command "echo 'export #{var}=#{value}' >> /home/vagrant/.profile"
+    not_if "grep #{var} /home/vagrant/.profile"
+    action :run
+  end
+end
+
+# other useful env vars
+
+{
+  "NOSE_INCLUDE_EXE" => "true",
 }.each do |var, value|
   execute "swift-env-#{var}" do
     command "echo 'export #{var}=#{value}' >> /home/vagrant/.profile"
