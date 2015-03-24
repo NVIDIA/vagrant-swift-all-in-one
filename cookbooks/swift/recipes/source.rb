@@ -62,6 +62,14 @@ execute "swift-bench-install" do
   action :run
 end
 
+execute "install pyeclib" do
+  command "pip install pyeclib"
+  if not node['full_reprovision']
+    creates "/usr/local/lib/python2.7/dist-packages/pyeclib"
+  end
+  action :run
+end
+
 execute "python-swift-install" do
   cwd "/vagrant/swift"
   command "python setup.py develop && pip install -r test-requirements.txt"
