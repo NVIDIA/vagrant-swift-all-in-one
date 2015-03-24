@@ -64,7 +64,7 @@ end
 
 execute "python-swift-install" do
   cwd "/vagrant/swift"
-  command "python setup.py develop && pip install -r test-requirements.txt"
+  command "pip install -e . && pip install -r test-requirements.txt"
   if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/swift.egg-link"
   end
