@@ -70,7 +70,7 @@ Vagrant.configure("2") do |global_config|
     global_config.vm.define vm_name do |config|
       hostname = vm_name
       if hostname == 'default' then
-        hostname = 'saio'
+        hostname = (ENV['VAGRANT_HOSTNAME'] || 'saio')
       end
       config.vm.hostname = hostname
       config.vm.box = vagrant_box
