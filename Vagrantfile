@@ -80,7 +80,7 @@ Vagrant.configure("2") do |global_config|
       config.vm.network :private_network, ip: ip
       config.vm.provider :virtualbox do |vb|
         vb.name = "vagrant-#{hostname}-#{current_datetime}"
-        vb.memory = 768
+        vb.memory = Integer(ENV['VAGRANT_RAM'] || 768)
       end
       config.vm.provision :chef_solo do |chef|
         chef.add_recipe "swift"
