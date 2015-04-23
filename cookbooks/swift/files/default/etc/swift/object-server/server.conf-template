@@ -12,13 +12,3 @@ use = egg:swift#object
 
 [filter:recon]
 use = egg:swift#recon
-
-[object-updater]
-
-[object-auditor]
-
-[object-replicator]
-# vm_test_mode = yes
-sync_method = <%= @sync_method %>
-
-[object-reconstructor]

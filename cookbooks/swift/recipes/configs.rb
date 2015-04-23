@@ -119,45 +119,79 @@ end
     group "vagrant"
     action :create
   end
-  if service == "object" then
-    template "/#{service_dir}/default.conf-template" do
-      source "#{service_dir}/default.conf-template.erb"
-      owner "vagrant"
-      group "vagrant"
-      variables({:sync_method => node['object_sync_method']})
-    end
-  else
-    cookbook_file "/#{service_dir}/default.conf-template" do
-      source "#{service_dir}/default.conf-template"
-      owner "vagrant"
-      group "vagrant"
-    end
+  cookbook_file "/#{service_dir}/server.conf-template" do
+    source "#{service_dir}/server.conf-template"
+    owner "vagrant"
+    group "vagrant"
+  end
+  template "/#{service_dir}/service.conf-template" do
+    source "#{service_dir}/service.conf-template.erb"
+    owner "vagrant"
+    group "vagrant"
+    variables({:replication_servers => true})
+  end
+  template "/#{service_dir}/replication.conf-template" do
+    source "#{service_dir}/replication.conf-template.erb"
+    owner "vagrant"
+    group "vagrant"
+    variables({
+      :replication_servers => true,
+      :sync_method => node['object_sync_method'],
+    })
   end
   (1..node['nodes']).each do |i|
-    conf_dir = "#{service_dir}/#{i}.conf.d"
-    directory "/#{conf_dir}" do
-      owner "vagrant"
-      group "vagrant"
-    end
-    link "/#{conf_dir}/00_base.conf" do
-      to "/etc/swift/base.conf-template"
-      owner "vagrant"
-      group "vagrant"
-    end
-    link "/#{conf_dir}/10_default.conf" do
-      to "/#{service_dir}/default.conf-template"
-      owner "vagrant"
-      group "vagrant"
-    end
-    template "/#{conf_dir}/20_settings.conf" do
-      source "#{service_dir}/settings.conf.erb"
+    # in non-replication servers this doesn't need to be a conf-template
+    template "/#{service_dir}/#{i}.conf-template" do
+      source "#{service_dir}/node.conf-template.erb"
       owner "vagrant"
       group "vagrant"
       variables({
-         :srv_path => "/srv/node#{i}",
-         :bind_port => "60#{i}#{p}",
-         :recon_cache_path => "/var/cache/swift/node#{i}",
+        :srv_path => "/srv/node#{i}",
+        # :bind_port => "60#{i}#{p}",
+        :recon_cache_path => "/var/cache/swift/node#{i}",
       })
+    end
+    service_conf_dir = "#{service_dir}/#{i}-server.conf.d"
+    replication_conf_dir = "#{service_dir}/#{i}-replication.conf.d"
+    {
+      service_conf_dir => "60#{i}#{p}",
+      replication_conf_dir  => "70#{i}#{p}",
+    }.each do |conf_dir, bind_port|
+      directory "/#{conf_dir}" do
+        owner "vagrant"
+        group "vagrant"
+      end
+      link "/#{conf_dir}/00_base.conf" do
+        to "/etc/swift/base.conf-template"
+        owner "vagrant"
+        group "vagrant"
+      end
+      link "/#{conf_dir}/10_server.conf" do
+        to "/#{service_dir}/server.conf-template"
+        owner "vagrant"
+        group "vagrant"
+      end
+      link "/#{conf_dir}/40_node.conf" do
+        to "/#{service_dir}/#{i}.conf-template"
+        owner "vagrant"
+        group "vagrant"
+      end
+      template "/#{conf_dir}/50_settings.conf" do
+        source "#{service_dir}/settings.conf.erb"
+        owner "vagrant"
+        group "vagrant"
+        variables({:bind_port => bind_port})
+      end
+    end
+    link "/#{service_conf_dir}/20_service.conf" do
+      to "/#{service_dir}/service.conf-template"
+      owner "vagrant"
+      group "vagrant"
+    end
+    link "/#{replication_conf_dir}/30_replication.conf" do
+      to "/#{service_dir}/replication.conf-template"
+      owner "vagrant"
+      group "vagrant"
     end
   end
 end

@@ -28,7 +28,7 @@
     z = ((i - 1) % node['zones']) + 1
     r = ((z - 1) % node['regions']) + 1
     execute "#{service}.builder-add-sdb#{i}" do
-      dsl = "r#{r}z#{z}-127.0.0.1:60#{j}#{p + 1}/sdb#{i}"
+      dsl = "r#{r}z#{z}-127.0.0.1:60#{j}#{p + 1}R127.0.0.1:70#{j}#{p + 1}/sdb#{i}"
       command "sudo -u vagrant swift-ring-builder #{service}.builder add " \
         "#{dsl} 1 && rm -f /etc/swift/#{service}.ring.gz || true"
       not_if "swift-ring-builder /etc/swift/#{service}.builder search #{dsl}"
@@ -66,10 +66,10 @@ node['storage_policies'].each_with_index do |name, p|
     z = ((i - 1) % node['zones']) + 1
     r = ((z - 1) % node['regions']) + 1
     execute "#{service}.builder-add-sdb#{i}" do
+      dsl = "r#{r}z#{z}-127.0.0.1:60#{j}0R127.0.0.1:70#{j}0/sdb#{i}"
       command "sudo -u vagrant swift-ring-builder #{service}.builder add " \
-        "r#{r}z#{z}-127.0.0.1:60#{j}0/sdb#{i} 1 && " \
-        "rm -f /etc/swift/#{service}.ring.gz || true"
-      not_if "swift-ring-builder /etc/swift/#{service}.builder search /sdb#{i}"
+        "#{dsl} 1 && rm -f /etc/swift/#{service}.ring.gz || true"
+      not_if "swift-ring-builder /etc/swift/#{service}.builder search #{dsl}"
       cwd "/etc/swift"
     end
   end
