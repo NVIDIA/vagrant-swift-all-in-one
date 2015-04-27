@@ -21,3 +21,4 @@ sudo umount /mnt/swift-disk
 sudo rm -r /srv/node*
 sudo rm -f /var/lib/swift/disk
 sudo rm -f /var/log/debug /var/log/messages /var/log/rsyncd.log /var/log/syslog
+sudo service rsyslog restart
