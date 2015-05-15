@@ -1,0 +1,31 @@
+[DEFAULT]
+user = vagrant
+eventlet_debug = true
+log_level = DEBUG
+mount_check = false
+disable_fallocate = true
+workers = 1
+log_facility = LOG_LOCAL2
+devices = <%= @srv_path %>
+bind_port = <%= @bind_port %>
+log_name = object-<%= @bind_port %>
+recon_cache_path = <%= @recon_cache_path %>
+
+[pipeline:main]
+pipeline = recon object-server
+
+[app:object-server]
+use = egg:swift#object
+
+[filter:recon]
+use = egg:swift#recon
+
+[object-updater]
+
+[object-auditor]
+
+[object-replicator]
+# vm_test_mode = yes
+sync_method = <%= @sync_method %>
+
+[object-reconstructor]

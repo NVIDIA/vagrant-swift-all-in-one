@@ -113,13 +113,8 @@ end
   end
 end
 
-["object", "container", "account"].each_with_index do |service, p|
-  service_dir = "etc/swift/#{service}-server"
-  directory "/#{service_dir}" do
-    owner "vagrant"
-    group "vagrant"
-    action :create
-  end
+# config directories
+def do_config_directory(node, service, service_dir, p)
   if service == "object" then
     template "/#{service_dir}/default.conf-template" do
       source "#{service_dir}/default.conf-template.erb"
@@ -177,6 +172,36 @@ end
          :recon_cache_path => "/var/cache/swift/node#{i}",
       })
     end
+  end
+end
+
+def do_flat_config(node, service, service_dir, p)
+  (1..node['nodes']).each do |i|
+    template "/#{service_dir}/#{i}.conf" do
+      source "#{service_dir}/flat.conf.erb"
+      owner "vagrant"
+      group "vagrant"
+      variables({
+        :sync_method => node['object_sync_method'],
+         :srv_path => "/srv/node#{i}",
+         :bind_port => "60#{i}#{p}",
+         :recon_cache_path => "/var/cache/swift/node#{i}",
+      })
+    end
+  end
+end
+
+["object", "container", "account"].each_with_index do |service, p|
+  service_dir = "etc/swift/#{service}-server"
+  directory "/#{service_dir}" do
+    owner "vagrant"
+    group "vagrant"
+    action :create
+  end
+  if service == "object" then
+    do_flat_config node, service, service_dir, p
+  else
+    do_config_directory node, service, service_dir, p
   end
 end
 
