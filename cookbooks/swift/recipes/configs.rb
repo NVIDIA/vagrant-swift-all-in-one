@@ -18,6 +18,7 @@
 
 cookbook_file "/etc/rsyncd.conf" do
   source "etc/rsyncd.conf"
+  notifies :restart, 'service[rsync]'
 end
 
 execute "enable-rsync" do
@@ -124,7 +125,10 @@ end
       source "#{service_dir}/default.conf-template.erb"
       owner "vagrant"
       group "vagrant"
-      variables({:sync_method => node['object_sync_method']})
+      variables({
+        :sync_method => node['object_sync_method'],
+        :servers_per_port => node['servers_per_port'],
+      })
     end
   else
     cookbook_file "/#{service_dir}/default.conf-template" do
@@ -134,6 +138,19 @@ end
     end
   end
   (1..node['nodes']).each do |i|
+    bind_ip = "127.0.0.1"
+    bind_port = "60#{i}#{p}"
+    if p == 0 && node['servers_per_port'] > 0 then
+      # Only use unique IPs if servers_per_port is enabled.  This lets this
+      # newer vagrant-swift-all-in-one work with older swift that doesn't have
+      # the required whataremyips() plumbing to make unique IPs work.
+      bind_ip = "127.0.0.#{i}"
+
+      # This config setting shouldn't really matter in the server-per-port
+      # scenario, but it should probably at least be equal to one of the actual
+      # ports in the ring.
+      bind_port = "60#{i}6"
+    end
     conf_dir = "#{service_dir}/#{i}.conf.d"
     directory "/#{conf_dir}" do
       owner "vagrant"
@@ -155,7 +172,8 @@ end
       group "vagrant"
       variables({
          :srv_path => "/srv/node#{i}",
-         :bind_port => "60#{i}#{p}",
+         :bind_ip => bind_ip,
+         :bind_port => bind_port,
          :recon_cache_path => "/var/cache/swift/node#{i}",
       })
     end

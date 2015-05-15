@@ -18,6 +18,14 @@ execute "clean-up" do
   command "rm /home/vagrant/postinstall.sh || true"
 end
 
+if node['extra_key'] then
+  keys_file = "~vagrant/.ssh/authorized_keys"
+  execute "add_extra_key" do
+    command "echo '#{node['extra_key']}' >> #{keys_file}"
+    not_if "grep -q '#{node['extra_key']}' #{keys_file}"
+  end
+end
+
 # deadsnakes for py2.6
 execute "deadsnakes key" do
   command "sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys DB82666C"
