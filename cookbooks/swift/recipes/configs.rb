@@ -60,6 +60,7 @@ end
   'test.conf',
   'dispersion.conf',
   'bench.conf',
+  'bench-direct.conf',
   'base.conf-template',
   'container-sync-realms.conf'
 ].each do |filename|
