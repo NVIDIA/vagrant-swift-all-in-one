@@ -34,3 +34,15 @@ use = egg:swift#proxy
 allow_account_management = true
 account_autocreate = true
 object_post_as_copy = <%= @post_as_copy %>
+
+[filter:decrypter]
+use = egg:swift#decrypter
+
+[filter:trivialkeymaster]
+use = egg:swift#trivialkeymaster
+
+[filter:encrypter]
+use = egg:swift#encrypter
+
+[filter:fake_footers]
+use = egg:swift#fake_footers
