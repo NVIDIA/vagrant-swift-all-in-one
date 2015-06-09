@@ -18,6 +18,6 @@
 rm -fr /etc/swift/*
 rm -f /etc/swift/*.builder /etc/swift/*.ring.gz \
   /etc/swift/backups/*.builder /etc/swift/backups/*.ring.gz
-cd /tmp/vagrant-chef-*/
+cd /tmp/vagrant-chef*/
 sed 's/"full_reprovision": false/"full_reprovision": true/g' dna.json > reload.json
 sudo chef-solo -c solo.rb -j reload.json
