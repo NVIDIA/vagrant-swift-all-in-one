@@ -38,6 +38,12 @@ cookbook_file "/etc/apt/sources.list.d/fkrull-deadsnakes-precise.list" do
   mode 0644
 end
 
+execute "enable backports" do
+  command "sudo sed -ie 's/# deb http:\\/\\/archive.ubuntu.com\\/ubuntu trusty-backports/deb http:\\/\\/archive.ubuntu.com\\/ubuntu trusty-backports/' /etc/apt/sources.list"
+  action :run
+  not_if "sudo grep -q '^deb .* trusty-backports' /etc/apt/sources.list"
+end
+
 execute "apt-get-update" do
   command "apt-get update && touch /tmp/.apt-get-update"
   if not node['full_reprovision']
@@ -48,11 +54,12 @@ end
 
 # packages
 required_packages = [
+  "libjerasure-dev",  # required for the EC biz
   "curl", "gcc", "memcached", "rsync", "sqlite3", "xfsprogs", "git-core",
   "build-essential", "python-dev", "libffi-dev", "python-setuptools",
   "python-coverage", "python-dev", "python-nose", "python-simplejson",
   "python-xattr", "python-eventlet", "python-greenlet", "python-pastedeploy",
-  "python-netifaces", "python-pip", "python-dnspython", "python-mock",
+  "python-netifaces", "python-dnspython", "python-mock",
   "python3.3", "python3.3-dev", "python3.4", "python3.4-dev",
   "python2.6", "python2.6-dev", "libxml2-dev", "libxml2", "libxslt1-dev",
 ]
@@ -61,6 +68,11 @@ extra_packages = node['extra_packages']
   package pkg do
     action :install
   end
+end
+
+# Migration: remove any existing python-pip package
+package "python-pip" do
+  action :purge
 end
 
 # setup environment
