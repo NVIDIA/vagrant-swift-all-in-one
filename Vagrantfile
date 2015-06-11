@@ -83,7 +83,7 @@ Vagrant.configure("2") do |global_config|
       config.vm.provider :virtualbox do |vb|
         vb.name = "vagrant-#{hostname}-#{current_datetime}"
         vb.cpus = Integer(ENV['VAGRANT_CPUS'] || 1)
-        vb.memory = Integer(ENV['VAGRANT_RAM'] || 768)
+        vb.memory = Integer(ENV['VAGRANT_RAM'] || 1024)
       end
       config.vm.provision :chef_solo do |chef|
         chef.add_recipe "swift"

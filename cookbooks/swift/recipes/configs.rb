@@ -140,7 +140,7 @@ end
   (1..node['nodes']).each do |i|
     bind_ip = "127.0.0.1"
     bind_port = "60#{i}#{p}"
-    if p == 0 && node['servers_per_port'] > 0 then
+    if service == "object" && node['servers_per_port'] > 0 then
       # Only use unique IPs if servers_per_port is enabled.  This lets this
       # newer vagrant-swift-all-in-one work with older swift that doesn't have
       # the required whataremyips() plumbing to make unique IPs work.
