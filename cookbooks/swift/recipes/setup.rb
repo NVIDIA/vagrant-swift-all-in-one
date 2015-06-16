@@ -55,6 +55,8 @@ extra_packages = node['extra_packages']
   end
 end
 
+execute "pip install -U pip"
+
 # setup environment
 
 execute "update-path" do
