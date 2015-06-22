@@ -16,6 +16,13 @@
 
 # python install
 
+# OS pip sucks, so don't use it; install latest instead
+execute "easy_install pip, baby" do
+  command "/usr/bin/easy_install pip"
+  action :run
+  not_if "test -f /usr/local/bin/pip"
+end
+
 execute "git python-swiftclient" do
   cwd "/vagrant"
   command "git clone -b #{node['swiftclient_repo_branch']} #{node['swiftclient_repo']}"

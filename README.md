@@ -17,7 +17,8 @@ This project assumes you have Virtualbox and Vagrant.
 running-tests
 =============
 
-You should be able to run most tests without too much fuss.
+You should be able to run most tests without too much fuss once SSH'ed into the
+VM.
 
  1. `.unittests`
  1. `.functests`
