@@ -15,6 +15,6 @@
 # limitations under the License.
 
 /vagrant/bin/cleanswift
-cd /tmp/vagrant-chef-*/ && sudo chef-solo -c solo.rb -j dna.json -o swift::data
+cd /tmp/vagrant-chef*/ && sudo chef-solo -c solo.rb -j dna.json -o swift::data
 sudo service rsyslog restart
 sudo service memcached restart

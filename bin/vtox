@@ -15,7 +15,7 @@
 # limitations under the License.
 
 # tox wrapper for vagrant
-ARGS=${@:-"-e pep8,py27,py26"}
+ARGS=${@:-"-e pep8,py27"}
 set -e
 cd /vagrant/swift
 sed -i '/envlist/ a\

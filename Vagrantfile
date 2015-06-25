@@ -43,6 +43,7 @@ local_config = {
   "extra_packages" => (ENV['EXTRA_PACKAGES'] || '').split(','),
   "storage_policies" => (ENV['STORAGE_POLICIES'] || 'default').split(','),
   "ec_policy" => (ENV['EC_POLICY'] || ''),
+  "servers_per_port" => Integer(ENV['SERVERS_PER_PORT'] || 0),
   "object_sync_method" => (ENV['OBJECT_SYNC_METHOD'] || 'rsync'),
   "post_as_copy" => (ENV['POST_AS_COPY'] || 'true').downcase == 'true',
   "part_power" => Integer(ENV['PART_POWER'] || 10),
@@ -61,6 +62,7 @@ local_config = {
   "swift_bench_repo_branch" => (ENV['SWIFTBENCH_REPO_BRANCH'] || 'master'),
   "swift_specs_repo" => (ENV['SWIFTSPECS_REPO'] || 'git://github.com/openstack/swift-specs.git'),
   "swift_specs_repo_branch" => (ENV['SWIFTSPECS_REPO_BRANCH'] || 'master'),
+  "extra_key" => (ENV['EXTRA_KEY'] || ''),
 }
 
 
@@ -80,7 +82,11 @@ Vagrant.configure("2") do |global_config|
       config.vm.network :private_network, ip: ip
       config.vm.provider :virtualbox do |vb|
         vb.name = "vagrant-#{hostname}-#{current_datetime}"
-        vb.memory = Integer(ENV['VAGRANT_RAM'] || 768)
+        vb.cpus = Integer(ENV['VAGRANT_CPUS'] || 1)
+        vb.memory = Integer(ENV['VAGRANT_RAM'] || 1024)
+        if (ENV['GUI'] || false)  # Why is my VM hung on boot? Find out!
+          vb.gui = true
+        end
       end
       config.vm.provision :chef_solo do |chef|
         chef.add_recipe "swift"
