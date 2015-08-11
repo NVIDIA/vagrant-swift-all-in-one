@@ -16,13 +16,6 @@
 
 # python install
 
-# OS pip sucks, so don't use it; install latest instead
-execute "easy_install pip, baby" do
-  command "/usr/bin/easy_install pip"
-  action :run
-  not_if "test -f /usr/local/bin/pip"
-end
-
 execute "git python-swiftclient" do
   cwd "/vagrant"
   command "git clone -b #{node['swiftclient_repo_branch']} #{node['swiftclient_repo']}"
@@ -49,6 +42,10 @@ execute "git swift-specs" do
   command "git clone -b #{node['swift_specs_repo_branch']} #{node['swift_specs_repo']}"
   creates "/vagrant/swift-specs"
   action :run
+end
+
+execute "fix semantic_version error from testtools" do
+  command "pip install --upgrade testtools"
 end
 
 execute "python-swiftclient-install" do

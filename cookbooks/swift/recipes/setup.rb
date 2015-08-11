@@ -56,12 +56,9 @@ end
 required_packages = [
   "libjerasure-dev",  # required for the EC biz
   "curl", "gcc", "memcached", "rsync", "sqlite3", "xfsprogs", "git-core",
-  "build-essential", "python-dev", "libffi-dev", "python-setuptools",
-  "python-coverage", "python-dev", "python-nose", "python-simplejson",
-  "python-xattr", "python-eventlet", "python-greenlet", "python-pastedeploy",
-  "python-netifaces", "python-dnspython", "python-mock",
-  "python3.3", "python3.3-dev", "python3.4", "python3.4-dev",
-  "python2.6", "python2.6-dev", "libxml2-dev", "libxml2", "libxslt1-dev",
+  "build-essential", "python-dev", "libffi-dev", "python-dev", "python3.3",
+  "python3.3-dev", "python3.4", "python3.4-dev", "python2.6", "python2.6-dev",
+  "libxml2-dev", "libxml2", "libxslt1-dev",
 ]
 extra_packages = node['extra_packages']
 (required_packages + extra_packages).each do |pkg|
@@ -70,9 +67,19 @@ extra_packages = node['extra_packages']
   end
 end
 
-# Migration: remove any existing python-pip package
-package "python-pip" do
-  action :purge
+# it's a brave new world
+execute "install pip" do
+  command "curl https://bootstrap.pypa.io/get-pip.py | python"
+  not_if "which pip"
+end
+
+execute "upgrade pip" do
+  command "pip install --upgrade pip"
+end
+
+execute "fix pip warning 1" do
+  command "sed '/env_reset/a Defaults\talways_set_home' -i /etc/sudoers"
+  not_if "grep always_set_home /etc/sudoers"
 end
 
 # setup environment
