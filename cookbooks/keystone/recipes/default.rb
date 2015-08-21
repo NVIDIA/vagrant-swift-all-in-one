@@ -1,5 +1,4 @@
-#!/bin/bash
-# Copyright (c) 2015 SwiftStack, Inc.
+# Copyright (c) 2015 Fujitsu, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,10 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-/vagrant/bin/cleanswift
-rm -fr /etc/swift/*
-rm -f /etc/swift/*.builder /etc/swift/*.ring.gz \
-  /etc/swift/backups/*.builder /etc/swift/backups/*.ring.gz
-cd /tmp/vagrant-chef*/
-sed 's/"full_reprovision": false/"full_reprovision": true/g' dna.json > reload.json
-sudo chef-solo -c solo.rb -j reload.json -o swift::default
+include_recipe "keystone::setup"
+include_recipe "keystone::configs"
+include_recipe "keystone::data"
+

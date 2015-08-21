@@ -31,6 +31,11 @@ current = //TEST/SAIO
 
 [app:proxy-server]
 use = egg:swift#proxy
+<% if @node['keystone_auth_provision'] == false %>
 allow_account_management = true
+<% end %>
+<% if @node['keystone_auth_provision'] == true %>
+allow_account_management = false
+<% end %>
 account_autocreate = true
 object_post_as_copy = <%= @post_as_copy %>

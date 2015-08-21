@@ -62,6 +62,9 @@ local_config = {
   "swift_bench_repo_branch" => (ENV['SWIFTBENCH_REPO_BRANCH'] || 'master'),
   "swift_specs_repo" => (ENV['SWIFTSPECS_REPO'] || 'git://github.com/openstack/swift-specs.git'),
   "swift_specs_repo_branch" => (ENV['SWIFTSPECS_REPO_BRANCH'] || 'master'),
+  "keystone_auth_provision" => (ENV['KEYSTONE_AUTH_PROVISION'] || 'false').downcase == 'true',
+  "keystonemiddleware_repo" => (ENV['KEYSTONEMIDDLEWARE_REPO'] || 'git://github.com/openstack/keystonemiddleware.git'),
+  "keystonemiddleware_repo_branch" => (ENV['KEYSTONEMIDDLEWARE_REPO_BRANCH'] || 'master'),
   "extra_key" => (ENV['EXTRA_KEY'] || ''),
 }
 
@@ -88,10 +91,19 @@ Vagrant.configure("2") do |global_config|
           vb.gui = true
         end
       end
+
       config.vm.provision :chef_solo do |chef|
+        if local_config["keystone_auth_provision"]
+          chef.add_recipe "keystone"
+        end
         chef.add_recipe "swift"
         chef.json = local_config
       end
+
+      if local_config["keystone_auth_provision"]
+        config.vm.provision "shell", path: "scripts/register_keystone_data.sh"
+      end
+
     end
   end
 end

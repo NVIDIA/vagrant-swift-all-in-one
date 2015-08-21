@@ -1,0 +1,26 @@
+{
+  "auth": {
+    "identity": {
+      "methods": [
+        "password"
+      ],
+      "password": {
+        "user": {
+          "domain": {
+            "name": "@DOMAIN_NAME@"
+          },
+          "name": "@USER_NAME@",
+          "password": "@PASSWORD@"
+        }
+      }
+    },
+    "scope": {
+      "project": {
+        "domain": {
+          "name": "@DOMAIN_NAME@"
+        },
+        "name": "@PROJECT_NAME@"
+      }
+    }
+  }
+}
