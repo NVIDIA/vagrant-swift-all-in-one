@@ -1,0 +1,42 @@
+[DEFAULT]
+bind_port = 8080
+
+<% if @node['keystone_auth_provision'] == false %>
+[pipeline:main]
+pipeline = catch_errors healthcheck proxy-logging cache container_sync bulk tempurl tempauth slo dlo proxy-logging proxy-server
+<% end %>
+<% if @node['keystone_auth_provision'] == true %>
+[pipeline:main]
+pipeline = catch_errors healthcheck proxy-logging cache container_sync bulk tempurl authtoken keystoneauth slo dlo proxy-logging proxy-server
+
+[filter:authtoken]
+paste.filter_factory = keystonemiddleware.auth_token:filter_factory
+identity_uri = http://127.0.0.1:35357/
+auth_uri = http://127.0.0.1:5000/
+admin_tenant_name = service
+admin_user = swift
+admin_password = swift_password
+
+delay_auth_decision = True
+cache = swift.cache
+include_service_catalog = False
+
+[filter:keystoneauth]
+use = egg:swift#keystoneauth
+reseller_prefix = AUTH, SERVICE
+operator_roles = admin, swiftoperator
+reseller_admin_role = ResellerAdmin
+allow_overrides = true
+is_admin = false
+SERVICE_service_roles = service
+default_domain_id = default
+allow_names_in_acls = true
+<% end %>
+
+[filter:tempauth]
+use = egg:swift#tempauth
+user_admin_admin = admin .admin .reseller_admin
+user_test_tester = testing .admin
+user_test2_tester2 = testing2 .admin
+user_test_tester3 = testing3
+

@@ -1,0 +1,7 @@
+{
+   "domain": {
+     "description": "For function testing",
+     "enabled": true,
+     "name": "@DOMAIN_NAME@"
+   }
+}

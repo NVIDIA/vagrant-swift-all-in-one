@@ -1,0 +1,8 @@
+{
+    "project": {
+        "description": "For function test",
+        "domain_id": "@DOMAIN_ID@",
+        "enabled": true,
+        "name": "@PROJECT_NAME@"
+    }
+}
