@@ -41,10 +41,11 @@ A few things are configurable, see `localrc-template`.
 
 keystone-auth
 ========================
-If you want to setup a Swift-All-In-One with keystone auth,
-set the KEYSTONE_AUTH_PROVISION environment variable to true.
-Steps are shown below.
- 1. `export KEYSTONE_AUTH_PROVISION=true`
+
+Keystone is an optional localrc customization
+
+ 1. `sed 's/KEYSTONE_AUTH_PROVISION=false/KEYSTONE_AUTH_PROVISION=true/' localrc-template > localrc.keystone`
+ 1. `source localrc.keystone`
  1. `vagrant up`
  1. `vagrant ssh`
  1. `sh /vagrant/scripts/check_with_keystone.sh`
