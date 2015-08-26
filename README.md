@@ -14,16 +14,6 @@ This project assumes you have Virtualbox and Vagrant.
  * https://www.virtualbox.org/wiki/Downloads
  * http://www.vagrantup.com/downloads.html
 
-vagrant-swift-all-in-one with keystone auth
-========================
-If you want to setup a Swift-All-In-One with keystone auth,
-set the KEYSTONE_AUTH_PROVISION environment variable to true.
-Steps are shown below.
- 1. `export KEYSTONE_AUTH_PROVISION=true`
- 1. `vagrant up`
- 1. `vagrant ssh`
- 1. `sh /vagrant/scripts/check_with_keystone.sh`
-
 running-tests
 =============
 
@@ -48,6 +38,16 @@ A few things are configurable, see `localrc-template`.
  1. `vagrant provision`
  1. `vagrant ssh`
  1. `rebuildswift`
+
+keystone-auth
+========================
+If you want to setup a Swift-All-In-One with keystone auth,
+set the KEYSTONE_AUTH_PROVISION environment variable to true.
+Steps are shown below.
+ 1. `export KEYSTONE_AUTH_PROVISION=true`
+ 1. `vagrant up`
+ 1. `vagrant ssh`
+ 1. `sh /vagrant/scripts/check_with_keystone.sh`
 
 ninja-dev-tricks
 ================
