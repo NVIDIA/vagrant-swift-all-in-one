@@ -12,8 +12,7 @@ use = egg:swift#account
 use = egg:swift#recon
 
 [account-replicator]
-# vm_test_mode = yes
-rsync_module = {replication_ip}::account{replication_port}
+rsync_module = {replication_ip}::account_{device}
 
 [account-auditor]
 

@@ -3,24 +3,6 @@ gid = <%= @username %>
 log file = /var/log/rsyncd.log
 pid file = /var/run/rsyncd.pid
 address = 0.0.0.0
-
-<% (1..4).each do |i| -%>
-
-[account60<%= i %>2]
-max connections = 25
-path = /srv/node<%= i %>/
 read only = false
-lock file = /var/lock/account60<%= i %>2.lock
 
-[container60<%= i %>1]
-max connections = 25
-path = /srv/node<%= i %>/
-read only = false
-lock file = /var/lock/container60<%= i %>1.lock
-
-[object60<%= i %>0]
-max connections = 25
-path = /srv/node<%= i %>/
-read only = false
-lock file = /var/lock/object60<%= i %>0.lock
-<% end -%>
+&include /etc/rsyncd.d
