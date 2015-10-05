@@ -33,8 +33,8 @@ execute "deadsnakes key" do
   not_if "sudo apt-key list | grep 'Launchpad Old Python Versions'"
 end
 
-cookbook_file "/etc/apt/sources.list.d/fkrull-deadsnakes-precise.list" do
-  source "etc/apt/sources.list.d/fkrull-deadsnakes-precise.list"
+cookbook_file "/etc/apt/sources.list.d/fkrull-deadsnakes-trusty.list" do
+  source "etc/apt/sources.list.d/fkrull-deadsnakes-trusty.list"
   mode 0644
 end
 
@@ -53,11 +53,12 @@ execute "apt-get-update" do
 end
 
 # packages
+# NOTE: Ubuntu Trusty 14.04 provides Python {2.7.6, 3.4.3} out of the box.
 required_packages = [
   "libjerasure-dev",  # required for the EC biz
   "curl", "gcc", "memcached", "rsync", "sqlite3", "xfsprogs", "git-core",
   "build-essential", "python-dev", "libffi-dev", "python-dev", "python3.3",
-  "python3.3-dev", "python3.4", "python3.4-dev", "python2.6", "python2.6-dev",
+  "python3.3-dev", "python2.6", "python2.6-dev",
   "libxml2-dev", "libxml2", "libxslt1-dev",
 ]
 extra_packages = node['extra_packages']

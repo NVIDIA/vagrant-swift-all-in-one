@@ -37,6 +37,13 @@ execute "git swift" do
   action :run
 end
 
+# TODO: Grabbing feature/crypto changes that haven't been merged/pushed upstream.
+# This step should be REMOVED once the changes are merged to feature/crypto.
+execute "git swift crypto changes" do
+  cwd "/vagrant/swift"
+  command "git fetch https://review.openstack.org/openstack/swift refs/changes/38/214438/10 && git checkout FETCH_HEAD"
+end
+
 execute "git swift-specs" do
   cwd "/vagrant"
   command "git clone -b #{node['swift_specs_repo_branch']} #{node['swift_specs_repo']}"
@@ -46,6 +53,13 @@ end
 
 execute "fix semantic_version error from testtools" do
   command "pip install --upgrade testtools"
+end
+
+# Prevent InsecurePlatformWarning failure if don't have >= Python 2.7.9/ >= Python 3.2
+# https://github.com/pypa/pip/issues/2681
+execute "python-pip-security" do
+  command "pip install requests[security]"
+  action :run
 end
 
 execute "python-swiftclient-install" do
