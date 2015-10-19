@@ -26,18 +26,6 @@ if node['extra_key'] then
   end
 end
 
-# deadsnakes for py2.6
-execute "deadsnakes key" do
-  command "sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys DB82666C"
-  action :run
-  not_if "sudo apt-key list | grep 'Launchpad Old Python Versions'"
-end
-
-cookbook_file "/etc/apt/sources.list.d/fkrull-deadsnakes-trusty.list" do
-  source "etc/apt/sources.list.d/fkrull-deadsnakes-trusty.list"
-  mode 0644
-end
-
 execute "enable backports" do
   command "sudo sed -ie 's/# deb http:\\/\\/archive.ubuntu.com\\/ubuntu trusty-backports/deb http:\\/\\/archive.ubuntu.com\\/ubuntu trusty-backports/' /etc/apt/sources.list"
   action :run
@@ -56,9 +44,9 @@ end
 # NOTE: Ubuntu Trusty 14.04 provides Python {2.7.6, 3.4.3} out of the box.
 required_packages = [
   "libjerasure-dev",  # required for the EC biz
+  "libssl-dev", # libssl-dev is required for building wheels from the cryptography package in swift.
   "curl", "gcc", "memcached", "rsync", "sqlite3", "xfsprogs", "git-core",
-  "build-essential", "python-dev", "libffi-dev", "python-dev", "python3.3",
-  "python3.3-dev", "python2.6", "python2.6-dev",
+  "build-essential", "libffi-dev", "python-dev",
   "libxml2-dev", "libxml2", "libxslt1-dev",
 ]
 extra_packages = node['extra_packages']
