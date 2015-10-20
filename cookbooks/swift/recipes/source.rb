@@ -37,13 +37,6 @@ execute "git swift" do
   action :run
 end
 
-# TODO: Grabbing feature/crypto changes that haven't been merged/pushed upstream.
-# This step should be REMOVED once the changes are merged to feature/crypto.
-execute "git swift crypto changes" do
-  cwd "/vagrant/swift"
-  command "git fetch https://review.openstack.org/openstack/swift refs/changes/38/214438/10 && git checkout FETCH_HEAD"
-end
-
 execute "git swift-specs" do
   cwd "/vagrant"
   command "git clone -b #{node['swift_specs_repo_branch']} #{node['swift_specs_repo']}"
