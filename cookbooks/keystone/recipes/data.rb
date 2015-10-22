@@ -35,7 +35,7 @@ bash 'register keystone initial data' do
     openstack endpoint create --publicurl http://127.0.0.1:5000/v2.0  --internalurl http://127.0.0.1:5000/v2.0  --adminurl http://127.0.0.1:35357/v2.0  --region RegionOne keystone
 
   EOC
-  environment "OS_TOKEN" =>'admin_token', "OS_URL" =>'http://127.0.0.1:35357/v2.0'
+  environment "OS_TOKEN" =>'ADMIN', "OS_URL" =>'http://127.0.0.1:35357/v2.0'
 end
 
 bash 'register swift initial data to keystone' do
@@ -47,5 +47,5 @@ bash 'register swift initial data to keystone' do
     openstack service create --type object-store --description "OpenStack Object Storage" swift
     openstack endpoint create --publicurl 'http://127.0.0.1:8080/v1/AUTH_%(tenant_id)s'  --internalurl 'http://127.0.0.1:8080/v1/AUTH_%(tenant_id)s'  --adminurl 'http://127.0.0.1:8080' --region RegionOne swift
   EOC
-  environment "OS_TOKEN" =>'admin_token', "OS_URL" =>'http://127.0.0.1:35357/v2.0'
+  environment "OS_TOKEN" =>'ADMIN', "OS_URL" =>'http://127.0.0.1:35357/v2.0'
 end

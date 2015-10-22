@@ -19,23 +19,54 @@ execute "apt-get-update" do
   action :run
 end
 
-bash 'install mysql silently' do
-  user "root"
-  code <<-EOC
-    sudo debconf-set-selections <<< 'mariadb-server-5.5 mysql-server/root_password password database_password'
-    sudo debconf-set-selections <<< 'mariadb-server-5.5 mysql-server/root_password_again password database_password'
-    apt-get install -y mariadb-server python-mysqldb
-  EOC
-  environment "DEBIAN_FRONTEND" =>'noninteractive'
-  not_if "which mysql"
-end
-
-%w{
-  keystone
-  python-openstackclient
-  }.each do |package_name|
-  apt_package "#{package_name}" do
+required_packages = [
+  "python-dev", "python3-dev", "libxml2-dev", "libxslt1-dev", "libsasl2-dev",
+  "libsqlite3-dev", "libssl-dev", "libldap2-dev", "libffi-dev",
+  "build-essential", "libxslt-dev",
+]
+required_packages.each do |pkg|
+  package pkg do
     action :install
   end
 end
 
+execute "install pip" do
+  command "curl https://bootstrap.pypa.io/get-pip.py | python"
+  not_if "which pip"
+end
+
+execute "upgrade pip" do
+  command "pip install --upgrade pip"
+  end
+
+execute "git keystone" do
+  cwd "/vagrant"
+  command "git clone -b #{node['keystone_repo_branch']} #{node['keystone_repo']}"
+  creates "/vagrant/keystone"
+  action :run
+end
+
+execute "keystone-install" do
+  cwd "/vagrant/keystone"
+  command "pip install -e . && pip install -r test-requirements.txt"
+  if not node['full_reprovision']
+    creates "/usr/local/lib/python2.7/dist-packages/keystone.egg-link"
+  end
+  action :run
+end
+
+execute "git python-openstackclient" do
+  cwd "/vagrant"
+  command "git clone -b #{node['openstackclient_repo_branch']} #{node['openstackclient_repo']}"
+  creates "/vagrant/python-openstackclient"
+  action :run
+end
+
+execute "python-openstackclient-install" do
+  cwd "/vagrant/python-openstackclient"
+  command "pip install -e . && pip install -r test-requirements.txt"
+  if not node['full_reprovision']
+    creates "/usr/local/lib/python2.7/dist-packages/python-openstackclient.egg-link"
+  end
+  action :run
+end

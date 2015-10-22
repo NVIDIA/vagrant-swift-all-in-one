@@ -13,38 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cookbook_file '/etc/mysql/my.cnf' do
-  source "/etc/mysql/my.cnf"
-  owner "vagrant"
-  group "vagrant"
-end
-
-cookbook_file "/tmp/set_keystone_db.sql" do
-  source "set_keystone_db.sql"
-  owner "vagrant"
-  group "vagrant"
-end
-
-bash 'setting database' do
-  user "root"
-  code <<-EOC
-    mysql -u root -pdatabase_password < /tmp/set_keystone_db.sql
-  EOC
-  not_if "mysqlshow -u root -pdatabase_password |grep keystone"
-end
-
-cookbook_file '/etc/keystone/keystone.conf' do
-  source "/etc/keystone/keystone.conf"
-  owner "vagrant"
-  group "vagrant"
-end
-
-bash 'disable_sqlite_db' do
-  user "root"
-  code <<-EOC
-    rm -f /var/lib/keystone/keystone.db
-  EOC
-  only_if { File.exists?("/var/lib/keystone/keystone.db") }
+execute "keystone-configuring" do
+  command "cp /vagrant/keystone/etc/keystone.conf.sample /vagrant/keystone/etc/keystone.conf"
+  action :run
+  not_if { File.exists?("/vagrant/keystone/etc/keystone.conf")}
 end
 
 bash 'set_cron' do
@@ -55,19 +27,14 @@ bash 'set_cron' do
   not_if "grep '@hourly' /var/spool/cron/crontabs/keystone"
 end
 
-service 'mysql' do
-  action [ :nothing]
-  subscribes :restart, "cookbook_file[/etc/mysql/my.cnf]", :immediately
+execute "keystone-start" do
+  command "/usr/local/bin/keystone-all --config-file /vagrant/keystone/etc/keystone.conf &"
+  action :nothing
+  subscribes :run, "execute[keystone-configuring]", :immediately
 end
 
 execute "populate_identity_service" do
-  command 'su -s /bin/sh -c "keystone-manage db_sync" keystone'
+  command '/usr/local/bin/keystone-manage db_sync'
   action :nothing
-  subscribes :run, "cookbook_file[/etc/keystone/keystone.conf]", :immediately
+  subscribes :run, "execute[keystone-configuring]", :immediately
 end
-
-service 'keystone' do
-  action [ :nothing]
-  subscribes :restart, "cookbook_file[/etc/keystone/keystone.conf]", :immediately
-end
-
