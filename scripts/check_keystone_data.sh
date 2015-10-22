@@ -17,7 +17,7 @@ unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY
 WORK_DIR="/vagrant/scripts"
 
 # Get Token
-export TOKEN=admin_token
+export TOKEN=ADMIN
 
 echo "===> Checking Services"
 curl -sS -X GET http://127.0.0.1:35357/v3/services -H "X-Auth-Token: ${TOKEN}" | jq .
