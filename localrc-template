@@ -37,3 +37,7 @@ export EXTRA_KEY=  # additional pubkey for ~vagrant/.ssh/authorized_keys
 export GUI=   # non-empty shows VirtualBox console window
 export SOURCE_ROOT=/vagrant # clone git repositories at this location
 export EXTRA_PACKAGES=ipython,vim,screen,sysstat
+export KEYSTONE_REPO=git://github.com/openstack/keystone.git
+export KEYSTONE_REPO_BRANCH=master
+export OPENSTACKCLIENT_REPO=git://github.com/openstack/python-openstackclient.git
+export OPENSTACKCLIENT_REPO_BRANCH=master
