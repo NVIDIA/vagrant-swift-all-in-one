@@ -59,7 +59,10 @@ end
 
 execute "swift-bench-install" do
   cwd "/vagrant/swift-bench"
-  command "pip install -e . && pip install -r test-requirements.txt"
+  # swift-bench has an old version of hacking in the test requirements,
+  # seems to pull back pbr to 0.11 and break everything; not installing
+  # swift-bench's test-requirements is probably better than that
+  command "pip install -e ."
   if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/swift-bench.egg-link"
   end
