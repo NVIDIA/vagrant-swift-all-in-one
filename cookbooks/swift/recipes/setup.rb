@@ -33,8 +33,8 @@ execute "deadsnakes key" do
   not_if "sudo apt-key list | grep 'Launchpad Old Python Versions'"
 end
 
-cookbook_file "/etc/apt/sources.list.d/fkrull-deadsnakes-precise.list" do
-  source "etc/apt/sources.list.d/fkrull-deadsnakes-precise.list"
+cookbook_file "/etc/apt/sources.list.d/fkrull-deadsnakes-trusty.list" do
+  source "etc/apt/sources.list.d/fkrull-deadsnakes-trusty.list"
   mode 0644
 end
 
