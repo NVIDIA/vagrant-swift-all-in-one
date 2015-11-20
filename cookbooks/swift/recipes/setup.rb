@@ -56,9 +56,9 @@ end
 required_packages = [
   "libjerasure-dev",  # required for the EC biz
   "curl", "gcc", "memcached", "rsync", "sqlite3", "xfsprogs", "git-core",
-  "build-essential", "python-dev", "libffi-dev", "python-dev", "python3.3",
-  "python3.3-dev", "python3.4", "python3.4-dev", "python2.6", "python2.6-dev",
-  "libxml2-dev", "libxml2", "libxslt1-dev",
+  "build-essential", "python-dev", "libffi-dev", "python3.3", "python3.3-dev",
+  "python3.4", "python3.4-dev", "python2.6", "python2.6-dev", "libxml2-dev",
+  "libxml2", "libxslt1-dev",
 ]
 extra_packages = node['extra_packages']
 (required_packages + extra_packages).each do |pkg|
