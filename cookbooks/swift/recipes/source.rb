@@ -14,32 +14,40 @@
 # limitations under the License.
 
 
+# ensure source_root
+
+directory "#{node['source_root']}" do
+  owner "vagrant"
+  group "vagrant"
+  action :create
+end
+
 # python install
 
 execute "git python-swiftclient" do
   cwd "#{node['source_root']}"
-  command "git clone -b #{node['swiftclient_repo_branch']} #{node['swiftclient_repo']}"
+  command "sudo -u vagrant git clone -b #{node['swiftclient_repo_branch']} #{node['swiftclient_repo']}"
   creates "#{node['source_root']}/python-swiftclient"
   action :run
 end
 
 execute "git swift-bench" do
   cwd "#{node['source_root']}"
-  command "git clone -b #{node['swift_bench_repo_branch']} #{node['swift_bench_repo']}"
+  command "sudo -u vagrant git clone -b #{node['swift_bench_repo_branch']} #{node['swift_bench_repo']}"
   creates "#{node['source_root']}/swift-bench"
   action :run
 end
 
 execute "git swift" do
   cwd "#{node['source_root']}"
-  command "git clone -b #{node['swift_repo_branch']} #{node['swift_repo']}"
+  command "sudo -u vagrant git clone -b #{node['swift_repo_branch']} #{node['swift_repo']}"
   creates "#{node['source_root']}/swift"
   action :run
 end
 
 execute "git swift-specs" do
   cwd "#{node['source_root']}"
-  command "git clone -b #{node['swift_specs_repo_branch']} #{node['swift_specs_repo']}"
+  command "sudo -u vagrant git clone -b #{node['swift_specs_repo_branch']} #{node['swift_specs_repo']}"
   creates "#{node['source_root']}/swift-specs"
   action :run
 end
