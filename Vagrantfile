@@ -63,6 +63,7 @@ local_config = {
   "swift_specs_repo" => (ENV['SWIFTSPECS_REPO'] || 'git://github.com/openstack/swift-specs.git'),
   "swift_specs_repo_branch" => (ENV['SWIFTSPECS_REPO_BRANCH'] || 'master'),
   "extra_key" => (ENV['EXTRA_KEY'] || ''),
+  "source_root" => (ENV['SOURCE_ROOT'] || '/vagrant'),
 }
 
 
