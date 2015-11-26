@@ -1,0 +1,10 @@
+{
+    "user": {
+        "description": "@USER_NAME@",
+        "domain_id": "@DOMAIN_ID@",
+        "email": "",
+        "enabled": true,
+        "name": "@USER_NAME@",
+        "password": "@PASSWORD@"
+    }
+}

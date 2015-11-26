@@ -57,7 +57,6 @@ template "/etc/swift/swift.conf" do
 end
 
 [
-  'test.conf',
   'dispersion.conf',
   'bench.conf',
   'base.conf-template',
@@ -69,6 +68,13 @@ end
     group "vagrant"
   end
 end
+
+template "/etc/swift/test.conf" do
+  source "etc/swift/test.conf.erb"
+  owner "vagrant"
+  group "vagrant"
+end
+
 
 # proxies
 
@@ -106,8 +112,8 @@ end
     owner "vagrant"
     group "vagrant"
   end
-  cookbook_file "#{proxy_conf_dir}/20_settings.conf" do
-    source "#{proxy_conf_dir}/20_settings.conf"
+  template "/#{proxy_conf_dir}/20_settings.conf" do
+    source "#{proxy_conf_dir}/20_settings.conf.erb"
     owner "vagrant"
     group "vagrant"
   end

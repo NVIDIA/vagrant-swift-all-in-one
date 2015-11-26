@@ -110,3 +110,20 @@ end
   end
 end
 
+if node['keystone_auth_provision'] then
+  execute "git keystonemiddleware" do
+    cwd "/vagrant"
+    command "git clone -b #{node['keystonemiddleware_repo_branch']} #{node['keystonemiddleware_repo']}"
+    creates "/vagrant/keystonemiddleware"
+    action :run
+  end
+
+  execute "keystonemiddleware-install" do
+    cwd "/vagrant/keystonemiddleware"
+    if not node['full_reprovision']
+      creates "/usr/local/lib/python2.7/dist-packages/keystonemiddleware.egg-link"
+    end
+    command "pip install -e . && pip install -r test-requirements.txt"
+    action :run
+  end
+end
