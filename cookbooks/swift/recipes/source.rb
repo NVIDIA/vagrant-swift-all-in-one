@@ -26,28 +26,28 @@ end
 
 execute "git python-swiftclient" do
   cwd "#{node['source_root']}"
-  command "sudo -u vagrant git clone -b #{node['swiftclient_repo_branch']} #{node['swiftclient_repo']}"
+  command "git clone -b #{node['swiftclient_repo_branch']} #{node['swiftclient_repo']}"
   creates "#{node['source_root']}/python-swiftclient"
   action :run
 end
 
 execute "git swift-bench" do
   cwd "#{node['source_root']}"
-  command "sudo -u vagrant git clone -b #{node['swift_bench_repo_branch']} #{node['swift_bench_repo']}"
+  command "git clone -b #{node['swift_bench_repo_branch']} #{node['swift_bench_repo']}"
   creates "#{node['source_root']}/swift-bench"
   action :run
 end
 
 execute "git swift" do
   cwd "#{node['source_root']}"
-  command "sudo -u vagrant git clone -b #{node['swift_repo_branch']} #{node['swift_repo']}"
+  command "git clone -b #{node['swift_repo_branch']} #{node['swift_repo']}"
   creates "#{node['source_root']}/swift"
   action :run
 end
 
 execute "git swift-specs" do
   cwd "#{node['source_root']}"
-  command "sudo -u vagrant git clone -b #{node['swift_specs_repo_branch']} #{node['swift_specs_repo']}"
+  command "git clone -b #{node['swift_specs_repo_branch']} #{node['swift_specs_repo']}"
   creates "#{node['source_root']}/swift-specs"
   action :run
 end
