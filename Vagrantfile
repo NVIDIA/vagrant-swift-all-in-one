@@ -1,13 +1,13 @@
 # Copyright (c) 2015 SwiftStack, Inc.
 #
-# Licensed under the Apache License, Version 2.0 (the 'License');
+# Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
 #    http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an 'AS IS' BASIS,
+# distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 # See the License for the specific language governing permissions and
@@ -32,7 +32,7 @@ hosts = {
 extra_vms = Integer(ENV['EXTRA_VMS'] || 0)
 (1..extra_vms).each do |i|
   base_ip = base_ip.succ
-  hosts['node#{i}'] = base_ip.to_s
+  hosts["node#{i}"] = base_ip.to_s
 end
 
 current_datetime = Time.now.strftime('%Y%m%d-%H%M%S')
@@ -93,7 +93,7 @@ Vagrant.configure('2') do |global_config|
       end
       config.vm.network :private_network, ip: ip
       config.vm.provider :virtualbox do |vb|
-        vb.name = 'vagrant-#{hostname}-#{current_datetime}'
+        vb.name = "vagrant-#{hostname}-#{current_datetime}"
         vb.cpus = Integer(ENV['VAGRANT_CPUS'] || 1)
         vb.memory = Integer(ENV['VAGRANT_RAM'] || 1024)
         if (ENV['GUI'] || false)  # Why is my VM hung on boot? Find out!
