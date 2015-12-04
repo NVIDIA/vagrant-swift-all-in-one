@@ -9,10 +9,22 @@ A Swift-All-In-One in a few easy steps.
  1. `swift upload test test`
  1. `swift download test test -o -`
 
-This project assumes you have Virtualbox and Vagrant.
+This project assumes you have Virtualbox, Vagrant, and python-swiftclient.
 
  * https://www.virtualbox.org/wiki/Downloads
  * http://www.vagrantup.com/downloads.html
+ * https://pypi.python.org/pypi/python-swiftclient
+
+A functional test target
+========================
+
+vagrant-swift-all-in-one can be used as Swift API endpoint for application
+development. To set it up this way, source the `localrc.test_target` before
+provisioning the VM.
+
+ 1. `source ./localrc.test_target`
+ 1. `vagrant up`
+ 1. Test your application against the IP specified in `localrc.test_target`
 
 running-tests
 =============
