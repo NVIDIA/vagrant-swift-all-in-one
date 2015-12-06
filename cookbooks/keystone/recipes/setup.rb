@@ -20,9 +20,9 @@ execute "apt-get-update" do
 end
 
 required_packages = [
-  "python-dev", "python3-dev", "libxml2-dev", "libxslt1-dev", "libsasl2-dev",
-  "libsqlite3-dev", "libssl-dev", "libldap2-dev", "libffi-dev",
-  "build-essential", "libxslt-dev",
+  "git", "python-dev", "python3-dev", "libxml2-dev", "libxslt1-dev",
+  "libsasl2-dev", "libsqlite3-dev", "libssl-dev", "libldap2-dev",
+  "libffi-dev", "build-essential", "libxslt-dev",
 ]
 required_packages.each do |pkg|
   package pkg do
