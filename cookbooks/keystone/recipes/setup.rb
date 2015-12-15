@@ -13,6 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# ensure source_root
+directory "#{node['source_root']}" do
+  owner "vagrant"
+  group "vagrant"
+  action :create
+end
+
 ### Setup
 execute "apt-get-update" do
   command "apt-get update"
@@ -40,14 +47,14 @@ execute "upgrade pip" do
   end
 
 execute "git keystone" do
-  cwd "/vagrant"
+  cwd "#{node['source_root']}"
   command "git clone -b #{node['keystone_repo_branch']} #{node['keystone_repo']}"
-  creates "/vagrant/keystone"
+  creates "#{node['source_root']}/keystone"
   action :run
 end
 
 execute "keystone-install" do
-  cwd "/vagrant/keystone"
+  cwd "#{node['source_root']}/keystone"
   command "pip install -e . && pip install -r test-requirements.txt"
   if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/keystone.egg-link"
@@ -56,14 +63,14 @@ execute "keystone-install" do
 end
 
 execute "git python-openstackclient" do
-  cwd "/vagrant"
+  cwd "#{node['source_root']}"
   command "git clone -b #{node['openstackclient_repo_branch']} #{node['openstackclient_repo']}"
-  creates "/vagrant/python-openstackclient"
+  creates "#{node['source_root']}/python-openstackclient"
   action :run
 end
 
 execute "python-openstackclient-install" do
-  cwd "/vagrant/python-openstackclient"
+  cwd "#{node['source_root']}/python-openstackclient"
   command "pip install -e . && pip install -r test-requirements.txt"
   if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/python-openstackclient.egg-link"

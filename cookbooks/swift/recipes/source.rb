@@ -112,14 +112,14 @@ end
 
 if node['keystone_auth_provision'] then
   execute "git keystonemiddleware" do
-    cwd "/vagrant"
+    cwd "#{node['source_root']}"
     command "git clone -b #{node['keystonemiddleware_repo_branch']} #{node['keystonemiddleware_repo']}"
-    creates "/vagrant/keystonemiddleware"
+    creates "#{node['source_root']}/keystonemiddleware"
     action :run
   end
 
   execute "keystonemiddleware-install" do
-    cwd "/vagrant/keystonemiddleware"
+    cwd "#{node['source_root']}/keystonemiddleware"
     if not node['full_reprovision']
       creates "/usr/local/lib/python2.7/dist-packages/keystonemiddleware.egg-link"
     end

@@ -14,9 +14,9 @@
 # limitations under the License.
 
 execute "keystone-configuring" do
-  command "cp /vagrant/keystone/etc/keystone.conf.sample /vagrant/keystone/etc/keystone.conf"
+  command "cp #{node['source_root']}/keystone/etc/keystone.conf.sample #{node['source_root']}/keystone/etc/keystone.conf"
   action :run
-  not_if { File.exists?("/vagrant/keystone/etc/keystone.conf")}
+  not_if { File.exists?("#{node['source_root']}/keystone/etc/keystone.conf")}
 end
 
 bash 'set_cron' do
@@ -28,7 +28,7 @@ bash 'set_cron' do
 end
 
 execute "keystone-start" do
-  command "/usr/local/bin/keystone-all --config-file /vagrant/keystone/etc/keystone.conf &"
+  command "/usr/local/bin/keystone-all --config-file #{node['source_root']}/keystone/etc/keystone.conf &"
   action :nothing
   subscribes :run, "execute[keystone-configuring]", :immediately
 end
