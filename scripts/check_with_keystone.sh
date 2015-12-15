@@ -27,7 +27,8 @@ TEST5_PROJECT_ID=$(curl -sS -X GET http://127.0.0.1:35357/v3/projects?name=test5
 
 # Restart swift (To solved problem that keystonemiddleware is forwarding requests through proxy)
 /vagrant/bin/resetswift
-/vagrant/swift/doc/saio/bin/startmain
+#/home/vagrant/swift/doc/saio/bin/startmain
+swift-init main start
 
 # Checking tester
 sed -e s/@USER_NAME@/tester/g \
