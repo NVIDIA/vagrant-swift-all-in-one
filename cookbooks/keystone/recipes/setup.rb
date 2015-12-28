@@ -62,18 +62,21 @@ execute "keystone-install" do
   action :run
 end
 
-execute "git python-openstackclient" do
-  cwd "#{node['source_root']}"
-  command "git clone -b #{node['openstackclient_repo_branch']} #{node['openstackclient_repo']}"
-  creates "#{node['source_root']}/python-openstackclient"
-  action :run
+if node['keystone_register_data_method'] != 'curl' then
+  execute "git python-openstackclient" do
+    cwd "#{node['source_root']}"
+    command "git clone -b #{node['openstackclient_repo_branch']} #{node['openstackclient_repo']}"
+    creates "#{node['source_root']}/python-openstackclient"
+    action :run
+  end
+
+  execute "python-openstackclient-install" do
+    cwd "#{node['source_root']}/python-openstackclient"
+    command "pip install -e . && pip install -r test-requirements.txt"
+    if not node['full_reprovision']
+      creates "/usr/local/lib/python2.7/dist-packages/python-openstackclient.egg-link"
+    end
+    action :run
+  end
 end
 
-execute "python-openstackclient-install" do
-  cwd "#{node['source_root']}/python-openstackclient"
-  command "pip install -e . && pip install -r test-requirements.txt"
-  if not node['full_reprovision']
-    creates "/usr/local/lib/python2.7/dist-packages/python-openstackclient.egg-link"
-  end
-  action :run
-end

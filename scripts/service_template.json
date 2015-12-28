@@ -1,0 +1,7 @@
+{
+    "service": {
+        "type": "@TYPE@",
+        "name": "@NAME@",
+        "description": "@DESCRIPTION@"
+    }
+}

@@ -65,6 +65,7 @@ local_config = {
   'swift_specs_repo_branch' => (ENV['SWIFTSPECS_REPO_BRANCH'] || 'master'),
   'keystone_repo' => (ENV['KEYSTONE_REPO'] || 'git://github.com/openstack/keystone.git'),
   'keystone_repo_branch' => (ENV['KEYSTONE_REPO_BRANCH'] || 'master'),
+  'keystone_register_data_method' => (ENV['KEYSTONE_REGISTER_DATA_METHOD'] || 'openstack-client'),
   'keystonemiddleware_repo' => (ENV['KEYSTONEMIDDLEWARE_REPO'] || 'git://github.com/openstack/keystonemiddleware.git'),
   'keystonemiddleware_repo_branch' => (ENV['KEYSTONEMIDDLEWARE_REPO_BRANCH'] || 'master'),
   'openstackclient_repo' => (ENV['OPENSTACKCLIENT_REPO'] || 'git://github.com/openstack/python-openstackclient.git'),

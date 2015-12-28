@@ -1,0 +1,9 @@
+{
+    "endpoint": {
+        "interface": "@INTERFACE@",
+        "name": "@NAME@",
+        "region_id": "@REGION_ID@",
+        "url": "@URL@",
+        "service_id": "@SERVICE_ID@"
+    }
+}
