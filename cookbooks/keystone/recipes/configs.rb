@@ -15,7 +15,6 @@
 
 execute "keystone-configuring" do
   command "cp #{node['source_root']}/keystone/etc/keystone.conf.sample #{node['source_root']}/keystone/etc/keystone.conf"
-  action :run
   not_if { File.exists?("#{node['source_root']}/keystone/etc/keystone.conf")}
 end
 
@@ -29,12 +28,10 @@ end
 
 execute "keystone-start" do
   command "/usr/local/bin/keystone-all --config-file #{node['source_root']}/keystone/etc/keystone.conf &"
-  action :nothing
-  subscribes :run, "execute[keystone-configuring]", :immediately
+  only_if { File.exists?("#{node['source_root']}/keystone/etc/keystone.conf")}
 end
 
 execute "populate_identity_service" do
   command '/usr/local/bin/keystone-manage db_sync'
-  action :nothing
-  subscribes :run, "execute[keystone-configuring]", :immediately
+  only_if { File.exists?("#{node['source_root']}/keystone/etc/keystone.conf")}
 end
