@@ -68,6 +68,17 @@ extra_packages = node['extra_packages']
   end
 end
 
+# no-no packages (PIP is the bomb, system packages are OLD SKOOL)
+unrequired_packages = [
+  "python-requests",  "python-six", "python-urllib3",
+  "python-pbr", "python-pip",
+]
+unrequired_packages.each do |pkg|
+  package pkg do
+    action :purge
+  end
+end
+
 # it's a brave new world
 execute "install pip" do
   command "curl https://bootstrap.pypa.io/get-pip.py | python"
