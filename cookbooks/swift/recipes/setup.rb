@@ -87,7 +87,7 @@ end
 
 # pip 8.0 is more or less broken on trusty -> https://github.com/pypa/pip/issues/3384
 execute "upgrade pip" do
-  command "pip install 'pip<8.0'"
+  command "pip install --upgrade 'pip>=8.0.2'"
 end
 
 execute "fix pip warning 1" do
