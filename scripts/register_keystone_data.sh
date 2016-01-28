@@ -22,7 +22,7 @@ apt-get install -y jq
 unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY
 
 # Get Token
-TOKEN=admin_token
+TOKEN=ADMIN
 
 # Create domain (test-domain)
 sed -e s/@DOMAIN_NAME@/test-domain/g ${WORK_DIR}/domain_template.json >${WORK_DIR}/test_domain.json

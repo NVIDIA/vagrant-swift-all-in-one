@@ -1,4 +1,4 @@
-# vm options
+#vm options
 export VAGRANT_BOX=swift-all-in-one  # trusty, precise, etc.
 export VAGRANT_HOSTNAME=saio
 export VAGRANT_CPUS=1
@@ -24,6 +24,7 @@ export SERVERS_PER_PORT=0  # 1 port per dev in ring; N obj-servers per port
 export OBJECT_SYNC_METHOD=rsync  # or ssync
 export POST_AS_COPY=true  # or false
 export KEYSTONE_AUTH_PROVISION=false  # or true
+export KEYSTONE_REGISTER_DATA_METHOD="curl" # openstack-client or curl
 # git repos
 export SWIFT_REPO=git://github.com/openstack/swift.git
 export SWIFT_REPO_BRANCH=master
@@ -32,6 +33,14 @@ export SWIFTBENCH_REPO=git://github.com/openstack/swift-bench.git
 export SWIFTSPECS_REPO=git://github.com/openstack/swift-specs.git
 export KEYSTONEMIDDLEWARE_REPO=git://github.com/openstack/keystonemiddleware.git
 export KEYSTONEMIDDLEWARE_REPO_BRANCH=master
+export KEYSTONE_REPO=git://github.com/openstack/keystone.git
+export KEYSTONE_REPO_BRANCH=master
+export OPENSTACKCLIENT_REPO=git://github.com/openstack/python-openstackclient.git
+export OPENSTACKCLIENT_REPO_BRANCH=master
 # environ options
+export HTTP_PROXY=
+export HTTPS_PROXY=
 export EXTRA_KEY=  # additional pubkey for ~vagrant/.ssh/authorized_keys
+export GUI=   # non-empty shows VirtualBox console window
+export SOURCE_ROOT=/vagrant # clone git repositories at this location
 export EXTRA_PACKAGES=ipython,vim,screen,sysstat

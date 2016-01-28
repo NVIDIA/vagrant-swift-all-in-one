@@ -1,0 +1,6 @@
+{
+    "region": {
+        "description": "@DESCRIPTION@",
+        "id": "@REGION_ID@"
+    }
+}

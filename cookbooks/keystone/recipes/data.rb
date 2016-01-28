@@ -13,39 +13,55 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-bash 'register keystone initial data' do
-  user "root"
-  code <<-EOC
-    unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY
+if node['keystone_register_data_method'] == 'curl' then
+  cookbook_file '/tmp/register_keystone_initial_data.sh' do
+    mode 0744
+  end
 
-    # TODO
-    # According to Openstack Installation Guide, there is not necessary to
-    # create demo project/user but there is a problem if there is no
-    # demo project/user creation before admin project/user creation.
-    # So I put them for workaround.
-    openstack project create --description "Demo Project" demo
-    openstack user create --password demo_password demo --email demo@example.com --project demo
+  bash 'register swift initial data to keystone by curl' do
+    user "root"
+    code <<-EOC
+      unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY
+      sh /tmp/register_keystone_initial_data.sh
+      rm -f register_keystone_initial_data.sh
+    EOC
+  end
+else
+  bash 'register keystone initial data by openstack-client' do
+    user "root"
+    code <<-EOC
+      unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY
 
-    openstack project create --description "Admin Project" admin
-    openstack user create --password admin_password admin --email admin@example.com --project admin
-    openstack role create admin
-    openstack role add --project admin --user admin admin
-    openstack project create --description "Service Project" service
-    openstack service create --type identity --description "OpenStack Identity" keystone
-    openstack endpoint create --publicurl http://127.0.0.1:5000/v2.0  --internalurl http://127.0.0.1:5000/v2.0  --adminurl http://127.0.0.1:35357/v2.0  --region RegionOne keystone
+      # TODO
+      # According to Openstack Installation Guide, there is not necessary to
+      # create demo project/user but there is a problem if there is no
+      # demo project/user creation before admin project/user creation.
+      # So I put them for workaround.
+      openstack project create --description "Demo Project" demo
+      openstack user create --password demo_password demo --email demo@example.com --project demo
 
-  EOC
-  environment "OS_TOKEN" =>'admin_token', "OS_URL" =>'http://127.0.0.1:35357/v2.0'
+      openstack project create --description "Admin Project" admin
+      openstack user create --password admin_password admin --email admin@example.com --project admin
+      openstack role create admin
+      openstack role add --project admin --user admin admin
+      openstack project create --description "Service Project" service
+      openstack service create --type identity --description "OpenStack Identity" keystone
+      openstack endpoint create --publicurl http://127.0.0.1:5000/v2.0  --internalurl http://127.0.0.1:5000/v2.0  --adminurl http://127.0.0.1:35357/v2.0  --region RegionOne keystone
+
+    EOC
+    environment "OS_TOKEN" =>'ADMIN', "OS_AUTH_URL" =>'http://127.0.0.1:35357/v2.0'
+  end
+
+  bash 'register swift initial data to keystone' do
+    user "root"
+    code <<-EOC
+      unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY
+      openstack user create --password swift_password swift --email admin@example.com --project service
+      openstack role add --project service --user swift admin
+      openstack service create --type object-store --description "OpenStack Object Storage" swift
+      openstack endpoint create --publicurl 'http://127.0.0.1:8080/v1/AUTH_%(tenant_id)s'  --internalurl 'http://127.0.0.1:8080/v1/AUTH_%(tenant_id)s'  --adminurl 'http://127.0.0.1:8080' --region RegionOne swift
+    EOC
+    environment "OS_TOKEN" =>'ADMIN', "OS_AUTH_URL" =>'http://127.0.0.1:35357/v2.0'
+  end
 end
 
-bash 'register swift initial data to keystone' do
-  user "root"
-  code <<-EOC
-    unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY
-    openstack user create --password swift_password swift --email admin@example.com --project service
-    openstack role add --project service --user swift admin
-    openstack service create --type object-store --description "OpenStack Object Storage" swift
-    openstack endpoint create --publicurl 'http://127.0.0.1:8080/v1/AUTH_%(tenant_id)s'  --internalurl 'http://127.0.0.1:8080/v1/AUTH_%(tenant_id)s'  --adminurl 'http://127.0.0.1:8080' --region RegionOne swift
-  EOC
-  environment "OS_TOKEN" =>'admin_token', "OS_URL" =>'http://127.0.0.1:35357/v2.0'
-end
