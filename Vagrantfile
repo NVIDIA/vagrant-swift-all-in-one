@@ -97,7 +97,7 @@ Vagrant.configure('2') do |global_config|
         vb.name = "vagrant-#{hostname}-#{current_datetime}"
         vb.cpus = Integer(ENV['VAGRANT_CPUS'] || 1)
         vb.memory = Integer(ENV['VAGRANT_RAM'] || 1024)
-        if (ENV['GUI'] || false)  # Why is my VM hung on boot? Find out!
+        if (ENV['GUI'] || '').nil?  # Why is my VM hung on boot? Find out!
           vb.gui = true
         end
       end
