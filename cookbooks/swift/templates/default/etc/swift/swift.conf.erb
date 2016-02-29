@@ -11,7 +11,7 @@ default = yes
 <% end %>
 <% if name == @ec_policy %>
 policy_type = erasure_coding
-ec_type = jerasure_rs_vand
+ec_type = liberasurecode_rs_vand
 ec_num_data_fragments = <%= @ec_replicas - 2 %>
 ec_num_parity_fragments = 2
 <% end %>
