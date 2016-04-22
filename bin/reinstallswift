@@ -18,5 +18,7 @@ set -e
 cd /tmp/vagrant-chef*/
 sed 's/"full_reprovision": false/"full_reprovision": true/g' dna.json > reload.json
 sudo chef-solo -c solo.rb -j reload.json -o swift::source
-swift-init restart main
+swift-init restart proxy account container
+/vagrant/bin/remakehummingbird
+hummingbird restart object
 echo "READY!"

@@ -127,3 +127,8 @@ end
 execute "install go" do
   command "ln -s /usr/local/go/bin/* /usr/local/bin || true"
 end
+
+execute "install hummingbird" do
+  cwd "/vagrant/swift/go/"
+  command "make all install"
+end

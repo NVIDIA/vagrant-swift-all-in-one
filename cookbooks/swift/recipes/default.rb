@@ -23,6 +23,7 @@ include_recipe "swift::rings"
 # start main
 
 execute "startmain" do
-  command "sudo -u vagrant swift-init start main"
+  command "sudo -u vagrant swift-init start proxy account container; " \
+    "sudo -u vagrant hummingbird start object"
 end
 
