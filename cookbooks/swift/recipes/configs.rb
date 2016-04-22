@@ -27,13 +27,19 @@ execute "enable-rsync" do
   action :run
 end
 
+execute "enable-udp-syslog" do
+  command "sed -i 's/# $ModLoad imudp/$ModLoad imudp/;" \
+    "s/# $UDPServerRun 514/$UDPServerRun 514/' /etc/rsyslog.conf"
+  action :run
+end
+
 [
   "rsync",
   "memcached",
   "rsyslog",
 ].each do |daemon|
   service daemon do
-    action :start
+    action :restart
   end
 end
 
