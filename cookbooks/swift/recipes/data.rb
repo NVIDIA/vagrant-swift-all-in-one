@@ -79,6 +79,7 @@ end
 
 [
   "/var/run/swift",
+  "/var/run/hummingbird",
   "/var/cache/swift",
 ].each do |d|
   directory d do

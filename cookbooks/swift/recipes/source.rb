@@ -110,20 +110,18 @@ end
   end
 end
 
-go_tar_ball = "go1.4.2.linux-amd64.tar.gz"
+go_tar_ball = "go1.6.2.linux-amd64.tar.gz"
 
 execute "download go" do
   cwd "/usr/local/"
-  command "wget https://storage.googleapis.com/golang/#{go_tar_ball}"
+  command "rm -fr go; wget https://storage.googleapis.com/golang/#{go_tar_ball}"
   creates "/usr/local/#{go_tar_ball}"
 end
 
 execute "inflate go" do
   cwd "/usr/local/"
   command "tar zxvf #{go_tar_ball}"
-  if not node['full_reprovision']
-    creates "/usr/local/go"
-  end
+  creates "/usr/local/go"
 end
 
 execute "install go" do
