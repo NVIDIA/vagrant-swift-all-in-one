@@ -130,5 +130,6 @@ end
 
 execute "install hummingbird" do
   cwd "/vagrant/swift/go/"
+  environment "GOPATH" => "/home/vagrant/hummingbird"
   command "make all install"
 end
