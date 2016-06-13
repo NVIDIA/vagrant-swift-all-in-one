@@ -37,6 +37,8 @@ end
 
 current_datetime = Time.now.strftime("%Y%m%d-%H%M%S")
 
+vagrant_dir = ENV['GOPATH'] || '.'
+
 local_config = {
   "full_reprovision" => (ENV['FULL_REPROVISION'] || 'false').downcase == 'true',
   "loopback_gb" => Integer(ENV['LOOPBACK_GB'] || 4),
@@ -89,8 +91,12 @@ Vagrant.configure("2") do |global_config|
           vb.gui = true
         end
       end
+	  config.vm.synced_folder "#{vagrant_dir}", "/vagrant"
       config.vm.provision :chef_solo do |chef|
+        chef.channel = "stable"
+        chef.version = "12.10"
         chef.add_recipe "swift"
+		chef.add_recipe "golang"
         chef.json = local_config
       end
     end
