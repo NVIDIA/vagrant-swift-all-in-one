@@ -23,7 +23,7 @@ DEFAULT_BOX = "swift-all-in-one"
 
 vagrant_boxes = {
   DEFAULT_BOX => "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/14.04/providers/virtualbox.box",
-  "precise" => "http://files.vagrantup.com/precise64.box",
+  "precise" => "https://hashicorp-files.hashicorp.com/precise64.box",
   "trusty" => "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/14.04/providers/virtualbox.box",
 }
 vagrant_box = (ENV['VAGRANT_BOX'] || DEFAULT_BOX)
