@@ -17,3 +17,11 @@ bash 'install_golang' do
 	echo "export PATH=$PATH:/usr/local/go/bin" > /etc/profile.d/golang_path.sh
     EOH
 end
+
+bash 'update_vagrant_profile' do
+  code <<-EOH
+    echo "export GOPATH=/vagrant" >> /home/vagrant/.profile
+    echo "export PATH=$PATH:\\$GOPATH/bin" >> /home/vagrant/.profile
+    echo "alias cdpfs='cd \\$GOPATH/src/github.com/swiftstack/ProxyFS'" >> /home/vagrant/.profile
+    EOH
+end
