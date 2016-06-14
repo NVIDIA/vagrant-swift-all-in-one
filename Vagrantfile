@@ -94,12 +94,12 @@ Vagrant.configure("2") do |global_config|
           vb.gui = true
         end
       end
-	  config.vm.synced_folder "#{vagrant_dir}", "/vagrant"
+      config.vm.synced_folder "#{vagrant_dir}", "/vagrant"
       config.vm.provision :chef_solo do |chef|
         chef.channel = "stable"
         chef.version = "12.10"
         chef.add_recipe "swift"
-		chef.add_recipe "golang"
+        chef.add_recipe "golang"
         chef.json = local_config
       end
     end
