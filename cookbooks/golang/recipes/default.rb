@@ -14,7 +14,7 @@ end
 bash 'install_golang' do
   code <<-EOH
     tar -C /usr/local -xzf #{tarfile_path}
-	echo "export PATH=$PATH:/usr/local/go/bin" > /etc/profile.d/golang_path.sh
+    echo "export PATH=$PATH:/usr/local/go/bin" > /etc/profile.d/golang_path.sh
     EOH
 end
 
