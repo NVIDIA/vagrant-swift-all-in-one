@@ -25,6 +25,7 @@ vagrant_boxes = {
   DEFAULT_BOX => "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/14.04/providers/virtualbox.box",
   "precise" => "https://hashicorp-files.hashicorp.com/precise64.box",
   "trusty" => "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/14.04/providers/virtualbox.box",
+  "dummy" => "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box",
 }
 vagrant_box = (ENV['VAGRANT_BOX'] || DEFAULT_BOX)
 
@@ -78,13 +79,16 @@ Vagrant.configure("2") do |global_config|
       if hostname == 'default' then
         hostname = (ENV['VAGRANT_HOSTNAME'] || 'saio')
       end
-      config.vm.hostname = hostname
+
       config.vm.box = vagrant_box
       if vagrant_boxes.key? vagrant_box
         config.vm.box_url = vagrant_boxes[vagrant_box]
       end
-      config.vm.network :private_network, ip: ip
-      config.vm.provider :virtualbox do |vb|
+
+      config.vm.provider :virtualbox do |vb, override|
+        override.vm.hostname = hostname
+        override.vm.network :private_network, ip: ip
+
         vb.name = "vagrant-#{hostname}-#{current_datetime}"
         vb.cpus = Integer(ENV['VAGRANT_CPUS'] || 1)
         vb.memory = Integer(ENV['VAGRANT_RAM'] || 1024)
@@ -92,6 +96,23 @@ Vagrant.configure("2") do |global_config|
           vb.gui = true
         end
       end
+
+      config.vm.provider :aws do |v, override|
+        override.ssh.username = 'ubuntu'
+        override.ssh.private_key_path = ENV['SSH_PRIVATE_KEY_PATH']
+
+        v.access_key_id = ENV['AWS_ACCESS_KEY_ID']
+        v.secret_access_key = ENV['AWS_SECRET_ACCESS_KEY']
+        v.region = ENV['AWS_REGION']
+        v.ami = ENV['AWS_AMI']
+        v.instance_type = ENV['AWS_INSTANCE_TYPE']
+        v.elastic_ip = ENV['AWS_ELASTIC_IP']
+        v.keypair_name = ENV['AWS_KEYPAIR_NAME']
+        security_groups = ENV['AWS_SECURITY_GROUPS']
+        v.security_groups = security_groups.split(',') unless security_groups.nil?
+        v.tags = {'Name' => 'swift'}
+      end
+
       config.vm.provision :chef_solo do |chef|
         chef.add_recipe "swift"
         chef.json = local_config
