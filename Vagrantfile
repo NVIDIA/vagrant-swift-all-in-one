@@ -114,6 +114,8 @@ Vagrant.configure('2') do |global_config|
       end
 
       config.vm.provision :chef_solo do |chef|
+        chef.version = "12.10"
+        chef.channel = "stable"
         if local_config['keystone_auth_provision']
           chef.add_recipe 'keystone'
         end
