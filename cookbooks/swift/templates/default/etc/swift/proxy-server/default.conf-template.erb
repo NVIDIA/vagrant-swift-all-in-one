@@ -1,5 +1,7 @@
 [DEFAULT]
 workers = 1
+# base64.encodestring(hashlib.md5('swift').hexdigest())
+encryption_root_secret = ODE4MDU2ZGJkN2UyMDEyNDMyMDZiOWM3Y2Q4ODQ4MWM=
 
 [filter:catch_errors]
 use = egg:swift#catch_errors
@@ -44,6 +46,3 @@ encryption_root_secret = saio_test_secret
 
 [filter:encrypter]
 use = egg:swift#encrypter
-
-[filter:fake_footers]
-use = egg:swift#fake_footers
