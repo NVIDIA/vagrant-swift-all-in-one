@@ -87,8 +87,11 @@ unrequired_packages.each do |pkg|
 end
 
 # it's a brave new world
-execute "install pip" do
-  command "curl https://bootstrap.pypa.io/get-pip.py | python"
+bash 'install pip' do
+  code <<-EOF
+    set -o pipefail
+    curl https://bootstrap.pypa.io/get-pip.py | python
+    EOF
   not_if "which pip"
 end
 
