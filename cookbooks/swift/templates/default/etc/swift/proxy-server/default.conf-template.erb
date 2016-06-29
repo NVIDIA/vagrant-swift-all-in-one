@@ -37,13 +37,9 @@ allow_account_management = true
 account_autocreate = true
 object_post_as_copy = <%= @post_as_copy %>
 
-[filter:decrypter]
-use = egg:swift#decrypter
-
 [filter:keymaster]
 use = egg:swift#keymaster
 encryption_root_secret = saio_test_secret
 
-[filter:encrypter]
-use = egg:swift#encrypter
-disable_encryption = false
+[filter:encryption]
+use = egg:swift#encryption
