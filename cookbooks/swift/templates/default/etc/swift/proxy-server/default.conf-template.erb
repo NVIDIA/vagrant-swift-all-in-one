@@ -1,7 +1,5 @@
 [DEFAULT]
 workers = 1
-# base64.encodestring(hashlib.md5('swift').hexdigest())
-encryption_root_secret = ODE4MDU2ZGJkN2UyMDEyNDMyMDZiOWM3Y2Q4ODQ4MWM=
 
 [filter:catch_errors]
 use = egg:swift#catch_errors
@@ -39,7 +37,8 @@ object_post_as_copy = <%= @post_as_copy %>
 
 [filter:keymaster]
 use = egg:swift#keymaster
-encryption_root_secret = saio_test_secret
+# base64.encodestring(hashlib.md5('swift').hexdigest())
+encryption_root_secret = ODE4MDU2ZGJkN2UyMDEyNDMyMDZiOWM3Y2Q4ODQ4MWM=
 
 [filter:encryption]
 use = egg:swift#encryption
