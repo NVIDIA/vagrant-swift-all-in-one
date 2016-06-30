@@ -27,3 +27,4 @@ export SWIFTBENCH_REPO=git://github.com/openstack/swift-bench.git
 export SWIFTSPECS_REPO=git://github.com/openstack/swift-specs.git
 export EXTRA_KEY=  # additional pubkey for ~vagrant/.ssh/authorized_keys
 export GUI=   # non-empty shows VirtualBox console window
+export SOURCE_ROOT=/vagrant # clone git repositories at this location

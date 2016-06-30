@@ -29,6 +29,9 @@ use = egg:swift#tempurl
 use = egg:swift#container_sync
 current = //TEST/SAIO
 
+[filter:staticweb]
+use = egg:swift#staticweb
+
 [app:proxy-server]
 use = egg:swift#proxy
 allow_account_management = true

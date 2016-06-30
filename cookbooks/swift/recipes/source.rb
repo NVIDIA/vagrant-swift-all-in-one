@@ -14,33 +14,41 @@
 # limitations under the License.
 
 
+# ensure source_root
+
+directory "#{node['source_root']}" do
+  owner "vagrant"
+  group "vagrant"
+  action :create
+end
+
 # python install
 
 execute "git python-swiftclient" do
-  cwd "/vagrant"
-  command "git clone -b #{node['swiftclient_repo_branch']} #{node['swiftclient_repo']}"
-  creates "/vagrant/python-swiftclient"
+  cwd "#{node['source_root']}"
+  command "sudo -u vagrant git clone -b #{node['swiftclient_repo_branch']} #{node['swiftclient_repo']}"
+  creates "#{node['source_root']}/python-swiftclient"
   action :run
 end
 
 execute "git swift-bench" do
-  cwd "/vagrant"
-  command "git clone -b #{node['swift_bench_repo_branch']} #{node['swift_bench_repo']}"
-  creates "/vagrant/swift-bench"
+  cwd "#{node['source_root']}"
+  command "sudo -u vagrant git clone -b #{node['swift_bench_repo_branch']} #{node['swift_bench_repo']}"
+  creates "#{node['source_root']}/swift-bench"
   action :run
 end
 
 execute "git swift" do
-  cwd "/vagrant"
-  command "git clone -b #{node['swift_repo_branch']} #{node['swift_repo']}"
-  creates "/vagrant/swift"
+  cwd "#{node['source_root']}"
+  command "sudo -u vagrant git clone -b #{node['swift_repo_branch']} #{node['swift_repo']}"
+  creates "#{node['source_root']}/swift"
   action :run
 end
 
 execute "git swift-specs" do
-  cwd "/vagrant"
-  command "git clone -b #{node['swift_specs_repo_branch']} #{node['swift_specs_repo']}"
-  creates "/vagrant/swift-specs"
+  cwd "#{node['source_root']}"
+  command "sudo -u vagrant git clone -b #{node['swift_specs_repo_branch']} #{node['swift_specs_repo']}"
+  creates "#{node['source_root']}/swift-specs"
   action :run
 end
 
@@ -56,7 +64,7 @@ execute "python-pip-security" do
 end
 
 execute "python-swiftclient-install" do
-  cwd "/vagrant/python-swiftclient"
+  cwd "#{node['source_root']}/python-swiftclient"
   command "pip install -e . && pip install -r test-requirements.txt"
   if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/python-swiftclient.egg-link"
@@ -65,7 +73,7 @@ execute "python-swiftclient-install" do
 end
 
 execute "swift-bench-install" do
-  cwd "/vagrant/swift-bench"
+  cwd "#{node['source_root']}/swift-bench"
   # swift-bench has an old version of hacking in the test requirements,
   # seems to pull back pbr to 0.11 and break everything; not installing
   # swift-bench's test-requirements is probably better than that
@@ -77,7 +85,7 @@ execute "swift-bench-install" do
 end
 
 execute "python-swift-install" do
-  cwd "/vagrant/swift"
+  cwd "#{node['source_root']}/swift"
   command "pip install -e . && pip install -r test-requirements.txt"
   if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/swift.egg-link"
@@ -86,7 +94,7 @@ execute "python-swift-install" do
 end
 
 execute "swift-specs-install" do
-  cwd "/vagrant/swift-specs"
+  cwd "#{node['source_root']}/swift-specs"
   command "pip install -r requirements.txt"
   action :run
 end
@@ -104,7 +112,7 @@ end
   'python-swiftclient',
 ].each do |dirname|
   execute "ln #{dirname}" do
-    command "ln -s /vagrant/#{dirname} /home/vagrant/#{dirname}"
+    command "ln -s #{node['source_root']}/#{dirname} /home/vagrant/#{dirname}"
     creates "/home/vagrant/#{dirname}"
   end
 end

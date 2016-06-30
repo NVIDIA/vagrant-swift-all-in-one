@@ -24,11 +24,18 @@ PROJECTS = {
     'swift': {
         'root': '/vagrant/swift/doc/',
         'dir': ['../swift', 'saio'],
+        'container': 'doc',
     },
     'swift-specs': {
         'root': '/vagrant/swift-specs/doc/',
         'dir': ['../'],
+        'container': 'specs',
     },
+    'swiftclient': {
+        'root': '/vagrant/python-swiftclient/doc/',
+        'dir': [],
+        'container': 'swiftclient',
+    }
 }
 
 parser = argparse.ArgumentParser()
@@ -37,6 +44,9 @@ parser.add_argument('-r', '--root', default=None,
 parser.add_argument('--dir', action='append', default=[],
                     help="extra dirs to append, if relative path, "
                     "it's relative to the root")
+parser.add_argument('--container', default=None,
+                    help="the swift container into which the "
+                    "compiled html will be uploaded")
 parser.add_argument('project', nargs='?', default='swift',
                     choices=PROJECTS.keys(),
                     help="use defaults for pre-configured projects")
@@ -76,10 +86,18 @@ def watch_changed_files(q, *source_dirs):
 
 def main():
     options = parser.parse_args()
-    root = options.root or PROJECTS[options.project]['root']
+    if options.root:
+        root = options.root
+        montior_paths = options.dir
+        default_container = 'doc'
+    else:
+        root = PROJECTS[options.project]['root']
+        montior_paths = PROJECTS[options.project]['dir'] + options.dir
+        default_container = PROJECTS[options.project]['container']
+
+    container = options.container or default_container
     source_dir = os.path.join(root, 'source')
     build_dir = os.path.join(root, 'build/html')
-    montior_paths = PROJECTS[options.project]['dir'] + options.dir
     extra_dirs = [os.path.join(root, path) for path in montior_paths]
 
     # intial build
@@ -88,11 +106,11 @@ def main():
         # bail on build fail
         return rv
     os.chdir(build_dir)
-    os.system('swift post doc -r .r:*')
+    os.system('swift post %s -r .r:*' % container)
     print 'uploading...'
-    os.system('swift upload --changed doc . > /dev/null')
+    os.system('swift upload --changed %s . > /dev/null' % container)
     print 'done...'
-    os.system('swift stat -v doc index.html | grep URL')
+    os.system('swift stat -v %s index.html | grep URL' % container)
     # we're gunna let the user hit enter to rebuild immediately
     q = Queue.Queue()
 
@@ -107,9 +125,9 @@ def main():
         print 'rebuilding...'
         os.system('sphinx-build -q -b html %s %s' % (source_dir, build_dir))
         print 'uploading...'
-        os.system('swift upload --changed doc . > /dev/null')
+        os.system('swift upload --changed %s . > /dev/null' % container)
         print 'done...'
-        os.system('swift stat -v doc index.html | grep URL')
+        os.system('swift stat -v %s index.html | grep URL' % container)
 
 
 if __name__ == "__main__":
