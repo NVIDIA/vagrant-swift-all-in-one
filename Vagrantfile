@@ -50,6 +50,7 @@ local_config = {
   "servers_per_port" => Integer(ENV['SERVERS_PER_PORT'] || 0),
   "object_sync_method" => (ENV['OBJECT_SYNC_METHOD'] || 'rsync'),
   "post_as_copy" => (ENV['POST_AS_COPY'] || 'true').downcase == 'true',
+  "encryption" => (ENV['ENCRYPTION'] || 'false').downcase == 'true',
   "part_power" => Integer(ENV['PART_POWER'] || 10),
   "replicas" => Integer(ENV['REPLICAS'] || 3),
   "ec_replicas" => Integer(ENV['EC_REPLICAS'] || 6),

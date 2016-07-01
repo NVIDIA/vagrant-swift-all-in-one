@@ -62,7 +62,6 @@ end
   'bench.conf',
   'base.conf-template',
   'container-sync-realms.conf',
-  'internal-client.conf',
 ].each do |filename|
   cookbook_file "/etc/swift/#{filename}" do
     source "etc/swift/#{filename}"
@@ -84,6 +83,7 @@ template "/etc/swift/proxy-server/default.conf-template" do
   group "vagrant"
   variables({
     :post_as_copy => node['post_as_copy'],
+    :disable_encryption => ! node['encryption'],
   })
 end
 
@@ -213,4 +213,14 @@ cookbook_file "/etc/swift/container-reconciler.conf.d/20_settings.conf" do
   source "etc/swift/container-reconciler.conf.d/20_settings.conf"
   owner "vagrant"
   group "vagrant"
+end
+
+# internal-client.conf
+template "/etc/swift/internal-client.conf" do
+  source "etc/swift/internal-client.conf.erb"
+  owner "vagrant"
+  owner "vagrant"
+  variables({
+    :disable_encryption => ! node['encryption'],
+  })
 end
