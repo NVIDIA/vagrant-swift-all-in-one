@@ -21,3 +21,4 @@ use = egg:swift#recon
 [container-auditor]
 
 [container-sync]
+internal_client_conf_path = /etc/swift/internal-client.conf
