@@ -128,6 +128,25 @@ execute "install go" do
   command "ln -s /usr/local/go/bin/* /usr/local/bin || true"
 end
 
+[
+  '/home/vagrant/hummingbird',
+  '/home/vagrant/hummingbird/src',
+  '/home/vagrant/hummingbird/src/github.com',
+  '/home/vagrant/hummingbird/src/github.com/openstack',
+].each do |dirname|
+  directory dirname do
+    owner "vagrant"
+    group "vagrant"
+    action :create
+  end
+end
+
+execute "link hummingbird" do
+  environment "GOPATH" => "/home/vagrant/hummingbird"
+  command "sudo -u vagrant ln -s /vagrant/swift $GOPATH/src/github.com/openstack/swift"
+  creates "/home/vagrant/hummingbird/src/github.com/openstack/swift"
+end
+
 execute "install hummingbird" do
   cwd "/vagrant/swift/go/"
   environment "GOPATH" => "/home/vagrant/hummingbird"
