@@ -39,6 +39,12 @@ A few things are configurable, see `localrc-template`.
  1. `vagrant ssh`
  1. `rebuildswift`
 
+You should talk to network services running in your Swift-All-In-One from your host!  Just add the configured `IP` from your localrc to your `/etc/hosts` or use the default:
+
+```
+sudo bash -c 'echo "192.168.8.80    saio" >> /etc/hosts'
+```
+
 ninja-dev-tricks
 ================
 
