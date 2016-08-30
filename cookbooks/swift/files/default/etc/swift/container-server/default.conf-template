@@ -8,7 +8,6 @@ pipeline = recon container-server
 
 [app:container-server]
 use = egg:swift#container
-allow_versions = true
 
 [filter:recon]
 use = egg:swift#recon
@@ -21,3 +20,4 @@ use = egg:swift#recon
 [container-auditor]
 
 [container-sync]
+internal_client_conf_path = /etc/swift/internal-client.conf

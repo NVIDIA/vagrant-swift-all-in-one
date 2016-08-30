@@ -18,6 +18,14 @@ execute "clean-up" do
   command "rm /home/vagrant/postinstall.sh || true"
 end
 
+execute 'create vagrant user' do
+  command 'sudo adduser --disabled-password --gecos "" vagrant || true'
+end
+
+execute 'ensure ssh directory exists' do
+  command 'mkdir -p ~vagrant/.ssh'
+end
+
 if node['extra_key'] then
   keys_file = "~vagrant/.ssh/authorized_keys"
   execute "add_extra_key" do
@@ -79,8 +87,11 @@ unrequired_packages.each do |pkg|
 end
 
 # it's a brave new world
-execute "install pip" do
-  command "curl https://bootstrap.pypa.io/get-pip.py | python"
+bash 'install pip' do
+  code <<-EOF
+    set -o pipefail
+    curl https://bootstrap.pypa.io/get-pip.py | python
+    EOF
   not_if "which pip"
 end
 

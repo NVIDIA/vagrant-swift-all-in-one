@@ -42,6 +42,18 @@ A few things are configurable, see `localrc-template`.
 ninja-dev-tricks
 ================
 
+You should add the configured `IP` from your localrc to your `/etc/hosts` or use the default:
+
+```
+sudo bash -c 'echo "192.168.8.80    saio" >> /etc/hosts'
+```
+
+Then you can easily share snippets that talk to network services running in your Swift-All-In-One from your host!
+
+```
+curl -s http://saio:8080/info | python -m json.tool
+```
+
 A few scripts are available to make your dev life easier.
 
  1. `vagrant up --provision` will bring up your VM in working order (useful

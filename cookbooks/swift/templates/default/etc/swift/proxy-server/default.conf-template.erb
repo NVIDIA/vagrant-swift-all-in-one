@@ -22,6 +22,10 @@ use = egg:swift#slo
 [filter:dlo]
 use = egg:swift#dlo
 
+[filter:versioned_writes]
+use = egg:swift#versioned_writes
+allow_versioned_writes = true
+
 [filter:tempurl]
 use = egg:swift#tempurl
 
@@ -37,3 +41,12 @@ use = egg:swift#proxy
 allow_account_management = true
 account_autocreate = true
 object_post_as_copy = <%= @post_as_copy %>
+
+[filter:keymaster]
+use = egg:swift#keymaster
+# base64.encodestring(hashlib.md5('swift').hexdigest())
+encryption_root_secret = ODE4MDU2ZGJkN2UyMDEyNDMyMDZiOWM3Y2Q4ODQ4MWM=
+
+[filter:encryption]
+use = egg:swift#encryption
+disable_encryption = <%= @disable_encryption %>
