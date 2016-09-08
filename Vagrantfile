@@ -69,6 +69,7 @@ local_config = {
   "swift_specs_repo_branch" => (ENV['SWIFTSPECS_REPO_BRANCH'] || 'master'),
   "extra_key" => (ENV['EXTRA_KEY'] || ''),
   "source_root" => (ENV['SOURCE_ROOT'] || '/vagrant'),
+  "gopath" => (ENV['VM_GOPATH'] || '/home/vagrant/.go'),
 }
 
 

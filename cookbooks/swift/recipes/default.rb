@@ -15,6 +15,7 @@
 
 
 include_recipe "swift::setup"
+include_recipe "swift::go"
 include_recipe "swift::source"
 include_recipe "swift::data"
 include_recipe "swift::configs"

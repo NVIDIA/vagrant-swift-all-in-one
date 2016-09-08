@@ -110,30 +110,10 @@ end
   end
 end
 
-go_tar_ball = "go1.6.2.linux-amd64.tar.gz"
-
-execute "download go" do
-  cwd "/usr/local/"
-  command "rm -fr go; wget https://storage.googleapis.com/golang/#{go_tar_ball}"
-  creates "/usr/local/#{go_tar_ball}"
-end
-
-execute "inflate go" do
-  cwd "/usr/local/"
-  command "tar zxvf #{go_tar_ball}"
-  creates "/usr/local/go"
-end
-
-execute "install go" do
-  command "ln -s /usr/local/go/bin/* /usr/local/bin || true"
-end
-
-[
-  '/home/vagrant/hummingbird',
-  '/home/vagrant/hummingbird/src',
-  '/home/vagrant/hummingbird/src/github.com',
-  '/home/vagrant/hummingbird/src/github.com/openstack',
-].each do |dirname|
+# https://docs.chef.io/resource_directory.html#recursive-directories
+dirname = node['gopath']
+"/src/github.com/openstack".split('/').each do |next_part|
+  dirname += "/#{next_part}"
   directory dirname do
     owner "vagrant"
     group "vagrant"
@@ -142,13 +122,13 @@ end
 end
 
 execute "link hummingbird" do
-  environment "GOPATH" => "/home/vagrant/hummingbird"
+  environment "GOPATH" => node['gopath']
   command "sudo -u vagrant ln -s /vagrant/swift $GOPATH/src/github.com/openstack/swift"
-  creates "/home/vagrant/hummingbird/src/github.com/openstack/swift"
+  creates "#{node['gopath']}/src/github.com/openstack/swift"
 end
 
 execute "install hummingbird" do
-  cwd "/vagrant/swift/go/"
-  environment "GOPATH" => "/home/vagrant/hummingbird"
+  cwd "#{node['gopath']}/src/github.com/openstack/swift/go"
+  environment "GOPATH" => node['gopath']
   command "make all install"
 end

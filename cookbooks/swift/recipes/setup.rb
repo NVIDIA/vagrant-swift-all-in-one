@@ -142,15 +142,3 @@ end
     action :run
   end
 end
-
-# hummingbird workspace
-{
-  "GOPATH" => "~/hummingbird",
-  "PATH" => "$GOPATH/bin:$PATH",
-}.each do |var, value|
-  execute "hummingbird-env-#{var}" do
-    command "echo 'export #{var}=#{value}' >> /home/vagrant/.profile"
-    not_if "grep '#{var}=#{value}' /home/vagrant/.profile"
-    action :run
-  end
-end
