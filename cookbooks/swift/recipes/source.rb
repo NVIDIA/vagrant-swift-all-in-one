@@ -26,28 +26,36 @@ end
 
 execute "git python-swiftclient" do
   cwd "#{node['source_root']}"
-  command "sudo -u vagrant git clone -b #{node['swiftclient_repo_branch']} #{node['swiftclient_repo']}"
+  user "vagrant"
+  group "vagrant"
+  command "git clone -b #{node['swiftclient_repo_branch']} #{node['swiftclient_repo']}"
   creates "#{node['source_root']}/python-swiftclient"
   action :run
 end
 
 execute "git swift-bench" do
   cwd "#{node['source_root']}"
-  command "sudo -u vagrant git clone -b #{node['swift_bench_repo_branch']} #{node['swift_bench_repo']}"
+  user "vagrant"
+  group "vagrant"
+  command "git clone -b #{node['swift_bench_repo_branch']} #{node['swift_bench_repo']}"
   creates "#{node['source_root']}/swift-bench"
   action :run
 end
 
 execute "git swift" do
   cwd "#{node['source_root']}"
-  command "sudo -u vagrant git clone -b #{node['swift_repo_branch']} #{node['swift_repo']}"
+  user "vagrant"
+  group "vagrant"
+  command "git clone -b #{node['swift_repo_branch']} #{node['swift_repo']}"
   creates "#{node['source_root']}/swift"
   action :run
 end
 
 execute "git swift-specs" do
   cwd "#{node['source_root']}"
-  command "sudo -u vagrant git clone -b #{node['swift_specs_repo_branch']} #{node['swift_specs_repo']}"
+  user "vagrant"
+  group "vagrant"
+  command "git clone -b #{node['swift_specs_repo_branch']} #{node['swift_specs_repo']}"
   creates "#{node['source_root']}/swift-specs"
   action :run
 end
@@ -123,12 +131,20 @@ end
 
 execute "link hummingbird" do
   environment "GOPATH" => node['gopath']
-  command "sudo -u vagrant ln -s /vagrant/swift $GOPATH/src/github.com/openstack/swift"
+  user "vagrant"
+  group "vagrant"
+  command "ln -s /vagrant/swift $GOPATH/src/github.com/openstack/swift"
   creates "#{node['gopath']}/src/github.com/openstack/swift"
 end
 
-execute "install hummingbird" do
-  cwd "#{node['gopath']}/src/github.com/openstack/swift/go"
-  environment "GOPATH" => node['gopath']
-  command "make all install"
+execute "build hummingbird" do
+  # THIS DOES NOT WORK - BECAUSE SYMLINKS
+  # cwd "#{node['gopath']}/src/github.com/openstack/swift/go"
+  user "vagrant"
+  group "vagrant"
+  environment ({
+    'GOPATH' => node['gopath'],
+  })
+  command "cd #{node['gopath']}/src/github.com/openstack/swift/go; " \
+    "make get all"
 end
