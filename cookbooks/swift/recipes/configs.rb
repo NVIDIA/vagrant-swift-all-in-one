@@ -129,7 +129,7 @@ def do_config_directory(node, service, service_dir, p)
       owner "vagrant"
       group "vagrant"
       variables({
-        :sync_method => node['object_sync_method'],
+        :sync_method => 'repconn',
         :servers_per_port => node['servers_per_port'],
       })
     end
@@ -190,7 +190,7 @@ def do_flat_config(node, service, service_dir, p)
       owner "vagrant"
       group "vagrant"
       variables({
-        :sync_method => node['object_sync_method'],
+        :sync_method => 'repconn',
          :srv_path => "/srv/node#{i}",
          :bind_port => "60#{i}#{p}",
          :recon_cache_path => "/var/cache/swift/node#{i}",

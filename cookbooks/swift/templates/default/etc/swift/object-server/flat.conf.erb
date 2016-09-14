@@ -15,7 +15,7 @@ recon_cache_path = <%= @recon_cache_path %>
 pipeline = recon object-server
 
 [app:object-server]
-use = egg:swift#object
+use = hummingbird
 
 [filter:recon]
 use = egg:swift#recon

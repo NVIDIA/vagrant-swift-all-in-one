@@ -26,9 +26,5 @@ include_recipe "swift::rings"
 execute "startmain" do
   user "vagrant"
   group "vagrant"
-  environment ({
-    'PATH' => "#{node['gopath']}/bin:#{ENV['PATH']}",
-  })
-  command "swift-init start proxy account container && " \
-    "hummingbird start object"
+  command "swift-init start main"
 end
