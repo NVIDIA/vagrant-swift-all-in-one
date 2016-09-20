@@ -4,3 +4,7 @@ localrc*
 /python-swiftclient
 /swift-bench
 /swift-specs
+
+# It's handy to generate HTML line & branch coverage from inside
+# the VM to "/vagrant/cover" and view them on an host OS:
+/cover
