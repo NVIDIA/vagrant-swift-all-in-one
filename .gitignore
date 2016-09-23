@@ -1,5 +1,6 @@
 .vagrant
 localrc*
+/*console.log
 /swift
 /python-swiftclient
 /swift-bench

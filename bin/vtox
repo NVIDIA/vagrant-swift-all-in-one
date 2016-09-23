@@ -18,9 +18,9 @@
 ARGS=${@:-"-e pep8,py27"}
 set -e
 cd /vagrant/swift
-sed -i '/envlist/ a\
-toxworkdir = /home/vagrant/.tox-swift
-' tox.ini
+sed -i "/envlist/ a\
+toxworkdir = $HOME/.tox-swift
+" tox.ini
 cp setup.py _setup.py
 cat > setup.py <<EOF
 import os

@@ -1,4 +1,5 @@
-export VAGRANT_BOX=swift-all-in-one  # trusty, precise, etc.
+export VAGRANT_BOX=xenial  # trusty, precise, etc.
+export USERNAME=ubuntu  # old boxes need user vagrant
 export VAGRANT_HOSTNAME=saio
 export VAGRANT_CPUS=1
 export VAGRANT_RAM=2048

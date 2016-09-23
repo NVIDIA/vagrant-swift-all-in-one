@@ -19,15 +19,16 @@
 
 require 'ipaddr'
 
-DEFAULT_BOX = "swift-all-in-one"
+DEFAULT_BOX = "xenial"
 
 vagrant_boxes = {
-  DEFAULT_BOX => "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/14.04/providers/virtualbox.box",
   "precise" => "https://hashicorp-files.hashicorp.com/precise64.box",
   "trusty" => "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/14.04/providers/virtualbox.box",
+  "xenial" => "http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-vagrant.box",
   "dummy" => "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box",
 }
 vagrant_box = (ENV['VAGRANT_BOX'] || DEFAULT_BOX)
+username = (ENV['USERNAME'] || "ubuntu")
 
 base_ip = IPAddr.new(ENV['IP'] || "192.168.8.80")
 hosts = {
@@ -42,6 +43,7 @@ end
 current_datetime = Time.now.strftime("%Y%m%d-%H%M%S")
 
 local_config = {
+  "username" => username,
   "full_reprovision" => (ENV['FULL_REPROVISION'] || 'false').downcase == 'true',
   "loopback_gb" => Integer(ENV['LOOPBACK_GB'] || 4),
   "extra_packages" => (ENV['EXTRA_PACKAGES'] || '').split(','),
@@ -73,6 +75,7 @@ local_config = {
 
 
 Vagrant.configure("2") do |global_config|
+  global_config.ssh.username = username
   global_config.ssh.forward_agent = true
   hosts.each do |vm_name, ip|
     global_config.vm.define vm_name do |config|
@@ -99,7 +102,6 @@ Vagrant.configure("2") do |global_config|
       end
 
       config.vm.provider :aws do |v, override|
-        override.ssh.username = 'ubuntu'
         override.ssh.private_key_path = ENV['SSH_PRIVATE_KEY_PATH']
 
         v.access_key_id = ENV['AWS_ACCESS_KEY_ID']
