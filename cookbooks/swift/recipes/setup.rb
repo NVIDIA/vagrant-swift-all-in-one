@@ -61,7 +61,7 @@ required_packages = [
   "libssl-dev", # libssl-dev is required for building wheels from the cryptography package in swift.
   "curl", "gcc", "memcached", "rsync", "sqlite3", "xfsprogs", "git-core", "build-essential",
   "python-dev", "libffi-dev", "python3.5", "python3.5-dev",
-  "libxml2-dev", "libxml2", "libxslt1-dev", "autoconf", "libtool",
+  "libxml2-dev", "libxml2", "libxslt1-dev", "autoconf", "libtool", "haproxy",
 ]
 extra_packages = node['extra_packages']
 (required_packages + extra_packages).each do |pkg|
@@ -117,8 +117,14 @@ end
 
 # swift command line env setup
 
+if node['ssl'] then
+  auth_url = "https://#{node['hostname']}/auth/v1.0"
+else
+  auth_url = "http://#{node['hostname']}:8080/auth/v1.0"
+end
 {
-  "ST_AUTH" => "http://#{node['hostname']}:8080/auth/v1.0",
+  "ST_AUTH" => auth_url,
+  "SWIFTCLIENT_INSECURE" => "true",  # w/e it's *dev* ;)
   "ST_USER" => "test:tester",
   "ST_KEY" => "testing",
 }.each do |var, value|

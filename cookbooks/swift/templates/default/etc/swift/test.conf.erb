@@ -1,8 +1,9 @@
 [func_test]
 # sample config
-auth_host = 127.0.0.1
-auth_port = 8080
-auth_ssl = no
+auth_host = saio
+auth_port = <%= @ssl ? "443" : "8080" %>
+auth_ssl = <%= @ssl ? "yes" : "no" %>
+insecure = yes
 auth_prefix = /auth/
 
 # Primary functional test account (needs admin access to the account)

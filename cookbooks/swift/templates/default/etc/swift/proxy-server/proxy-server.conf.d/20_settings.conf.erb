@@ -1,6 +1,9 @@
 [DEFAULT]
 bind_port = 8080
 
+[app:proxy-server]
+require_proxy_protocol = <%= @ssl %>
+
 [pipeline:main]
 pipeline = catch_errors healthcheck proxy-logging cache container_sync bulk tempurl tempauth staticweb slo dlo versioned_writes symlink keymaster encryption proxy-logging proxy-server
 
@@ -10,4 +13,4 @@ user_admin_admin = admin .admin .reseller_admin
 user_test_tester = testing .admin
 user_test2_tester2 = testing2 .admin
 user_test_tester3 = testing3
-
+storage_url_scheme = http<%= @ssl ? "s" : "" %>

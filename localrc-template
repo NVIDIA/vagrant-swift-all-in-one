@@ -25,6 +25,7 @@ export SERVERS_PER_PORT=0  # 1 port per dev in ring; N obj-servers per port
 export OBJECT_SYNC_METHOD=rsync  # or ssync
 export POST_AS_COPY=true  # or false
 export ENCRYPTION=false  # or true
+export SSL=false  # or true
 export SWIFT_REPO=git://github.com/openstack/swift.git
 export SWIFT_REPO_BRANCH=master
 export SWIFTCLIENT_REPO=git://github.com/openstack/python-swiftclient.git
