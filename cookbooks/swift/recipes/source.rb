@@ -129,14 +129,6 @@ dirname = node['gopath']
   end
 end
 
-execute "link hummingbird" do
-  environment "GOPATH" => node['gopath']
-  user "vagrant"
-  group "vagrant"
-  command "ln -s /vagrant/swift $GOPATH/src/github.com/openstack/swift"
-  creates "#{node['gopath']}/src/github.com/openstack/swift"
-end
-
 execute "build hummingbird" do
   # THIS DOES NOT WORK - BECAUSE SYMLINKS
   # cwd "#{node['gopath']}/src/github.com/openstack/swift/go"
@@ -147,4 +139,9 @@ execute "build hummingbird" do
   })
   command "cd #{node['gopath']}/src/github.com/openstack/swift/go; " \
     "make get all"
+end
+
+# "install" hummingbird
+link '/usr/local/bin/hummingbird' do
+  to "/vagrant/swift/go/bin/hummingbird"
 end
