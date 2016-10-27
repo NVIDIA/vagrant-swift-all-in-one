@@ -23,6 +23,8 @@ include_recipe "swift::rings"
 # start main
 
 execute "startmain" do
-  command "sudo -u vagrant swift-init start main"
+  command "swift-init start main"
+  user node['username']
+  group node["username"]
 end
 

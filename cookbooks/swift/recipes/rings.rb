@@ -18,8 +18,10 @@
 
 ["container", "account"].each_with_index do |service, p|
   execute "#{service}.builder-create" do
-    command "sudo -u vagrant swift-ring-builder #{service}.builder create " \
+    command "swift-ring-builder #{service}.builder create " \
       "#{node['part_power']} #{node['replicas']} 1"
+    user node['username']
+    group node["username"]
     creates "/etc/swift/#{service}.builder"
     cwd "/etc/swift"
   end
@@ -32,16 +34,18 @@
     port = "60#{n_idx}#{p + 1}"
     execute "#{service}.builder-add-#{dev}" do
       dsl = "r#{r}z#{z}-#{ip}:#{port}/#{dev}"
-      command "sudo -u vagrant swift-ring-builder #{service}.builder add " \
+      command "swift-ring-builder #{service}.builder add " \
         "#{dsl} 1 && rm -f /etc/swift/#{service}.ring.gz || true"
+      user node['username']
+      group node["username"]
       not_if "swift-ring-builder /etc/swift/#{service}.builder search #{dsl}"
       cwd "/etc/swift"
     end
   end
   execute "#{service}.builder-rebalance" do
-    command "sudo -u vagrant swift-ring-builder #{service}.builder write_ring"
-    not_if "sudo -u vagrant swift-ring-builder /etc/swift/#{service}.builder rebalance"
-    creates "/etc/swift/#{service}.ring.gz"
+    command "swift-ring-builder /etc/swift/#{service}.builder rebalance -f"
+    user node['username']
+    group node["username"]
     cwd "/etc/swift"
   end
 end
@@ -59,8 +63,10 @@ node['storage_policies'].each_with_index do |name, p|
     num_disks = node['disks']
   end
   execute "#{service}.builder-create" do
-    command "sudo -u vagrant swift-ring-builder #{service}.builder create " \
+    command "swift-ring-builder #{service}.builder create " \
       "#{node['part_power']} #{replicas} 1"
+    user node['username']
+    group node["username"]
     creates "/etc/swift/#{service}.builder"
     cwd "/etc/swift"
   end
@@ -80,17 +86,19 @@ node['storage_policies'].each_with_index do |name, p|
       port = "60#{n_idx}#{p}"
     end
     execute "#{service}.builder-add-#{dev}" do
-      command "sudo -u vagrant swift-ring-builder #{service}.builder add " \
+      command "swift-ring-builder #{service}.builder add " \
         "r#{r}z#{z}-#{ip}:#{port}/#{dev} 1 && " \
         "rm -f /etc/swift/#{service}.ring.gz || true"
+      user node['username']
+      group node["username"]
       not_if "swift-ring-builder /etc/swift/#{service}.builder search /#{dev}"
       cwd "/etc/swift"
     end
   end
   execute "#{service}.builder-rebalance" do
-    command "sudo -u vagrant swift-ring-builder #{service}.builder write_ring"
-    not_if "sudo -u vagrant swift-ring-builder /etc/swift/#{service}.builder rebalance"
-    creates "/etc/swift/#{service}.ring.gz"
+    command "swift-ring-builder /etc/swift/#{service}.builder rebalance -f"
+    user node['username']
+    group node["username"]
     cwd "/etc/swift"
   end
 end

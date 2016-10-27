@@ -17,8 +17,8 @@
 # ensure source_root
 
 directory "#{node['source_root']}" do
-  owner "vagrant"
-  group "vagrant"
+  owner node["username"]
+  group node["username"]
   action :create
 end
 
@@ -26,28 +26,36 @@ end
 
 execute "git python-swiftclient" do
   cwd "#{node['source_root']}"
-  command "sudo -u vagrant git clone -b #{node['swiftclient_repo_branch']} #{node['swiftclient_repo']}"
+  command "git clone -b #{node['swiftclient_repo_branch']} #{node['swiftclient_repo']}"
+  user node['username']
+  group node["username"]
   creates "#{node['source_root']}/python-swiftclient"
   action :run
 end
 
 execute "git swift-bench" do
   cwd "#{node['source_root']}"
-  command "sudo -u vagrant git clone -b #{node['swift_bench_repo_branch']} #{node['swift_bench_repo']}"
+  command "git clone -b #{node['swift_bench_repo_branch']} #{node['swift_bench_repo']}"
+  user node['username']
+  group node["username"]
   creates "#{node['source_root']}/swift-bench"
   action :run
 end
 
 execute "git swift" do
   cwd "#{node['source_root']}"
-  command "sudo -u vagrant git clone -b #{node['swift_repo_branch']} #{node['swift_repo']}"
+  command "git clone -b #{node['swift_repo_branch']} #{node['swift_repo']}"
+  user node['username']
+  group node["username"]
   creates "#{node['source_root']}/swift"
   action :run
 end
 
 execute "git swift-specs" do
   cwd "#{node['source_root']}"
-  command "sudo -u vagrant git clone -b #{node['swift_specs_repo_branch']} #{node['swift_specs_repo']}"
+  command "git clone -b #{node['swift_specs_repo_branch']} #{node['swift_specs_repo']}"
+  user node['username']
+  group node["username"]
   creates "#{node['source_root']}/swift-specs"
   action :run
 end
@@ -105,8 +113,8 @@ end
   'python-swiftclient',
 ].each do |dirname|
   execute "ln #{dirname}" do
-    command "ln -s #{node['source_root']}/#{dirname} /home/vagrant/#{dirname}"
-    creates "/home/vagrant/#{dirname}"
+    command "ln -s #{node['source_root']}/#{dirname} /home/#{node['username']}/#{dirname}"
+    creates "/home/#{node['username']}/#{dirname}"
   end
 end
 
