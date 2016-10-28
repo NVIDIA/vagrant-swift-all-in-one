@@ -5,3 +5,5 @@ localrc*
 /python-swiftclient
 /swift-bench
 /swift-specs
+/liberasurecode
+/pyeclib

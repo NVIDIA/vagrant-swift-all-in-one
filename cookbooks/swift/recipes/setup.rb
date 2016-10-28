@@ -58,11 +58,10 @@ end
 
 # packages
 required_packages = [
-  "liberasurecode-dev",  # required for the EC biz
   "libssl-dev", # libssl-dev is required for building wheels from the cryptography package in swift.
   "curl", "gcc", "memcached", "rsync", "sqlite3", "xfsprogs", "git-core", "build-essential",
   "python-dev", "libffi-dev", "python3.4", "python3.4-dev", "python2.6", "python2.6-dev",
-  "libxml2-dev", "libxml2", "libxslt1-dev",
+  "libxml2-dev", "libxml2", "libxslt1-dev", "autoconf", "libtool",
 ]
 extra_packages = node['extra_packages']
 (required_packages + extra_packages).each do |pkg|
@@ -134,6 +133,7 @@ end
 # other useful env vars
 
 {
+  "SOURCE_ROOT" => "#{node['source_root']}",
   "NOSE_INCLUDE_EXE" => "true",
 }.each do |var, value|
   execute "swift-env-#{var}" do

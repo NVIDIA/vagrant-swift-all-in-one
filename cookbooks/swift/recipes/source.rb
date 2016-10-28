@@ -60,8 +60,48 @@ execute "git swift-specs" do
   action :run
 end
 
+execute "git liberasurecode" do
+  cwd "#{node['source_root']}"
+  command "git clone -b #{node['liberasurecode_repo_branch']} #{node['liberasurecode_repo']}"
+  user node['username']
+  group node["username"]
+  creates "#{node['source_root']}/liberasurecode"
+  action :run
+end
+
+execute "git pyeclib" do
+  cwd "#{node['source_root']}"
+  command "git clone -b #{node['pyeclib_repo_branch']} #{node['pyeclib_repo']}"
+  user node['username']
+  group node["username"]
+  creates "#{node['source_root']}/pyeclib"
+  action :run
+end
+
 execute "fix semantic_version error from testtools" do
   command "pip install --upgrade testtools"
+end
+
+execute "liberasurecode-install" do
+  cwd "#{node['source_root']}/liberasurecode"
+  command "./autogen.sh && " \
+    "./configure && " \
+    "make && " \
+    "make install && " \
+    "ldconfig"
+  if not node['full_reprovision']
+    creates "/usr/local/lib/liberasurecode.so.1.2.0"
+  end
+  action :run
+end
+
+execute "python-pyeclib-install" do
+  cwd "#{node['source_root']}/pyeclib"
+  command "pip install -e . && pip install -r test-requirements.txt"
+  if not node['full_reprovision']
+    creates "/usr/local/lib/python2.7/dist-packages/pyeclib.egg-link"
+  end
+  action :run
 end
 
 execute "python-swiftclient-install" do

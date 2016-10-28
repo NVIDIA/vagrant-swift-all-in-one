@@ -1,0 +1,8 @@
+#!/bin/bash
+set -ex
+cd $SOURCE_ROOT/liberasurecode
+./autogen.sh
+./configure
+make
+make install
+ldconfig

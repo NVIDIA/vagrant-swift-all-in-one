@@ -69,6 +69,10 @@ local_config = {
   "swift_bench_repo_branch" => (ENV['SWIFTBENCH_REPO_BRANCH'] || 'master'),
   "swift_specs_repo" => (ENV['SWIFTSPECS_REPO'] || 'git://github.com/openstack/swift-specs.git'),
   "swift_specs_repo_branch" => (ENV['SWIFTSPECS_REPO_BRANCH'] || 'master'),
+  "liberasurecode_repo" => (ENV['LIBERASURECODE_REPO'] || 'git://github.com/openstack/liberasurecode.git'),
+  "liberasurecode_repo_branch" => (ENV['LIBERASURECODE_REPO_BRANCH'] || 'master'),
+  "pyeclib_repo" => (ENV['PYECLIB_REPO'] || 'git://github.com/openstack/pyeclib.git'),
+  "pyeclib_repo_branch" => (ENV['PYECLIB_REPO_BRANCH'] || 'master'),
   "extra_key" => (ENV['EXTRA_KEY'] || ''),
   "source_root" => (ENV['SOURCE_ROOT'] || '/vagrant'),
 }
