@@ -143,6 +143,7 @@ def do_config_directory(node, service, service_dir, p)
   (1..node['nodes']).each do |i|
     bind_ip = "127.0.0.1"
     bind_port = "60#{i}#{p}"
+    replicator_bind_port = "61#{i}#{p}"
     if service == "object" && node['servers_per_port'] > 0 then
       # Only use unique IPs if servers_per_port is enabled.  This lets this
       # newer vagrant-swift-all-in-one work with older swift that doesn't have
@@ -177,6 +178,7 @@ def do_config_directory(node, service, service_dir, p)
          :srv_path => "/srv/node#{i}",
          :bind_ip => bind_ip,
          :bind_port => bind_port,
+         :replicator_bind_port => replicator_bind_port,
          :recon_cache_path => "/var/cache/swift/node#{i}",
       })
     end

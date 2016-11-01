@@ -71,6 +71,7 @@ node['storage_policies'].each_with_index do |name, p|
     dev = "sdb#{i}"
     ip = "127.0.0.1"
     port = "60#{n_idx}0"
+    replication_port = "61#{n_idx}0"
     if node['servers_per_port'] > 0 then
       ip = "127.0.0.#{n_idx}"
 
@@ -81,7 +82,7 @@ node['storage_policies'].each_with_index do |name, p|
     end
     execute "#{service}.builder-add-#{dev}" do
       command "sudo -u vagrant swift-ring-builder #{service}.builder add " \
-        "r#{r}z#{z}-#{ip}:#{port}/#{dev} 1 && " \
+        "r#{r}z#{z}-#{ip}:#{port}R#{ip}:#{replication_port}/#{dev} 1 && " \
         "rm -f /etc/swift/#{service}.ring.gz || true"
       not_if "swift-ring-builder /etc/swift/#{service}.builder search /#{dev}"
       cwd "/etc/swift"
