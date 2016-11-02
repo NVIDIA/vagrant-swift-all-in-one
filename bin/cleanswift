@@ -20,5 +20,7 @@ find /var/cache/swift* -type f -name *.recon -delete
 sudo umount /mnt/swift-disk
 sudo rm -r /srv/node*
 sudo rm -f /var/lib/swift/disk
-sudo rm -f /var/log/debug /var/log/messages /var/log/rsyncd.log /var/log/syslog
+for fname in /var/log/debug /var/log/messages /var/log/rsyncd.log /var/log/syslog; do
+    sudo truncate $fname
+done
 sudo service rsyslog restart
