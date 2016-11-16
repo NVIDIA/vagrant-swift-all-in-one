@@ -28,7 +28,7 @@ vagrant_boxes = {
   "dummy" => "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box",
 }
 vagrant_box = (ENV['VAGRANT_BOX'] || DEFAULT_BOX)
-username = (ENV['USERNAME'] || "ubuntu")
+username = (ENV['VAGRANT_USERNAME'] || "ubuntu")
 
 base_ip = IPAddr.new(ENV['IP'] || "192.168.8.80")
 hosts = {
