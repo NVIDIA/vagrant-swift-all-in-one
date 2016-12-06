@@ -1,12 +1,14 @@
 #!/bin/bash
 set -ex
-cd /usr/local/lib
-sudo rm liberasurecode.* libnullcode.* libXorcode.* || true
 cd $SOURCE_ROOT/liberasurecode
 ./autogen.sh
 ./configure
 make
+cd /usr/local/lib
+sudo rm liberasurecode.* libnullcode.* libXorcode.* || true
+cd -
 sudo make install
 sudo ldconfig
 cd $SOURCE_ROOT/pyeclib
+rm -fr *.so build/
 sudo pip install -e .
