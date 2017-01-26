@@ -111,7 +111,8 @@ def main():
         # bail on build fail
         return rv
     os.chdir(build_dir)
-    os.system('swift post %s -r .r:*' % container)
+    os.system('swift post %s -r .r:*,.rlistings -m web-index:index.html' %
+              container)
     print 'uploading...'
     os.system('swift upload --changed %s . > /dev/null' % container)
     print 'done...'
