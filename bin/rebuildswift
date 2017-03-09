@@ -15,9 +15,7 @@
 # limitations under the License.
 
 /vagrant/bin/cleanswift
-rm -fr /etc/swift/*
-rm -f /etc/swift/*.builder /etc/swift/*.ring.gz \
-  /etc/swift/backups/*.builder /etc/swift/backups/*.ring.gz
+rm -fr /etc/swift/* /var/run/swift/* /var/cache/swift/*
 cd /tmp/vagrant-chef*/
 sed 's/"full_reprovision": false/"full_reprovision": true/g' dna.json > reload.json
 sudo chef-solo -c solo.rb -j reload.json
