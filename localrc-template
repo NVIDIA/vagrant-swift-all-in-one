@@ -13,6 +13,7 @@ export REPLICAS=3
 export EC_TYPE=liberasurecode_rs_vand
 export EC_REPLICAS=6
 export EC_PARITY=2
+export EC_DUPLICATION=1
 export REGIONS=1
 export ZONES=4
 export NODES=4
