@@ -58,6 +58,7 @@ template "/etc/swift/swift.conf" do
     :ec_type => node['ec_type'],
     :ec_replicas => node['ec_replicas'],
     :ec_parity => node['ec_parity'],
+    :ec_duplication => node['ec_duplication'],
   })
 end
 

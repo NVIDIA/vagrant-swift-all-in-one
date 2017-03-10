@@ -58,6 +58,7 @@ local_config = {
   "ec_type" => (ENV['EC_TYPE'] || 'liberasurecode_rs_vand'),
   "ec_replicas" => Integer(ENV['EC_REPLICAS'] || 6),
   "ec_parity" => Integer(ENV['EC_PARITY'] || 2),
+  "ec_duplication" => Integer(ENV['EC_DUPLICATION'] || 1),
   "regions" => Integer(ENV['REGIONS'] || 1),
   "zones" => Integer(ENV['ZONES'] || 4),
   "nodes" => Integer(ENV['NODES'] || 4),

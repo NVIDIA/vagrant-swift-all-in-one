@@ -56,7 +56,7 @@ node['storage_policies'].each_with_index do |name, p|
     service += "-#{p}"
   end
   if name == node['ec_policy'] then
-    replicas = node['ec_replicas']
+    replicas = node['ec_replicas'] * node['ec_duplication']
     num_disks = node['ec_disks']
   else
     replicas = node['replicas']
