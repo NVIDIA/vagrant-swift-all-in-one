@@ -42,6 +42,12 @@ end
 
 current_datetime = Time.now.strftime("%Y%m%d-%H%M%S")
 
+def load_key(path_or_contents)
+  File.open(path_or_contents).read
+rescue Errno::ENOENT => ex
+  path_or_contents
+end
+
 local_config = {
   "username" => username,
   "full_reprovision" => (ENV['FULL_REPROVISION'] || 'false').downcase == 'true',
@@ -76,7 +82,7 @@ local_config = {
   "liberasurecode_repo_branch" => (ENV['LIBERASURECODE_REPO_BRANCH'] || 'master'),
   "pyeclib_repo" => (ENV['PYECLIB_REPO'] || 'git://github.com/openstack/pyeclib.git'),
   "pyeclib_repo_branch" => (ENV['PYECLIB_REPO_BRANCH'] || 'master'),
-  "extra_key" => (ENV['EXTRA_KEY'] || ''),
+  "extra_key" => load_key(ENV['EXTRA_KEY'] || ''),
   "source_root" => (ENV['SOURCE_ROOT'] || '/vagrant'),
 }
 
