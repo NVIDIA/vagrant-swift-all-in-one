@@ -33,6 +33,11 @@ use = egg:swift#tempurl
 use = egg:swift#container_sync
 current = //TEST/SAIO
 
+[filter:domain_remap]
+use = egg:swift#domain_remap
+storage_domain = example.com
+default_reseller_prefix = AUTH
+
 [filter:staticweb]
 use = egg:swift#staticweb
 
