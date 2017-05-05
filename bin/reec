@@ -1,14 +1,15 @@
 #!/bin/bash
 set -ex
 if [ -d $SOURCE_ROOT/isa-l ]; then
-	cd $SOURCE_ROOT/isa-l
-	./autogen.sh
-	./configure
-	make
-	cd /usr/lib
-	sudo rm libisal.* || true
-	cd -
-	sudo make install
+    sudo apt install yasm
+    cd $SOURCE_ROOT/isa-l
+    ./autogen.sh
+    ./configure
+    make
+    cd /usr/lib
+    sudo rm libisal.* || true
+    cd -
+    sudo make install
 fi
 cd $SOURCE_ROOT/liberasurecode
 ./autogen.sh
