@@ -22,17 +22,9 @@ sed -i "/envlist/ a\
 toxworkdir = $HOME/.tox-swift
 " tox.ini
 cp setup.py _setup.py
-cat > setup.py <<EOF
-import os
-import shutil
-os.link = shutil.copy
-import _setup
-_setup
-EOF
 set +e
 tox $ARGS
 error=$?
 sed -i '/toxworkdir/d' tox.ini
-mv _setup.py setup.py
 cd -
 exit $error
