@@ -115,6 +115,8 @@ Vagrant.configure("2") do |global_config|
       end
 
       config.vm.provider :aws do |v, override|
+        override.vm.synced_folder ".", "/vagrant", type: "rsync",
+          rsync__args: ["--verbose", "--archive", "--delete", "-z"]
         override.ssh.private_key_path = ENV['SSH_PRIVATE_KEY_PATH']
 
         v.access_key_id = ENV['AWS_ACCESS_KEY_ID']
