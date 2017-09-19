@@ -21,3 +21,6 @@ use = egg:swift#recon
 
 [container-sync]
 internal_client_conf_path = /etc/swift/internal-client.conf
+
+[container-sharder]
+shard_container_size = 50

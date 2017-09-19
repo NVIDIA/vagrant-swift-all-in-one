@@ -4,3 +4,6 @@ bind_ip = <%= @bind_ip %>
 bind_port = <%= @bind_port %>
 log_name = container-<%= @bind_port %>
 recon_cache_path = <%= @recon_cache_path %>
+
+[container-sharder]
+log_name = container-sharder-<%= @bind_port %>
