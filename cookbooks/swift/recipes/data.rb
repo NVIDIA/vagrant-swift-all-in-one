@@ -49,6 +49,13 @@ execute "mount" do
   not_if "mountpoint /mnt/swift-disk"
 end
 
+# for unittest xfs scratch
+directory "/mnt/swift-disk/tmp" do
+  owner node["username"]
+  group node["username"]
+  action :create
+end
+
 if node['ec_policy'].empty? then
   num_disks = node['disks']
 else
