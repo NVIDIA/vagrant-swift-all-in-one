@@ -50,3 +50,6 @@ encryption_root_secret = ODE4MDU2ZGJkN2UyMDEyNDMyMDZiOWM3Y2Q4ODQ4MWM=
 [filter:encryption]
 use = egg:swift#encryption
 disable_encryption = <%= @disable_encryption %>
+
+[filter:symlink]
+use = egg:swift#symlink
