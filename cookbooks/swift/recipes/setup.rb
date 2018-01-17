@@ -32,16 +32,16 @@ end
 
 # deadsnakes for py2.6
 execute "deadsnakes key" do
-  command "sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys DB82666C"
+  command "sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6A755776"
   action :run
-  not_if "sudo apt-key list | grep 'Launchpad Old Python Versions'"
+  not_if "sudo apt-key list | grep 'Launchpad PPA for deadsnakes'"
 end
 
 execute "add repo" do
-  command "sudo add-apt-repository ppa:fkrull/deadsnakes"
+  command "sudo add-apt-repository ppa:deadsnakes/ppa"
 end
 
-# backports seems to be enabeld on xenail aready?
+# backports seems to be enabled on xenial already?
 execute "enable backports" do
   command "sudo sed -ie 's/# deb http:\\/\\/archive.ubuntu.com\\/ubuntu trusty-backports/deb http:\\/\\/archive.ubuntu.com\\/ubuntu trusty-backports/' /etc/apt/sources.list"
   action :run
