@@ -21,7 +21,6 @@ cd /vagrant/swift
 sed -i "/envlist/ a\
 toxworkdir = $HOME/.tox-swift
 " tox.ini
-cp setup.py _setup.py
 set +e
 tox $ARGS
 error=$?
