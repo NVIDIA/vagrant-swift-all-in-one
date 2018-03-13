@@ -1,5 +1,5 @@
 export VAGRANT_BOX=xenial  # trusty, precise, etc.
-export VAGRANT_USERNAME=ubuntu  # old boxes need user vagrant
+export VAGRANT_USERNAME=vagrant # old boxes need user ubuntu
 export VAGRANT_HOSTNAME=saio
 export VAGRANT_CPUS=1
 export VAGRANT_RAM=2048
