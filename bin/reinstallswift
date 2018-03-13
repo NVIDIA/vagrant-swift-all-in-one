@@ -16,7 +16,8 @@
 
 set -e
 cd /tmp/vagrant-chef*/
+DIR=$(pwd)
 sed 's/"full_reprovision": false/"full_reprovision": true/g' dna.json > reload.json
-sudo chef-solo -c solo.rb -j reload.json -o swift::source
+sudo chef-solo -c ${DIR}/solo.rb -j ${DIR}/reload.json -o swift::source
 swift-init restart main
 echo "READY!"
