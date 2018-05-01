@@ -27,8 +27,13 @@ vagrant_boxes = {
   "xenial" => "http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-vagrant.box",
   "dummy" => "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box",
 }
+
+default_usernames = {
+  "xenial" => "ubuntu",
+}
+
 vagrant_box = (ENV['VAGRANT_BOX'] || DEFAULT_BOX)
-username = (ENV['VAGRANT_USERNAME'] || "vagrant")
+username = (ENV['VAGRANT_USERNAME'] || default_usernames[vagrant_box] || "vagrant")
 
 base_ip = IPAddr.new(ENV['IP'] || "192.168.8.80")
 hosts = {
