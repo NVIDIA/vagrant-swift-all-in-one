@@ -21,10 +21,12 @@ require 'ipaddr'
 
 DEFAULT_BOX = "xenial"
 
+# Note: 18.04/bionic requires Vagrant 2.02 or newer because 18.04 ships without ifup/ifdown by default.
 vagrant_boxes = {
   "precise" => "https://hashicorp-files.hashicorp.com/precise64.box",
   "trusty" => "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/14.04/providers/virtualbox.box",
   "xenial" => "http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-vagrant.box",
+  "bionic" => "http://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64-vagrant.box",
   "dummy" => "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box",
 }
 vagrant_box = (ENV['VAGRANT_BOX'] || DEFAULT_BOX)
