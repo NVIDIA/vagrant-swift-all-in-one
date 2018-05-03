@@ -32,7 +32,7 @@ end
 
 # deadsnakes for py2.6
 execute "deadsnakes key" do
-  command "sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6A755776"
+  command "sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys"
   action :run
   not_if "sudo apt-key list | grep 'Launchpad PPA for deadsnakes'"
 end
