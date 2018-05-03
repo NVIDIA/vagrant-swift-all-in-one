@@ -81,7 +81,7 @@ execute "liberasurecode-install" do
     "make install && " \
     "ldconfig"
   if not node['full_reprovision']
-    creates "/usr/local/lib/liberasurecode.so.1.2.0"
+    creates "/usr/local/lib/liberasurecode.so"
   end
   # avoid /opt/chef/embedded/bin - related to chef/chef-dk#313
   environment 'PATH' => "/usr/bin:#{ENV['PATH']}"

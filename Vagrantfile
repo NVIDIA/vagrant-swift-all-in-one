@@ -72,6 +72,14 @@ local_config = {
   "nodes" => Integer(ENV['NODES'] || 4),
   "disks" => Integer(ENV['DISKS'] || 4),
   "ec_disks" => Integer(ENV['EC_DISKS'] || 8),
+  "cmake_repo" => (ENV['CMAKE_REPO'] || 'https://github.com/Kitware/CMake.git'),
+  "cmake_repo_branch" => (ENV['CMAKE_REPO_BRANCH'] || 'v3.11.1'),
+  "protobuf_repo" => (ENV['PROTOBUF_REPO'] || 'https://github.com/google/protobuf.git'),
+  "protobuf_repo_branch" => (ENV['PROTOBUF_REPO'] || 'v3.5.1'),
+  "snappy_repo" => (ENV['SNAPPY_REPO'] || 'https://github.com/google/snappy.git'),
+  "snappy_repo_branch" => (ENV['SNAPPY_REPO_BRANCH'] || '1.1.7'),
+  "leveldb_repo" => (ENV['LEVELDB_REPO'] || 'https://github.com/google/leveldb.git'),
+  "leveldb_repo_branch" => (ENV['LEVELDB_REPO_BRANCH'] || 'master'),
   "swift_repo" => (ENV['SWIFT_REPO'] || 'git://github.com/openstack/swift.git'),
   "swift_repo_branch" => (ENV['SWIFT_REPO_BRANCH'] || 'master'),
   "swiftclient_repo" => (ENV['SWIFTCLIENT_REPO'] || 'git://github.com/openstack/python-swiftclient.git'),
@@ -102,6 +110,10 @@ Vagrant.configure("2") do |global_config|
       config.vm.box = vagrant_box
       if vagrant_boxes.key? vagrant_box
         config.vm.box_url = vagrant_boxes[vagrant_box]
+      end
+
+      if ENV['GOPATH'] then
+          config.vm.synced_folder ENV['GOPATH'], '/vagrant/go'
       end
 
       config.vm.provider :virtualbox do |vb, override|
@@ -136,6 +148,7 @@ Vagrant.configure("2") do |global_config|
       config.vm.provision :chef_solo do |chef|
         chef.provisioning_path = "/etc/chef"
         chef.add_recipe "swift"
+        chef.add_recipe "losf"
         chef.json = local_config
       end
     end
