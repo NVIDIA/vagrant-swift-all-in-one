@@ -104,6 +104,10 @@ Vagrant.configure("2") do |global_config|
         config.vm.box_url = vagrant_boxes[vagrant_box]
       end
 
+      if ENV['GOPATH'] then
+          config.vm.synced_folder ENV['GOPATH'], '/vagrant/go'
+      end
+
       config.vm.provider :virtualbox do |vb, override|
         override.vm.hostname = hostname
         override.vm.network :private_network, ip: ip
@@ -135,6 +139,8 @@ Vagrant.configure("2") do |global_config|
 
       config.vm.provision :chef_solo do |chef|
         chef.add_recipe "swift"
+        chef.add_recipe "rocksdb"
+        chef.add_recipe "go-dev"
         chef.json = local_config
       end
     end
