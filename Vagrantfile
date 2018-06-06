@@ -112,6 +112,7 @@ Vagrant.configure("2") do |global_config|
         override.vm.hostname = hostname
         override.vm.network :private_network, ip: ip
 
+        vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
         vb.name = "vagrant-#{hostname}-#{current_datetime}"
         vb.cpus = Integer(ENV['VAGRANT_CPUS'] || 1)
         vb.memory = Integer(ENV['VAGRANT_RAM'] || 2048)
