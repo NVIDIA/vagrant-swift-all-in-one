@@ -1,4 +1,4 @@
-export VAGRANT_BOX=xenial  # trusty, bionic, etc.
+export VAGRANT_BOX=bionic  # precise, xenial, etc.
 export VAGRANT_USERNAME=vagrant # old boxes need user ubuntu
 export VAGRANT_HOSTNAME=saio
 export VAGRANT_CPUS=1
