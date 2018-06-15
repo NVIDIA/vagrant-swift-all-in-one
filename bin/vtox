@@ -26,4 +26,20 @@ tox $ARGS
 error=$?
 sed -i '/toxworkdir/d' tox.ini
 cd -
+
+# If setup.py or setup.cfg are newer than swift.egg-info, then tox
+# will always reinstall Swift in the test virtualenv, which is really
+# slow. It wouldn't be so bad if that reinstallation would update the
+# timestamp on swift.egg-info, but it doesn't, so once you get an
+# update to setup.py or setup.cfg, your test runs are slow forever
+# after.
+#
+# To work around this, after a successful test run, touch
+# swift.egg-info to update its mtime. This way, if there really is a
+# change to setup.py/setup.cfg, then one (slow) reinstall will occur,
+# and then subsequent test runs will use the existing one.
+if [ $error -eq 0 -a -d swift.egg-info ]; then
+	touch swift.egg-info
+fi
+
 exit $error
