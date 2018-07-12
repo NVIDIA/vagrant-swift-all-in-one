@@ -33,6 +33,9 @@ use = egg:swift#tempurl
 use = egg:swift#container_sync
 current = //TEST/SAIO
 
+[filter:s3api]
+use = egg:swift#s3api
+
 [filter:staticweb]
 use = egg:swift#staticweb
 

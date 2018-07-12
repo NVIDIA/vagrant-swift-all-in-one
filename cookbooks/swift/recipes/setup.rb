@@ -130,6 +130,21 @@ end
   end
 end
 
+# s3cmd setup
+
+execute "install s3cmd" do
+  command "pip install s3cmd"
+end
+
+file "/home/#{node['username']}/.s3cfg" do
+  owner node['username']
+  group node['username']
+  mode 0755
+  content IO.read("/vagrant/.s3cfg")
+  action :create
+end
+
+
 # other useful env vars
 
 {

@@ -39,6 +39,18 @@ A few things are configurable, see `localrc-template`.
  1. `vagrant ssh`
  1. `rebuildswift`
 
+
+s3cmd
+=====
+
+You know you want to play with s3api, we got you covered.
+
+```
+vagrant ssh
+s3cmd mb s3://s3test
+s3cmd ls
+```
+
 ninja-dev-tricks
 ================
 
