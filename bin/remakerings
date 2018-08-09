@@ -18,6 +18,5 @@ rm -f /etc/swift/*.builder /etc/swift/*.ring.gz \
   /etc/swift/backups/*.builder /etc/swift/backups/*.ring.gz
 
 cd /tmp/vagrant-chef*/
-cd /tmp/vagrant-chef*/
 DIR=$(pwd)
 sudo chef-solo -c ${DIR}/solo.rb -j ${DIR}/dna.json -o swift::rings
