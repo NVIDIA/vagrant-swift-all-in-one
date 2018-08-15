@@ -60,6 +60,7 @@ local_config = {
   "object_sync_method" => (ENV['OBJECT_SYNC_METHOD'] || 'rsync'),
   "post_as_copy" => (ENV['POST_AS_COPY'] || 'true').downcase == 'true',
   "encryption" => (ENV['ENCRYPTION'] || 'false').downcase == 'true',
+  "kmip" => (ENV['KMIP'] || 'false').downcase == 'true',
   "part_power" => Integer(ENV['PART_POWER'] || 10),
   "replicas" => Integer(ENV['REPLICAS'] || 3),
   "ec_type" => (ENV['EC_TYPE'] || 'liberasurecode_rs_vand'),

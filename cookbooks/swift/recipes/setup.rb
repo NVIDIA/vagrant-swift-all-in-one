@@ -104,6 +104,17 @@ execute "fix pip warning 2" do
   command "pip install --upgrade ndg-httpsclient"
 end
 
+# install pip packages
+
+[
+  "s3cmd",
+].each do |pkg|
+  execute "pip install #{pkg}" do
+    command "pip install #{pkg}"
+  end
+end
+
+
 # setup environment
 
 profile_file = "/home/#{node['username']}/.profile"
@@ -130,11 +141,8 @@ end
   end
 end
 
-# s3cmd setup
 
-execute "install s3cmd" do
-  command "pip install s3cmd"
-end
+# s3cmd setup
 
 file "/home/#{node['username']}/.s3cfg" do
   owner node['username']

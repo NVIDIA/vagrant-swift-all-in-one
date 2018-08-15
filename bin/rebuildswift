@@ -15,7 +15,7 @@
 # limitations under the License.
 
 /vagrant/bin/cleanswift
-rm -fr /etc/swift/* /var/run/swift/* /var/cache/swift/*
+rm -fr /etc/swift/* /var/run/swift/* /var/cache/swift/* /etc/pykmip/*
 cd /tmp/vagrant-chef*/
 DIR=$(pwd)
 sed 's/"full_reprovision": false/"full_reprovision": true/g' dna.json > reload.json

@@ -45,6 +45,10 @@ allow_account_management = true
 account_autocreate = true
 object_post_as_copy = <%= @post_as_copy %>
 
+[filter:kmip_keymaster]
+use = egg:swift#kmip_keymaster
+keymaster_config_path = /etc/swift/kmip_keymaster.conf
+
 [filter:keymaster]
 use = egg:swift#keymaster
 # base64.encodestring(hashlib.md5('swift').hexdigest())

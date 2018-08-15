@@ -119,10 +119,26 @@ end
     owner node["username"]
     group node["username"]
   end
-  cookbook_file "#{proxy_conf_dir}/20_settings.conf" do
-    source "#{proxy_conf_dir}/20_settings.conf"
-    owner node["username"]
-    group node["username"]
+  if proxy == "proxy-noauth" then
+    cookbook_file "#{proxy_conf_dir}/20_settings.conf" do
+      source "#{proxy_conf_dir}/20_settings.conf"
+      owner node["username"]
+      group node["username"]
+    end
+  else
+    if node['kmip'] then
+      keymaster_pipeline = 'kmip_keymaster'
+    else
+      keymaster_pipeline = 'keymaster'
+    end
+    template "/#{proxy_conf_dir}/20_settings.conf" do
+      source "#{proxy_conf_dir}/20_settings.conf.erb"
+      owner node["username"]
+      group node["username"]
+      variables({
+        :keymaster_pipeline => keymaster_pipeline,
+      })
+    end
   end
 end
 

@@ -1,0 +1,9 @@
+[Unit]
+Description=PyKMIP server
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/local/bin/pykmip-server
+
+[Install]
+WantedBy=multi-user.target
