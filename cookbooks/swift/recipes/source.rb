@@ -51,15 +51,6 @@ execute "git swift" do
   action :run
 end
 
-execute "git swift-specs" do
-  cwd "#{node['source_root']}"
-  command "git clone -b #{node['swift_specs_repo_branch']} #{node['swift_specs_repo']}"
-  user node['username']
-  group node["username"]
-  creates "#{node['source_root']}/swift-specs"
-  action :run
-end
-
 execute "git liberasurecode" do
   cwd "#{node['source_root']}"
   command "git clone -b #{node['liberasurecode_repo_branch']} #{node['liberasurecode_repo']}"
@@ -136,12 +127,6 @@ execute "python-swift-install" do
   action :run
 end
 
-execute "swift-specs-install" do
-  cwd "#{node['source_root']}/swift-specs"
-  command "pip install -r requirements.txt"
-  action :run
-end
-
 execute "install tox" do
   command "pip install tox"
   if not node['full_reprovision']
@@ -149,6 +134,8 @@ execute "install tox" do
   end
   action :run
 end
+
+# add some helpful symlinks
 
 [
   'swift',
