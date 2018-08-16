@@ -51,8 +51,7 @@ keymaster_config_path = /etc/swift/kmip_keymaster.conf
 
 [filter:keymaster]
 use = egg:swift#keymaster
-# base64.encodestring(hashlib.md5('swift').hexdigest())
-encryption_root_secret = ODE4MDU2ZGJkN2UyMDEyNDMyMDZiOWM3Y2Q4ODQ4MWM=
+keymaster_config_path = /etc/swift/keymaster.conf
 
 [filter:encryption]
 use = egg:swift#encryption

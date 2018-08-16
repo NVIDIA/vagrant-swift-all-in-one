@@ -67,6 +67,7 @@ end
   'dispersion.conf',
   'bench.conf',
   'container-sync-realms.conf',
+  'keymaster.conf',
 ].each do |filename|
   cookbook_file "/etc/swift/#{filename}" do
     source "etc/swift/#{filename}"

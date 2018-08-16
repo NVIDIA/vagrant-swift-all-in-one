@@ -25,15 +25,17 @@ logging.basicConfig(level=logging.INFO)
 
 def main():
     with kmip.pie.client.ProxyKmipClient() as client:
-        try:
-            client.get('1')
-        except kmip.pie.exceptions.KmipOperationFailure as e:
-            if e.reason != kmip.core.enums.ResultReason.ITEM_NOT_FOUND:
-                raise
-            client.create(kmip.core.enums.CryptographicAlgorithm.AES, 256)
-            logging.info('KEY CREATED')
-        else:
-            logging.info('KEY FOUND')
+        for i in range(3):
+            secret_id = str(i + 1)
+            try:
+                client.get(secret_id)
+            except kmip.pie.exceptions.KmipOperationFailure as e:
+                if e.reason != kmip.core.enums.ResultReason.ITEM_NOT_FOUND:
+                    raise
+                client.create(kmip.core.enums.CryptographicAlgorithm.AES, 256)
+                logging.info('KEY %s CREATED', secret_id)
+            else:
+                logging.info('KEY %s FOUND', secret_id)
 
 
 if __name__ == "__main__":
