@@ -78,6 +78,11 @@ end
     group node["username"]
     action :create
   end
+  execute "create .ismount stub for #{disk_path}" do
+    command "touch #{disk_path}/.ismount"
+    creates "#{disk_path}/.ismount"
+    action :run
+  end
   link srv_path do
     to disk_path 
   end
