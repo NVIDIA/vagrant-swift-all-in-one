@@ -14,6 +14,7 @@ use = egg:swift#recon
 
 [container-replicator]
 # vm_test_mode = yes
+rsync_module = {replication_ip}::container{replication_port}
 
 [container-updater]
 
