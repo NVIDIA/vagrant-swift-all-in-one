@@ -1,0 +1,33 @@
+#!/bin/sh
+#/ usage: mount-drive [drive [...]]
+#/ "Mount" a "drive" under /srv/node*
+#/
+#/ Examples:
+#/   mount-drive /srv/node1/sdb1 /srv/node2/sdb2
+#/   mount-drive /srv/node3/*
+#/   mount-drive /srv/*/*
+
+[ -z "$1" -o "$1" = "-h" -o "$1" = "--help" ] && {
+    grep '^#/' "$0" | cut -c4-
+    exit 2
+}
+
+set +e
+for drive in "$@"; do
+    case "$drive" in
+        /srv/node*)
+            if [ -L "$drive" ]; then
+                echo "$drive assumed already mounted"
+            elif [ -d "$drive" ]; then
+                rmdir "$drive"
+                ln -s /mnt/swift-disk/"$(basename "$drive")" "$drive"
+                echo "$drive now mounted"
+            else
+                echo "Expected '$drive' to be a link or directory; ignoring"
+            fi
+            ;;
+        *)
+            echo "Expected '$drive' to start with '/srv/node'; ignoring"
+            ;;
+    esac
+done

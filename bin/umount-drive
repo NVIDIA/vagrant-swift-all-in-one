@@ -1,0 +1,33 @@
+#!/bin/sh
+#/ usage: umount-drive [drive [...]]
+#/ "Unmount" a "drive" under /srv/node*
+#/
+#/ Examples:
+#/   umount-drive /srv/node1/sdb1 /srv/node2/sdb2
+#/   umount-drive /srv/node3/*
+#/   umount-drive /srv/*/*
+
+[ -z "$1" -o "$1" = "-h" -o "$1" = "--help" ] && {
+    grep '^#/' "$0" | cut -c4-
+    exit 2
+}
+
+set +e
+for drive in "$@"; do
+    case "$drive" in
+        /srv/node*)
+            if [ -L "$drive" ]; then
+                rm "$drive"
+                mkdir -m 0500 "$drive"
+                echo "$drive now unmounted"
+            elif [ -d "$drive" ]; then
+                echo "$drive assumed already unmounted"
+            else
+                echo "Expected '$drive' to be a link or directory; ignoring"
+            fi
+            ;;
+        *)
+            echo "Expected '$drive' to start with '/srv/node'; ignoring"
+            ;;
+    esac
+done
