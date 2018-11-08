@@ -21,5 +21,6 @@ use = egg:swift#recon
 [object-replicator]
 # vm_test_mode = yes
 sync_method = <%= @sync_method %>
+rsync_module = {replication_ip}::object{replication_port}
 
 [object-reconstructor]
