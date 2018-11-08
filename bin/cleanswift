@@ -19,11 +19,13 @@ set -e
 swift-init all stop || :
 find /var/log/swift -type f -delete || :
 find /var/cache/swift* -type f -name *.recon -delete
-if mount | grep -q swift-disk ; then
-    sudo umount /mnt/swift-disk
-fi
+
+for d in $(ls -d /srv/node*/*); do
+    mount | grep -q $d && sudo umount $d
+done
 sudo rm -rf /srv/node*
-sudo rm -f /var/lib/swift/disk
+sudo rm -f /var/lib/swift/disk*
+
 for fname in /var/log/debug /var/log/messages /var/log/rsyncd.log /var/log/syslog; do
     sudo truncate --size 0 $fname
 done

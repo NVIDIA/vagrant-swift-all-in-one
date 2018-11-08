@@ -25,37 +25,6 @@
   end
 end
 
-execute "create sparse file" do
-  command "truncate -s #{node['loopback_gb']}GB /var/lib/swift/disk"
-  creates "/var/lib/swift/disk"
-  action :run
-end
-
-execute "create file system" do
-  command "mkfs.xfs /var/lib/swift/disk"
-  not_if "xfs_admin -l /var/lib/swift/disk"
-  action :run
-end
-
-execute "update fstab" do
-  command "echo '/var/lib/swift/disk /mnt/swift-disk xfs " \
-    "loop,noatime,nodiratime,nobarrier,logbufs=8 0 0' >> /etc/fstab"
-  not_if "grep swift-disk /etc/fstab"
-  action :run
-end
-
-execute "mount" do
-  command "mount /mnt/swift-disk"
-  not_if "mountpoint /mnt/swift-disk"
-end
-
-# for unittest xfs scratch
-directory "/mnt/swift-disk/tmp" do
-  owner node["username"]
-  group node["username"]
-  action :create
-end
-
 if node['ec_policy'].empty? then
   num_disks = node['disks']
 else
@@ -64,23 +33,56 @@ end
 
 (1..num_disks).each do |i|
   j = ((i - 1) % node['nodes']) + 1
-  disk_path = "/mnt/swift-disk/sdb#{i}"
+  disk_file = "/var/lib/swift/disk#{i}"
   node_path = "/srv/node#{j}"
-  srv_path = node_path + "/sdb#{i}"
-  directory disk_path do
-    owner node["username"]
-    group node["username"]
+  mount_path = node_path + "/sdb#{i}"
+
+
+  execute "create sparse file #{i}" do
+    command "truncate -s #{node['loopback_gb']}GB #{disk_file}"
+    creates "#{disk_file}"
+    action :run
+  end
+
+  execute "create file system" do
+    command "mkfs.xfs #{disk_file}"
+    not_if "xfs_admin -l #{disk_file}"
+    action :run
+  end
+
+  directory mount_path do
+    owner 'root'
+    group 'root'
+    mode '0755'
+    recursive true
     action :create
   end
-  directory "create node path for #{disk_path}" do
-    path node_path
+
+  execute "update fstab" do
+    command "echo '#{disk_file} #{mount_path} xfs " \
+      "loop,noatime,nodiratime,nobarrier,logbufs=8 0 0' >> /etc/fstab"
+    not_if "grep #{mount_path} /etc/fstab"
+    action :run
+  end
+
+  execute "mount" do
+    command "mount #{mount_path}"
+    not_if "mountpoint #{mount_path}"
+  end
+
+  # Fix perms on mounted dir
+  directory mount_path do
     owner node["username"]
     group node["username"]
-    action :create
+    mode '0775'
   end
-  link srv_path do
-    to disk_path 
-  end
+end
+
+# for unittest xfs scratch
+directory "/srv/node1/sdb1/tmp" do
+  owner node["username"]
+  group node["username"]
+  action :create
 end
 
 # run dirs
