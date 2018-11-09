@@ -134,6 +134,7 @@ Vagrant.configure("2") do |global_config|
       end
 
       config.vm.provision :chef_solo do |chef|
+        chef.provisioning_path = "/etc/chef"
         chef.add_recipe "swift"
         chef.json = local_config
       end
