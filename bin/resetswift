@@ -16,8 +16,6 @@
 
 set -e
 /vagrant/bin/cleanswift
-cd /tmp/vagrant-chef*/
-DIR=$(pwd)
-sudo chef-solo -c ${DIR}/solo.rb -j ${DIR}/dna.json -o swift::data
+sudo chef-solo -c /etc/chef/solo.rb -j /etc/chef/dna.json -o swift::data
 sudo service rsyslog restart
 sudo service memcached restart
