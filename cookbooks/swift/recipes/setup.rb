@@ -158,7 +158,7 @@ end
 {
   "SOURCE_ROOT" => "#{node['source_root']}",
   "NOSE_INCLUDE_EXE" => "true",
-  "TMPDIR" => "/mnt/swift-disk/tmp",
+  "TMPDIR" => "/srv/node1/sdb1/tmp",
 }.each do |var, value|
   execute "swift-env-#{var}" do
     command "echo 'export #{var}=#{value}' >> #{profile_file}"

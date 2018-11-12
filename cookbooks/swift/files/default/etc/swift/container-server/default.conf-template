@@ -1,5 +1,4 @@
 [DEFAULT]
-mount_check = false
 disable_fallocate = true
 workers = 1
 
@@ -14,6 +13,7 @@ use = egg:swift#recon
 
 [container-replicator]
 # vm_test_mode = yes
+rsync_module = {replication_ip}::container{replication_port}
 
 [container-updater]
 
