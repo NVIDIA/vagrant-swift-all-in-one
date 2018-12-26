@@ -108,6 +108,7 @@ end
 
 [
   "s3cmd",
+  "awscli-plugin-endpoint",
 ].each do |pkg|
   execute "pip install #{pkg}" do
     command "pip install #{pkg}"
@@ -147,8 +148,24 @@ end
 file "/home/#{node['username']}/.s3cfg" do
   owner node['username']
   group node['username']
-  mode 0755
+  mode 0700
   content IO.read("/vagrant/.s3cfg")
+  action :create
+end
+
+# awscli setup
+
+directory "/home/#{node['username']}/.aws" do
+  owner node['username']
+  group node['username']
+  mode 0700
+  action :create
+end
+file "/home/#{node['username']}/.aws/config" do
+  owner node['username']
+  group node['username']
+  mode 0700
+  content IO.read("/vagrant/.aws-config")
   action :create
 end
 
