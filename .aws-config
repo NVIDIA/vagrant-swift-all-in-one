@@ -4,7 +4,6 @@ endpoint = awscli_plugin_endpoint
 [profile default]
 aws_access_key_id = test:tester
 aws_secret_access_key = testing
-region = US
 # signature_version can be either s3v4 (for v4 sigs) or s3 (for v2)
 s3 =
 	signature_version = s3v4
