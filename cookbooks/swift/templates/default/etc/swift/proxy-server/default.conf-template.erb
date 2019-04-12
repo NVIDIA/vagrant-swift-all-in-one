@@ -41,6 +41,10 @@ check_bucket_owner = True
 [filter:staticweb]
 use = egg:swift#staticweb
 
+[filter:domain_remap]
+use = egg:swift#domain_remap
+storage_domain = saio
+
 [app:proxy-server]
 use = egg:swift#proxy
 allow_account_management = true
