@@ -1,0 +1,9 @@
+all:
+  hosts:
+    saio:
+  vars:
+    ansible_user: vagrant
+    ansible_private_key_file: /vagrant/.vagrant/machines/default/virtualbox/private_key
+    zuul:
+      project:
+        src_dir: /vagrant/swift

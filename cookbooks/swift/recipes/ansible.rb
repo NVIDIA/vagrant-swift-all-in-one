@@ -1,4 +1,4 @@
-# Copyright (c) 2015 SwiftStack, Inc.
+# Copyright (c) 2019 SwiftStack, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,20 +13,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-include_recipe "swift::setup"
-include_recipe "swift::source"
-include_recipe "swift::data"
-include_recipe "swift::configs"
-include_recipe "swift::pykmip"
-include_recipe "swift::rings"
-include_recipe "swift::ansible"
-
-# start main
-
-execute "startmain" do
-  command "swift-init start main"
-  user node['username']
-  group node["username"]
+[
+  "ansible",
+].each do |pkg|
+  execute "pip install #{pkg}" do
+    command "pip install #{pkg}"
+  end
 end
 
+directory "/etc/ansible" do
+  owner node['username']
+  group node["username"]
+  action :create
+end
+
+[
+  'hosts',
+  'ansible.cfg',
+].each do |filename|
+  cookbook_file "/etc/ansible/#{filename}" do
+    source "etc/ansible/#{filename}"
+    owner node["username"]
+    group node["username"]
+  end
+end
