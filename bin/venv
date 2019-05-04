@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+TOXENV=$1
+if [ ! -d ~/.tox-swift/${TOXENV}/ ]; then
+  cd /vagrant/swift
+  vtox -e ${TOXENV} --notest
+  cd -
+fi
+RCFILE=~/.venv.${TOXENV}
+cat <<EOF > $RCFILE
+. ~/.bashrc
+. ~/.tox-swift/${TOXENV}/bin/activate
+EOF
+trap "rm $RCFILE" EXIT
+$SHELL --rcfile $RCFILE
