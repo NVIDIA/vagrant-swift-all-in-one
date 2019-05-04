@@ -85,3 +85,4 @@ A few scripts are available to make your dev life easier.
  1. `vtox` will hack the local tox.ini and setup.py so you can run tox tests
     successfully on the swift repo in the `/vagrant` directory
  1. `reec` will rebuild/reinstall all the liberasure/pyeclib[/isa-l] bits!
+ 1. `venv py37` will make sure your tox virtualenv is ready and let you py3
