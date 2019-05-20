@@ -16,6 +16,7 @@
 [
   "common/install_losf_dependencies.yaml",
   "losf_setup/pre.yaml",
+  "losf_setup/run.yaml",
 ].each do |playbook|
   execute "ansible #{playbook}" do
     full_path = "/vagrant/swift/tools/playbooks/#{playbook}"
