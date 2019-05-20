@@ -4,6 +4,9 @@ all:
   vars:
     ansible_user: vagrant
     ansible_private_key_file: /vagrant/.vagrant/machines/default/virtualbox/private_key
+    ansible_shell_type: sh
     zuul:
       project:
         src_dir: swift
+      executor:
+        log_root: /var/log/ansible

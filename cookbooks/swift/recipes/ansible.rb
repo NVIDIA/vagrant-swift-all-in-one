@@ -21,10 +21,15 @@
   end
 end
 
-directory "/etc/ansible" do
-  owner node['username']
-  group node["username"]
-  action :create
+[
+  "/etc/ansible",
+  "/var/log/ansible",
+].each do |dir|
+  directory dir do
+    owner node['username']
+    group node["username"]
+    action :create
+  end
 end
 
 [
