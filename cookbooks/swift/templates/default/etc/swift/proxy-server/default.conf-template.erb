@@ -35,6 +35,8 @@ current = //TEST/SAIO
 
 [filter:s3api]
 use = egg:swift#s3api
+s3_acl = True
+check_bucket_owner = True
 
 [filter:staticweb]
 use = egg:swift#staticweb
