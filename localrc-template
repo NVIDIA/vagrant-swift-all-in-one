@@ -23,7 +23,6 @@ export STORAGE_POLICIES=default # e.g. gold,silver
 export EC_POLICY= # e.g. silver
 export SERVERS_PER_PORT=0  # 1 port per dev in ring; N obj-servers per port
 export OBJECT_SYNC_METHOD=rsync  # or ssync
-export POST_AS_COPY=false  # or false
 export ENCRYPTION=false  # or true
 export KMIP=false  # or true
 export SWIFT_REPO=git://github.com/openstack/swift.git

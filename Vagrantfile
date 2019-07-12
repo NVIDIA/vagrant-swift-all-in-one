@@ -58,7 +58,6 @@ local_config = {
   "ec_policy" => (ENV['EC_POLICY'] || ''),
   "servers_per_port" => Integer(ENV['SERVERS_PER_PORT'] || 0),
   "object_sync_method" => (ENV['OBJECT_SYNC_METHOD'] || 'rsync'),
-  "post_as_copy" => (ENV['POST_AS_COPY'] || 'true').downcase == 'true',
   "encryption" => (ENV['ENCRYPTION'] || 'false').downcase == 'true',
   "kmip" => (ENV['KMIP'] || 'false').downcase == 'true',
   "part_power" => Integer(ENV['PART_POWER'] || 10),

@@ -95,7 +95,6 @@ template "/etc/swift/proxy-server/default.conf-template" do
   owner node["username"]
   group node["username"]
   variables({
-    :post_as_copy => node['post_as_copy'],
     :disable_encryption => ! node['encryption'],
   })
 end
