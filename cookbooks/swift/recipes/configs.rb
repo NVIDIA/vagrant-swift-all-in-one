@@ -142,34 +142,34 @@ end
   end
 end
 
-["object", "container", "account"].each_with_index do |service, p|
+service_vars = {
+  :account => {},
+  :container => {
+    :auto_shard => node['container_auto_shard'],
+  },
+  :object => {
+    :sync_method => node['object_sync_method'],
+    :servers_per_port => node['servers_per_port'],
+  },
+}
+
+[:object, :container, :account].each_with_index do |service, p|
   service_dir = "etc/swift/#{service}-server"
   directory "/#{service_dir}" do
     owner node["username"]
     group node["username"]
     action :create
   end
-  if service == "object" then
-    template "/#{service_dir}/default.conf-template" do
-      source "#{service_dir}/default.conf-template.erb"
-      owner node["username"]
-      group node["username"]
-      variables({
-        :sync_method => node['object_sync_method'],
-        :servers_per_port => node['servers_per_port'],
-      })
-    end
-  else
-    cookbook_file "/#{service_dir}/default.conf-template" do
-      source "#{service_dir}/default.conf-template"
-      owner node["username"]
-      group node["username"]
-    end
+  template "/#{service_dir}/default.conf-template" do
+    source "#{service_dir}/default.conf-template.erb"
+    owner node["username"]
+    group node["username"]
+    variables(service_vars[service])
   end
   (1..node['nodes']).each do |i|
     bind_ip = "127.0.0.1"
     bind_port = "60#{i}#{p}"
-    if service == "object" && node['servers_per_port'] > 0 then
+    if service == :object && node['servers_per_port'] > 0 then
       # Only use unique IPs if servers_per_port is enabled.  This lets this
       # newer vagrant-swift-all-in-one work with older swift that doesn't have
       # the required whataremyips() plumbing to make unique IPs work.

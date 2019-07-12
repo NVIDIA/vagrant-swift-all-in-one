@@ -23,5 +23,5 @@ rsync_module = {replication_ip}::container{replication_port}
 internal_client_conf_path = /etc/swift/internal-client.conf
 
 [container-sharder]
-auto_shard = true
+auto_shard = <%= @auto_shard %>
 shard_container_threshold = 50
