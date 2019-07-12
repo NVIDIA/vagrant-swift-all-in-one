@@ -24,4 +24,4 @@ internal_client_conf_path = /etc/swift/internal-client.conf
 
 [container-sharder]
 auto_shard = true
-shard_container_size = 50
+shard_container_threshold = 50
