@@ -14,11 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import errno
 import kmip.core.enums
 import kmip.pie.client
 import kmip.pie.exceptions
 import logging
+import socket
 import sys
+import time
 
 logging.basicConfig(level=logging.INFO)
 
@@ -39,4 +42,11 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except socket.error as e:
+        if e.errno != errno.ECONNREFUSED:
+            raise
+        # Give the kmip server more of a chance to start up
+        time.sleep(3)
+        sys.exit(main())
