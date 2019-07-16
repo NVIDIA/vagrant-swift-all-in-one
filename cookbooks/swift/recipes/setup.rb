@@ -86,7 +86,7 @@ end
 bash 'install pip' do
   code <<-EOF
     set -o pipefail
-    curl https://bootstrap.pypa.io/get-pip.py | python
+    curl https://bootstrap.pypa.io/get-pip.py | python#{node['use_python3'] && '3' || '2'}
     EOF
   not_if "which pip"
 end

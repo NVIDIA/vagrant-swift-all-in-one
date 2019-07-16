@@ -59,6 +59,7 @@ local_config = {
   "servers_per_port" => Integer(ENV['SERVERS_PER_PORT'] || 0),
   "container_auto_shard" => (ENV['CONTAINER_AUTO_SHARD'] || 'true').downcase == 'true',
   "object_sync_method" => (ENV['OBJECT_SYNC_METHOD'] || 'rsync'),
+  "use_python3" => (ENV['USE_PYTHON3'] || 'false').downcase == 'true',
   "encryption" => (ENV['ENCRYPTION'] || 'false').downcase == 'true',
   "kmip" => (ENV['KMIP'] || 'false').downcase == 'true',
   "part_power" => Integer(ENV['PART_POWER'] || 10),

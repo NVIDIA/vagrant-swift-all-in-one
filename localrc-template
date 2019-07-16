@@ -24,6 +24,7 @@ export EC_POLICY= # e.g. silver
 export SERVERS_PER_PORT=0  # 1 port per dev in ring; N obj-servers per port
 export CONTAINER_AUTO_SHARD=true  # or false
 export OBJECT_SYNC_METHOD=rsync  # or ssync
+export USE_PYTHON3=false  # or true
 export ENCRYPTION=false  # or true
 export KMIP=false  # or true
 export SWIFT_REPO=git://github.com/openstack/swift.git
