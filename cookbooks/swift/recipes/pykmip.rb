@@ -28,6 +28,7 @@ PYKMIP_DIR = "/etc/pykmip"
   PYKMIP_DIR,
   "#{PYKMIP_DIR}/certs",
   "#{PYKMIP_DIR}/policies",
+  "/var/lib/pykmip",
   "/var/log/pykmip",
 ].each do |dir|
   directory dir do
