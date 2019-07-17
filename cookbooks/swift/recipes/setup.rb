@@ -82,11 +82,16 @@ unrequired_packages.each do |pkg|
   end
 end
 
+execute "select default python version" do
+  default_python = node['use_python3'] ? 'python3' : 'python2'
+  command "ln -sf #{default_python} /usr/bin/python"
+end
+
 # it's a brave new world
 bash 'install pip' do
   code <<-EOF
     set -o pipefail
-    curl https://bootstrap.pypa.io/get-pip.py | python#{node['use_python3'] && '3' || '2'}
+    curl https://bootstrap.pypa.io/get-pip.py | python
     EOF
   not_if "which pip"
 end
