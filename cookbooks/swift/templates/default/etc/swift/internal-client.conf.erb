@@ -24,7 +24,7 @@
 # log_statsd_metric_prefix =
 
 [pipeline:main]
-pipeline = catch_errors proxy-logging cache symlink keymaster encryption proxy-server
+pipeline = catch_errors proxy-logging cache symlink <%= @keymaster_pipeline %> encryption proxy-server
 
 [app:proxy-server]
 use = egg:swift#proxy
@@ -41,6 +41,10 @@ use = egg:swift#proxy_logging
 
 [filter:catch_errors]
 use = egg:swift#catch_errors
+
+[filter:kmip_keymaster]
+use = egg:swift#kmip_keymaster
+keymaster_config_path = /etc/swift/kmip_keymaster.conf
 
 [filter:keymaster]
 use = egg:swift#keymaster

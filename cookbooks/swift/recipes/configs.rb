@@ -244,11 +244,17 @@ cookbook_file "/etc/swift/container-reconciler.conf.d/20_settings.conf" do
 end
 
 # internal-client.conf
+if node['kmip'] then
+  keymaster_pipeline = 'kmip_keymaster'
+else
+  keymaster_pipeline = 'keymaster'
+end
 template "/etc/swift/internal-client.conf" do
   source "etc/swift/internal-client.conf.erb"
   owner node["username"]
   owner node["username"]
   variables({
     :disable_encryption => ! node['encryption'],
+    :keymaster_pipeline => keymaster_pipeline,
   })
 end
