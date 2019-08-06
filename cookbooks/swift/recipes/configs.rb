@@ -48,6 +48,15 @@ directory "/etc/swift" do
   action :create
 end
 
+template "/etc/rc.local" do
+  # Make /var/run/swift/ survive reboots
+  source "etc/rc.local.erb"
+  mode 0755
+  variables({
+    :username => node['username'],
+  })
+end
+
 template "/etc/swift/swift.conf" do
   source "/etc/swift/swift.conf.erb"
   owner node["username"]

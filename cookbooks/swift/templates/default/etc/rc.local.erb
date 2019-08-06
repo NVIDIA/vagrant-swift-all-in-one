@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+SWIFT_RUN_DIR=/var/run/swift
+
+if [ ! -d "$SWIFT_RUN_DIR" ]; then
+    mkdir "$SWIFT_RUN_DIR"
+    chown <%= @username %>:<%= @username %> "$SWIFT_RUN_DIR"
+fi
