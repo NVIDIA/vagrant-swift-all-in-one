@@ -175,6 +175,12 @@ file "/home/#{node['username']}/.aws/config" do
   action :create
 end
 
+execute "enable completion for awscli" do
+  command "echo 'complete -C $(which aws_completer) aws' >> #{profile_file}"
+  not_if "grep 'complete .* aws' #{profile_file}"
+  action :run
+end
+
 
 # other useful env vars
 
