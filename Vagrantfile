@@ -45,7 +45,7 @@ current_datetime = Time.now.strftime("%Y%m%d-%H%M%S")
 
 def load_key(path_or_contents)
   File.open(path_or_contents).read
-rescue Errno::ENOENT => ex
+rescue Errno::ENOENT, Errno::ENAMETOOLONG
   path_or_contents
 end
 
