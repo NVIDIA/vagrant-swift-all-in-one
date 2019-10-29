@@ -4,7 +4,7 @@ log file = /var/log/rsyncd.log
 pid file = /var/run/rsyncd.pid
 address = 0.0.0.0
 
-<% (1..4).each do |i| -%>
+<% (1..@num_nodes).each do |i| -%>
 
 [account60<%= i %>2]
 max connections = 25
@@ -18,9 +18,20 @@ path = /srv/node<%= i %>/
 read only = false
 lock file = /var/lock/container60<%= i %>1.lock
 
-[object60<%= i %>0]
+<% end -%>
+
+<% (1..@num_disks).each do |i| -%>
+  <% @n_idx = ((i - 1) % @num_nodes) + 1 -%>
+  <% if @servers_per_port > 0 -%>
+    <% @p = 5 + (i / Float(@num_nodes)).ceil.to_int -%>
+    <% @port = "60#{@n_idx}#{@p}" -%>
+  <% else -%>
+    <% @port = "60#{@n_idx}0" -%>
+  <% end %>
+[object<%= @port %>]
 max connections = 25
 path = /srv/node<%= i %>/
 read only = false
-lock file = /var/lock/object60<%= i %>0.lock
+lock file = /var/lock/object<%= @port %>.lock
+
 <% end -%>

@@ -21,6 +21,9 @@ template "/etc/rsyncd.conf" do
   notifies :restart, 'service[rsync]'
   variables({
     :username => node['username'],
+    :servers_per_port => node['servers_per_port'],
+    :num_disks => node['disks'],
+    :num_nodes => node['nodes'],
   })
 end
 
