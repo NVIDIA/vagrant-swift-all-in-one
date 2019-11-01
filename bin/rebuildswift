@@ -15,6 +15,6 @@
 # limitations under the License.
 
 /vagrant/bin/cleanswift
-rm -fr /etc/swift/* /var/run/swift/* /var/cache/swift/* /etc/pykmip/*
+rm -fr /etc/swift/* /var/run/swift/* /var/cache/swift/* /etc/pykmip/* /etc/rsyncd.*
 sed 's/"full_reprovision": false/"full_reprovision": true/g' /etc/chef/dna.json > /tmp/reload.json
 sudo chef-solo -c /etc/chef/solo.rb -j /tmp/reload.json

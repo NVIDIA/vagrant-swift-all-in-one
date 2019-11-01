@@ -30,6 +30,48 @@ execute "enable-rsync" do
   action :run
 end
 
+# pre device rsync modules
+
+directory "/etc/rsyncd.d" do
+  owner "vagrant"
+  group "vagrant"
+  action :create
+end
+
+["container", "account"].each do |service|
+  (1..node['disks']).each do |i|
+    dev = "sdb#{i}"
+    n = ((i - 1) % node['nodes']) + 1
+    template "/etc/rsyncd.d/#{service}_#{dev}.conf" do
+      source "/etc/rsyncd.d/rsync_disk.erb"
+      owner "vagrant"
+      group "vagrant"
+      variables({
+        :service => service,
+        :dev => dev,
+        :n => n,
+      })
+    end
+  end
+end
+
+(1..[node['disks'], node['ec_disks']].max).each do |i|
+  dev = "sdb#{i}"
+  n = ((i - 1) % node['nodes']) + 1
+  template "/etc/rsyncd.d/object_#{dev}.conf" do
+    source "/etc/rsyncd.d/rsync_disk.erb"
+    owner "vagrant"
+    group "vagrant"
+    variables({
+      :service => "object",
+      :dev => "sdb#{i}",
+      :n => n,
+    })
+  end
+end
+
+# services
+
 [
   "rsync",
   "memcached",
