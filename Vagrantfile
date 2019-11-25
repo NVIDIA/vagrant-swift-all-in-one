@@ -134,6 +134,12 @@ Vagrant.configure("2") do |global_config|
         v.tags = {'Name' => 'swift'}
       end
 
+      # Install libssl for Chef (https://github.com/hashicorp/vagrant/issues/10914)
+      config.vm.provision "shell",
+        inline: "sudo apt-get update -y -qq && "\
+          "export DEBIAN_FRONTEND=noninteractive && "\
+          "sudo -E apt-get -q --option \"Dpkg::Options::=--force-confold\" --assume-yes install libssl1.1"
+
       config.vm.provision :chef_solo do |chef|
         chef.custom_config_path = "chef.conf"
         chef.provisioning_path = "/etc/chef"
