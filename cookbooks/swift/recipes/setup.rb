@@ -132,10 +132,13 @@ execute "update-path" do
   action :run
 end
 
-execute "add clear-auth function" do
-  command "echo 'clear-auth() { unset $( env | egrep \"^(OS|ST)_\" | sed -e \"s/=.*//\" ) ; }' >> #{profile_file}"
-  not_if "grep clear-auth #{profile_file}"
-  action :run
+[
+  "/vagrant/.functions.sh",
+].each do |filename|
+  execute "source-#{filename}" do
+    command "echo 'source #{filename}' >> #{profile_file}"
+    not_if "grep 'source #{filename}' #{profile_file}"
+  end
 end
 
 
