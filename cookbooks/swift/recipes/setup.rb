@@ -62,7 +62,7 @@ required_packages = [
   "curl", "gcc", "memcached", "rsync", "sqlite3", "xfsprogs", "git-core", "build-essential",
   "python-dev", "libffi-dev", "python3.5", "python3.5-dev",
   "python3.6", "python3.6-dev", "python3.7", "python3.7-dev",
-  "libxml2-dev", "libxml2", "libxslt1-dev", "autoconf", "libtool", "openjdk-11-jre-headless",
+  "libxml2-dev", "libxml2", "libxslt1-dev", "autoconf", "libtool", "openjdk-11-jre-headless", "haproxy",
 ]
 extra_packages = node['extra_packages']
 (required_packages + extra_packages).each do |pkg|
@@ -158,7 +158,7 @@ end
 # swift command line env setup
 
 {
-  "ST_AUTH" => "http://#{node['hostname']}:8080/auth/v1.0",
+  "ST_AUTH" => node['auth_uri'],
   "ST_USER" => "test:tester",
   "ST_KEY" => "testing",
 }.each do |var, value|
@@ -173,12 +173,14 @@ end
 
 # s3cmd setup
 
-file "/home/#{node['username']}/.s3cfg" do
+template "/home/#{node['username']}/.s3cfg" do
+  source "/home/s3cfg.erb"
   owner node['username']
   group node['username']
   mode 0700
-  content IO.read("/vagrant/.s3cfg")
-  action :create
+  variables({
+    :ssl => node['ssl'],
+  })
 end
 
 # awscli setup
@@ -189,12 +191,14 @@ directory "/home/#{node['username']}/.aws" do
   mode 0700
   action :create
 end
-file "/home/#{node['username']}/.aws/config" do
+template "/home/#{node['username']}/.aws/config" do
+  source "/home/aws/config.erb"
   owner node['username']
   group node['username']
   mode 0700
-  content IO.read("/vagrant/.aws-config")
-  action :create
+  variables({
+    :base_uri => node['base_uri'],
+  })
 end
 
 execute "enable bash completer for awscli" do

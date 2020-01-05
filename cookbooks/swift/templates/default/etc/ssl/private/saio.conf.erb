@@ -1,0 +1,24 @@
+[req]
+default_md = sha256
+prompt = no
+distinguished_name = subject
+x509_extensions = ext
+
+[subject]
+CN = <%= @hostname %>
+
+[ext]
+subjectKeyIdentifier    = hash
+authorityKeyIdentifier  = keyid:always, issuer:always
+basicConstraints        = CA:true
+subjectAltName          = @alt-names
+keyUsage                = digitalSignature, keyEncipherment, keyCertSign
+extendedKeyUsage        = serverAuth
+
+[alt-names]
+DNS.1   = <%= @hostname %>
+DNS.2   = *.<%= @hostname %>
+DNS.3   = <%= @ip %>.xip.io
+DNS.4   = *.<%= @ip %>.xip.io
+IP.1    = <%= @ip %>
+
