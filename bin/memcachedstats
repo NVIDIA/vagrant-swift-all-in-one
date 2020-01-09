@@ -1,0 +1,2 @@
+#!/bin/sh
+echo stats | nc -N localhost 11211
