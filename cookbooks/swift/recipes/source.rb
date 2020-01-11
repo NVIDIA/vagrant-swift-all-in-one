@@ -135,6 +135,14 @@ execute "install tox" do
   action :run
 end
 
+execute "install no-op gatekeeper" do
+  command "pip install git+https://github.com/tipabu/no_op_gatekeeper@1.0"
+  if not node['full_reprovision']
+    creates "/usr/local/lib/python2.7/dist-packages/no_op_gatekeeper.py"
+  end
+  action :run
+end
+
 # add some helpful symlinks
 
 [
