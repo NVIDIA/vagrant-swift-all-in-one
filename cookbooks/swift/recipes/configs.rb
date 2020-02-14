@@ -131,6 +131,7 @@ template "/etc/swift/base.conf-template" do
   source "etc/swift/base.conf-template.erb"
   variables({
     :username => node['username'],
+    :zipkin => node['zipkin'],
   })
 end
 
@@ -187,6 +188,7 @@ end
       owner node["username"]
       group node["username"]
       variables({
+        :zipkin => if node["zipkin"] then "zipkin" else "" end,
         :keymaster_pipeline => keymaster_pipeline,
       })
     end
@@ -194,13 +196,17 @@ end
 end
 
 service_vars = {
-  :account => {},
+  :account => {
+    :zipkin => if node["zipkin"] then "zipkin" else "" end,
+  },
   :container => {
     :auto_shard => node['container_auto_shard'],
+    :zipkin => if node["zipkin"] then "zipkin" else "" end,
   },
   :object => {
     :sync_method => node['object_sync_method'],
     :servers_per_port => node['servers_per_port'],
+    :zipkin => if node["zipkin"] then "zipkin" else "" end,
   },
 }
 

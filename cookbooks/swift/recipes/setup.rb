@@ -121,6 +121,17 @@ end
   end
 end
 
+if node['zipkin'] then
+  [
+    "git+https://github.com/swiftstack/py_zipkin/",
+    "git+https://github.com/swiftstack/swift-zipkin/",
+  ].each do |pkg|
+    execute "pip install #{pkg}" do
+      command "pip install #{pkg}"
+    end
+  end
+end
+
 
 # setup environment
 

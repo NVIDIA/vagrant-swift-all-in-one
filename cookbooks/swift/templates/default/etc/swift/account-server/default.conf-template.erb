@@ -3,7 +3,7 @@ disable_fallocate = true
 workers = 1
 
 [pipeline:main]
-pipeline = recon account-server
+pipeline = <%= @zipkin %> recon account-server
 
 [app:account-server]
 use = egg:swift#account
