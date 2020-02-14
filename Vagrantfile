@@ -62,6 +62,7 @@ local_config = {
   "use_python3" => (ENV['USE_PYTHON3'] || 'false').downcase == 'true',
   "encryption" => (ENV['ENCRYPTION'] || 'false').downcase == 'true',
   "kmip" => (ENV['KMIP'] || 'false').downcase == 'true',
+  "zipkin" => (ENV['ZIPKIN'] || 'false').downcase == 'true',
   "part_power" => Integer(ENV['PART_POWER'] || 10),
   "replicas" => Integer(ENV['REPLICAS'] || 3),
   "ec_type" => (ENV['EC_TYPE'] || 'liberasurecode_rs_vand'),

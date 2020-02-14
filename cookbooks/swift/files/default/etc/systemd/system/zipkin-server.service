@@ -1,0 +1,9 @@
+[Unit]
+Description=Zipkin server
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/bin/java -jar /usr/local/share/java/zipkin-server.jar
+
+[Install]
+WantedBy=multi-user.target

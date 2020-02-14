@@ -62,7 +62,7 @@ required_packages = [
   "curl", "gcc", "memcached", "rsync", "sqlite3", "xfsprogs", "git-core", "build-essential",
   "python-dev", "libffi-dev", "python3.5", "python3.5-dev",
   "python3.6", "python3.6-dev", "python3.7", "python3.7-dev",
-  "libxml2-dev", "libxml2", "libxslt1-dev", "autoconf", "libtool",
+  "libxml2-dev", "libxml2", "libxslt1-dev", "autoconf", "libtool", "openjdk-11-jre-headless",
 ]
 extra_packages = node['extra_packages']
 (required_packages + extra_packages).each do |pkg|
