@@ -6,7 +6,7 @@ log_facility = LOG_LOCAL2
 servers_per_port = <%= @servers_per_port %>
 
 [pipeline:main]
-pipeline = recon object-server
+pipeline = <%= @zipkin %> recon object-server
 
 [app:object-server]
 use = egg:swift#object
