@@ -93,7 +93,9 @@ bash 'install pip' do
     set -o pipefail
     curl https://bootstrap.pypa.io/get-pip.py | python
     EOF
-  not_if "which pip"
+  if not node['full_reprovision']
+    not_if "which pip"
+  end
 end
 
 # pip 8.0 is more or less broken on trusty -> https://github.com/pypa/pip/issues/3384
