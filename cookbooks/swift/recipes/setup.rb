@@ -161,6 +161,10 @@ end
   "ST_AUTH" => "http://#{node['hostname']}:8080/auth/v1.0",
   "ST_USER" => "test:tester",
   "ST_KEY" => "testing",
+  "OS_AUTH_TYPE" => "v1password",
+  "OS_AUTH_URL" => "http://#{node['hostname']}:8080/auth/v1.0",
+  "OS_USERNAME" => "test:tester",
+  "OS_PASSWORD" => "testing",
 }.each do |var, value|
   execute "swift-env-#{var}" do
     command "echo 'export #{var}=#{value}' >> #{profile_file}"
