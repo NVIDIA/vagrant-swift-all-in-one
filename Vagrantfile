@@ -86,6 +86,8 @@ local_config = {
   "liberasurecode_repo_branch" => (ENV['LIBERASURECODE_REPO_BRANCH'] || 'master'),
   "pyeclib_repo" => (ENV['PYECLIB_REPO'] || 'git://github.com/openstack/pyeclib.git'),
   "pyeclib_repo_branch" => (ENV['PYECLIB_REPO_BRANCH'] || 'master'),
+  "swift_zipkin_repo" => (ENV['SWIFTZIPKIN_REPO'] || 'git://github.com/swiftstack/swift-zipkin.git'),
+  "swift_zipkin_repo_branch" => (ENV['SWIFTZIPKIN_REPO_BRANCH'] || 'master'),
   "extra_key" => load_key(ENV['EXTRA_KEY'] || ''),
   "source_root" => (ENV['SOURCE_ROOT'] || '/vagrant'),
 }
