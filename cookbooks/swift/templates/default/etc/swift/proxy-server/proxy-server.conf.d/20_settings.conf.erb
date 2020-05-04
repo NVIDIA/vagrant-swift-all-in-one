@@ -4,6 +4,9 @@ bind_port = 8080
 [pipeline:main]
 pipeline = catch_errors healthcheck proxy-logging domain_remap cache container_sync bulk tempurl s3api tempauth <%= @zipkin %> staticweb slo dlo versioned_writes symlink <%= @keymaster_pipeline %> encryption proxy-logging proxy-server
 
+[app:proxy-server]
+require_proxy_protocol = <%= @ssl %>
+
 [filter:tempauth]
 use = egg:swift#tempauth
 user_admin_admin = admin .admin .reseller_admin

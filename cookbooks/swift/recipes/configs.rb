@@ -82,6 +82,63 @@ end
   end
 end
 
+# haproxy
+
+execute "create key" do
+  command "openssl genpkey -algorithm EC -out saio.key " \
+    "-pkeyopt ec_paramgen_curve:prime256v1 " \
+    "-pkeyopt ec_param_enc:named_curve"
+  #command "openssl genpkey -algorithm RSA -out saio.key " \
+  #  "-pkeyopt rsa_keygen_bits:2048"
+  cwd "/etc/ssl/private/"
+  creates "/etc/ssl/private/saio.key"
+end
+
+template "/etc/ssl/private/saio.conf" do
+  source "/etc/ssl/private/saio.conf.erb"
+  variables({
+    :ip => node["ip"],
+    :hostname => node["hostname"],
+  })
+end
+
+execute "create cert" do
+  command "openssl req -x509 -days 365 -key saio.key " \
+    "-out saio.crt -config saio.conf"
+  cwd "/etc/ssl/private/"
+  creates "/etc/ssl/private/saio.crt"
+end
+
+execute "install cert" do
+  cert_to_install = "/etc/ssl/private/saio.crt"
+  command "mkdir -p /usr/local/share/ca-certificates/extra && " \
+    "cp #{cert_to_install} /usr/local/share/ca-certificates/extra/saio_ca.crt && " \
+    "update-ca-certificates && " \
+    "cat #{cert_to_install} >> $(python -m certifi)"
+  creates "/usr/local/share/ca-certificates/extra/saio_ca.crt"
+end
+
+execute "create pem" do
+  command "cat saio.crt saio.key > saio.pem"
+  cwd "/etc/ssl/private/"
+  creates "/etc/ssl/private/saio.pem"
+end
+
+cookbook_file "/etc/haproxy/haproxy.cfg" do
+  source "etc/haproxy/haproxy.cfg"
+  notifies :restart, 'service[haproxy]'
+  owner node['username']
+  group node['username']
+end
+
+service "haproxy" do
+  if node['ssl'] then
+    action :start
+  else
+    action :stop
+  end
+end
+
 # swift
 
 directory "/etc/swift" do
@@ -99,25 +156,8 @@ template "/etc/rc.local" do
   })
 end
 
-template "/etc/swift/swift.conf" do
-  source "/etc/swift/swift.conf.erb"
-  owner node["username"]
-  group node["username"]
-  variables({
-    :storage_policies => node['storage_policies'],
-    :ec_policy => node['ec_policy'],
-    :ec_type => node['ec_type'],
-    :ec_replicas => node['ec_replicas'],
-    :ec_parity => node['ec_parity'],
-    :ec_duplication => node['ec_duplication'],
-  })
-end
-
 [
-  'test.conf',
-  'dispersion.conf',
   'bench.conf',
-  'container-sync-realms.conf',
   'keymaster.conf',
 ].each do |filename|
   cookbook_file "/etc/swift/#{filename}" do
@@ -127,12 +167,19 @@ end
   end
 end
 
-template "/etc/swift/base.conf-template" do
-  source "etc/swift/base.conf-template.erb"
-  variables({
-    :username => node['username'],
-    :zipkin => node['zipkin'],
-  })
+[
+  'base.conf-template',
+  'dispersion.conf',
+  'container-sync-realms.conf',
+  'test.conf',
+  'swift.conf',
+].each do |filename|
+  template "/etc/swift/#{filename}" do
+    source "/etc/swift/#{filename}.erb"
+    owner node["username"]
+    group node["username"]
+    variables({}.merge(node))
+  end
 end
 
 # proxies
@@ -188,6 +235,7 @@ end
       owner node["username"]
       group node["username"]
       variables({
+        :ssl => node['ssl'],
         :zipkin => if node["zipkin"] then "zipkin" else "" end,
         :keymaster_pipeline => keymaster_pipeline,
       })

@@ -7,7 +7,7 @@ aws_secret_access_key = testing
 # signature_version can be either s3v4 (for v4 sigs) or s3 (for v2)
 s3 =
 	signature_version = s3v4
-	endpoint_url = http://saio:8080
+	endpoint_url = <%= @base_uri %>
 s3api =
 	signature_version = s3v4
-	endpoint_url = http://saio:8080
+	endpoint_url = <%= @base_uri %>

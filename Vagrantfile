@@ -61,6 +61,7 @@ local_config = {
   "object_sync_method" => (ENV['OBJECT_SYNC_METHOD'] || 'rsync'),
   "use_python3" => (ENV['USE_PYTHON3'] || 'false').downcase == 'true',
   "encryption" => (ENV['ENCRYPTION'] || 'false').downcase == 'true',
+  "ssl" => (ENV['SSL'] || 'false').downcase == 'true',
   "kmip" => (ENV['KMIP'] || 'false').downcase == 'true',
   "zipkin" => (ENV['ZIPKIN'] || 'false').downcase == 'true',
   "part_power" => Integer(ENV['PART_POWER'] || 10),
@@ -147,7 +148,17 @@ Vagrant.configure("2") do |global_config|
         chef.custom_config_path = "chef.conf"
         chef.provisioning_path = "/etc/chef"
         chef.add_recipe "swift"
-        chef.json = local_config
+        chef.json = {
+          "ip" => ip,
+          "hostname" => hostname,
+        }
+        chef.json.merge! local_config
+        if chef.json['ssl'] then
+          chef.json['base_uri'] = "https://#{hostname}"
+        else
+          chef.json['base_uri'] = "http://#{hostname}:8080"
+        end
+        chef.json['auth_uri'] = "#{chef.json['base_uri']}/auth/v1.0"
       end
     end
   end

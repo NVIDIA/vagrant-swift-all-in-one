@@ -1,0 +1,6 @@
+[default]
+access_key = test:tester
+secret_key = testing
+host_base = <%= @ssl ? "saio" : "saio:8080" %>
+host_bucket = <%= @ssl ? "saio" : "saio:8080" %>
+use_https = <%= @ssl %>
