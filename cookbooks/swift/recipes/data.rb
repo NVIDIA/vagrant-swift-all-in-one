@@ -31,15 +31,9 @@ else
   num_disks = [node['disks'], node['ec_disks']].max
 end
 
-(1..num_disks).each do |i|
-  j = ((i - 1) % node['nodes']) + 1
-  disk_file = "/var/lib/swift/disk#{i}"
-  node_path = "/srv/node#{j}"
-  mount_path = node_path + "/sdb#{i}"
-
-
-  execute "create sparse file #{i}" do
-    command "truncate -s #{node['loopback_gb']}GB #{disk_file}"
+def make_disk(disk_file, mount_path, size="#{node['loopback_gb']}GB")
+  execute "create sparse file #{disk_file}" do
+    command "truncate -s #{size} #{disk_file}"
     creates "#{disk_file}"
     action :run
   end
@@ -78,12 +72,13 @@ end
   end
 end
 
-# for unittest xfs scratch
-directory "/srv/node1/sdb1/tmp" do
-  owner node["username"]
-  group node["username"]
-  action :create
+(1..num_disks).each do |i|
+  j = ((i - 1) % node['nodes']) + 1
+  make_disk "/var/lib/swift/disk#{i}", "/srv/node#{j}/sdb#{i}"
 end
+
+# for unittest xfs scratch
+make_disk "/var/lib/swift/tmp-disk", "/mnt/tmp", "100MB"
 
 # run dirs
 
