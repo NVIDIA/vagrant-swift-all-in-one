@@ -58,9 +58,9 @@ end
     action :create
   end
 
-  execute "update fstab" do
+  execute "update fstab for #{disk_file}" do
     command "echo '#{disk_file} #{mount_path} xfs " \
-      "loop,noatime,nodiratime,nobarrier,logbufs=8 0 0' >> /etc/fstab"
+      "loop,noatime 0 0' >> /etc/fstab"
     not_if "grep #{mount_path} /etc/fstab"
     action :run
   end
