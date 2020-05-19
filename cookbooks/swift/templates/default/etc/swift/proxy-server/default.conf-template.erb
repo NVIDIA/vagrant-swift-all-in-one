@@ -66,3 +66,16 @@ disable_encryption = <%= @disable_encryption %>
 
 [filter:symlink]
 use = egg:swift#symlink
+
+[filter:ratelimit]
+use = egg:swift#ratelimit
+# max_sleep_time_seconds = 60
+# log_sleep_time_seconds = 0
+# rate_buffer_seconds = 5
+# account_ratelimit = 0
+# container_ratelimit_0 = 100
+# container_ratelimit_10 = 50
+# container_ratelimit_50 = 20
+# container_listing_ratelimit_0 = 100
+# container_listing_ratelimit_10 = 50
+# container_listing_ratelimit_50 = 20
