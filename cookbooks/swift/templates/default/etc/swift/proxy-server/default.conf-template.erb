@@ -13,6 +13,10 @@ use = egg:swift#healthcheck
 [filter:cache]
 use = egg:swift#memcache
 
+[filter:etag-quoter]
+use = egg:swift#etag_quoter
+enable_by_default = true
+
 [filter:bulk]
 use = egg:swift#bulk
 
