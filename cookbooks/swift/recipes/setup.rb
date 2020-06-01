@@ -30,7 +30,12 @@ if node['extra_key'] then
   end
 end
 
-# deadsnakes for py2.6
+# deadsnakes for all the pythons
+package "software-properties-common" do
+  action :install
+  not_if "which add-apt-repository"
+end
+
 execute "deadsnakes key" do
   command "sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys"
   action :run
@@ -62,7 +67,9 @@ required_packages = [
   "curl", "gcc", "memcached", "rsync", "sqlite3", "xfsprogs", "git-core", "build-essential",
   "python-dev", "libffi-dev", "python3.5", "python3.5-dev",
   "python3.6", "python3.6-dev", "python3.7", "python3.7-dev",
-  "libxml2-dev", "libxml2", "libxslt1-dev", "autoconf", "libtool", "openjdk-11-jre-headless", "haproxy",
+ "python3.8", "python3.8-dev",
+  "libxml2-dev", "libxml2", "libxslt1-dev", "zlib1g-dev", "autoconf", "libtool",
+  "openjdk-11-jre-headless", "haproxy",
 ]
 extra_packages = node['extra_packages']
 (required_packages + extra_packages).each do |pkg|
