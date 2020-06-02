@@ -33,7 +33,6 @@ export SWIFT_REPO=git://github.com/openstack/swift.git
 export SWIFT_REPO_BRANCH=master
 export SWIFTCLIENT_REPO=git://github.com/openstack/python-swiftclient.git
 export SWIFTBENCH_REPO=git://github.com/openstack/swift-bench.git
-export SWIFTSPECS_REPO=git://github.com/openstack/swift-specs.git
 export LIBERASURECODE_REPO=git://github.com/openstack/liberasurecode.git
 export PYECLIB_REPO=git://github.com/openstack/pyeclib.git
 export SWIFTZIPKIN_REPO=git://github.com/swiftstack/swift-zipkin.git

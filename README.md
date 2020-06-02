@@ -79,7 +79,7 @@ A few scripts are available to make your dev life easier.
  1. `reinstallswift` will make sure all of the bin scripts are installed
     correctly and restart the main swift processes (useful if you change
     branches)
- 1. `autodoc [swift|swift-specs|swiftclient]` will build the sphinx docs and
+ 1. `autodoc [swift|swiftclient]` will build the sphinx docs and
     watch files for changes, and upload them to a public container on your vm
     so you can review them as you edit
  1. `vtox` will hack the local tox.ini and setup.py so you can run tox tests
