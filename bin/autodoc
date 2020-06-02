@@ -31,11 +31,6 @@ PROJECTS = {
         'dir': [],
         'container': 'api-ref',
     },
-    'swift-specs': {
-        'root': '/vagrant/swift-specs/doc/',
-        'dir': ['../'],
-        'container': 'specs',
-    },
     'swiftclient': {
         'root': '/vagrant/python-swiftclient/doc/',
         'dir': [],
