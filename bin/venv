@@ -3,11 +3,13 @@ set -e
 TOXENV=$1
 if [ ! -d ~/.tox-swift/${TOXENV}/ ]; then
   cd /vagrant/swift
+  unset TMPDIR
   vtox -e ${TOXENV} --notest
   cd -
 fi
 RCFILE=~/.venv.${TOXENV}
 cat <<EOF > $RCFILE
+. ~/.profile
 . ~/.bashrc
 . ~/.tox-swift/${TOXENV}/bin/activate
 EOF
