@@ -58,6 +58,7 @@ local_config = {
   "storage_policies" => (ENV['STORAGE_POLICIES'] || 'default').split(','),
   "ec_policy" => (ENV['EC_POLICY'] || ''),
   "servers_per_port" => Integer(ENV['SERVERS_PER_PORT'] || 0),
+  "replication_servers" => (ENV['REPLICATION_SERVERS'] || 'false').downcase == 'true',
   "container_auto_shard" => (ENV['CONTAINER_AUTO_SHARD'] || 'true').downcase == 'true',
   "object_sync_method" => (ENV['OBJECT_SYNC_METHOD'] || 'rsync'),
   "use_python3" => (ENV['USE_PYTHON3'] || 'false').downcase == 'true',

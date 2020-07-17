@@ -10,16 +10,7 @@ pipeline = <%= @zipkin %> recon object-server
 
 [app:object-server]
 use = egg:swift#object
+replication_server = <%= @replication_server %>
 
 [filter:recon]
 use = egg:swift#recon
-
-[object-updater]
-
-[object-auditor]
-
-[object-replicator]
-sync_method = <%= @sync_method %>
-rsync_module = {replication_ip}::object_{device}
-
-[object-reconstructor]

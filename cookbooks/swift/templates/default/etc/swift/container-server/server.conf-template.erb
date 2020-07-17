@@ -1,0 +1,13 @@
+[DEFAULT]
+disable_fallocate = true
+workers = 1
+
+[pipeline:main]
+pipeline = <%= @zipkin %> recon container-server
+
+[app:container-server]
+use = egg:swift#container
+replication_server = <%= @replication_server %>
+
+[filter:recon]
+use = egg:swift#recon

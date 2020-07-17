@@ -30,10 +30,14 @@
     z = ((i - 1) % node['zones']) + 1
     r = ((z - 1) % node['regions']) + 1
     dev = "sdb#{i}"
-    ip = "127.0.0.1"
+    ip = "127.0.0.#{i}"
     port = "60#{n_idx}#{p + 1}"
+    replication_port = "60#{n_idx + 4}#{p + 1}"
+    dsl = "r#{r}z#{z}-#{ip}:#{port}/#{dev}"
+    if node['replication_servers'] then
+      dsl = "r#{r}z#{z}-#{ip}:#{port}R#{ip}:#{replication_port}/#{dev}"
+    end
     execute "#{service}.builder-add-#{dev}" do
-      dsl = "r#{r}z#{z}-#{ip}:#{port}/#{dev}"
       command "swift-ring-builder #{service}.builder add " \
         "#{dsl} 1 && rm -f /etc/swift/#{service}.ring.gz || true"
       user node['username']
@@ -75,23 +79,26 @@ node['storage_policies'].each_with_index do |name, p|
     z = ((i - 1) % node['zones']) + 1
     r = ((z - 1) % node['regions']) + 1
     dev = "sdb#{i}"
-    ip = "127.0.0.1"
+    ip = "127.0.0.#{n_idx}"
     port = "60#{n_idx}0"
+    replication_port = "60#{n_idx + 4}0"
     if node['servers_per_port'] > 0 then
-      ip = "127.0.0.#{n_idx}"
-
       # Range ports per disk per node from 60j6 - 60j9
       # NOTE: this only supports DISKS <= 4 * NODES
       p = 5 + (i / Float(node['nodes'])).ceil.to_int
       port = "60#{n_idx}#{p}"
+      replication_port = "60#{n_idx + 4}#{p}"
+    end
+    dsl = "r#{r}z#{z}-#{ip}:#{port}/#{dev}"
+    if node['replication_servers'] then
+      dsl = "r#{r}z#{z}-#{ip}:#{port}R#{ip}:#{replication_port}/#{dev}"
     end
     execute "#{service}.builder-add-#{dev}" do
       command "swift-ring-builder #{service}.builder add " \
-        "r#{r}z#{z}-#{ip}:#{port}/#{dev} 1 && " \
-        "rm -f /etc/swift/#{service}.ring.gz || true"
+        "#{dsl} 1 && rm -f /etc/swift/#{service}.ring.gz || true"
       user node['username']
       group node["username"]
-      not_if "swift-ring-builder /etc/swift/#{service}.builder search /#{dev}"
+      not_if "swift-ring-builder /etc/swift/#{service}.builder search /#{dsl}"
       cwd "/etc/swift"
     end
   end
