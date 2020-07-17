@@ -243,20 +243,18 @@ end
   end
 end
 
-service_vars = {
-  :account => {
-    :zipkin => if node["zipkin"] then "zipkin" else "" end,
-  },
-  :container => {
-    :auto_shard => node['container_auto_shard'],
-    :zipkin => if node["zipkin"] then "zipkin" else "" end,
-  },
-  :object => {
-    :sync_method => node['object_sync_method'],
-    :servers_per_port => node['servers_per_port'],
-    :zipkin => if node["zipkin"] then "zipkin" else "" end,
-  },
-}
+(1..node['nodes']).each do |i|
+  template "/etc/swift/node#{i}.conf-template" do
+    source "/etc/swift/node.conf-template.erb"
+    owner node["username"]
+    group node["username"]
+    variables({
+       :srv_path => "/srv/node#{i}",
+       :bind_ip => "127.0.0.#{i}",
+       :recon_cache_path => "/var/cache/swift/node#{i}",
+    })
+  end
+end
 
 [:object, :container, :account].each_with_index do |service, p|
   service_dir = "etc/swift/#{service}-server"
@@ -265,51 +263,127 @@ service_vars = {
     group node["username"]
     action :create
   end
-  template "/#{service_dir}/default.conf-template" do
-    source "#{service_dir}/default.conf-template.erb"
+  template "/#{service_dir}/server.conf-template" do
+    source "#{service_dir}/server.conf-template.erb"
     owner node["username"]
     group node["username"]
-    variables(service_vars[service])
+    variables({
+      :zipkin => if node["zipkin"] then "zipkin" else "" end,
+      :servers_per_port => node['servers_per_port'],
+      :replication_server => !node["replication_servers"],
+    })
+  end
+  if node["replication_servers"] then
+    template "/#{service_dir}/replication-server.conf-template" do
+      source "#{service_dir}/server.conf-template.erb"
+      owner node["username"]
+      group node["username"]
+      variables({
+        :zipkin => if node["zipkin"] then "zipkin" else "" end,
+        :servers_per_port => node['servers_per_port'],
+        :replication_server => true,
+      })
+    end
+  else
+    file "/#{service_dir}/replication-server.conf-template" do
+      action :delete
+    end
+  end
+  template "/#{service_dir}/replication-daemons.conf-template" do
+    source "#{service_dir}/replication.conf-template.erb"
+    owner node["username"]
+    group node["username"]
+    variables({
+      :auto_shard => node['container_auto_shard'],
+      :sync_method => node['object_sync_method'],
+    })
   end
   (1..node['nodes']).each do |i|
-    bind_ip = "127.0.0.1"
-    bind_port = "60#{i}#{p}"
+    bind_port = 6000 + 10 * i + p
+    replication_bind_port = 6000 + 10 * (i + node['nodes']) + p
     if service == :object && node['servers_per_port'] > 0 then
-      # Only use unique IPs if servers_per_port is enabled.  This lets this
-      # newer vagrant-swift-all-in-one work with older swift that doesn't have
-      # the required whataremyips() plumbing to make unique IPs work.
-      bind_ip = "127.0.0.#{i}"
-
-      # This config setting shouldn't really matter in the server-per-port
-      # scenario, but it should probably at least be equal to one of the actual
+      # These config settings shouldn't really matter in the server-per-port
+      # scenario, but they should probably at least be equal to one of the actual
       # ports in the ring.
-      bind_port = "60#{i}6"
+      bind_port = 6000 + 10 * i + 6
+      replication_bind_port = 6000 + 10 * (i + node['nodes']) + 6
     end
-    conf_dir = "#{service_dir}/#{i}.conf.d"
-    directory "/#{conf_dir}" do
+    server_conf_dir = "#{service_dir}/#{i}.conf.d"
+    replication_conf_dir = "#{service_dir}/#{i + node['nodes']}-replication.conf.d"
+    directory "/#{server_conf_dir}" do
       owner node["username"]
       group node["username"]
     end
-    link "/#{conf_dir}/00_base.conf" do
+    link "/#{server_conf_dir}/00_base.conf" do
       to "/etc/swift/base.conf-template"
       owner node["username"]
       group node["username"]
     end
-    link "/#{conf_dir}/10_default.conf" do
-      to "/#{service_dir}/default.conf-template"
+    link "/#{server_conf_dir}/10_node.conf" do
+      to "/etc/swift/node#{i}.conf-template"
       owner node["username"]
       group node["username"]
     end
-    template "/#{conf_dir}/20_settings.conf" do
+    link "/#{server_conf_dir}/20_server.conf" do
+      to "/#{service_dir}/server.conf-template"
+      owner node["username"]
+      group node["username"]
+    end
+    template "/#{server_conf_dir}/30_settings.conf" do
       source "#{service_dir}/settings.conf.erb"
       owner node["username"]
       group node["username"]
       variables({
-         :srv_path => "/srv/node#{i}",
-         :bind_ip => bind_ip,
-         :bind_port => bind_port,
-         :recon_cache_path => "/var/cache/swift/node#{i}",
+       :bind_port => bind_port,
+       :include_replication_settings => !node["replication_servers"],
       })
+    end
+    if node["replication_servers"] then
+      file "/#{server_conf_dir}/40_replication.conf" do
+        action :delete
+      end
+      directory "/#{replication_conf_dir}" do
+        owner node["username"]
+        group node["username"]
+      end
+      link "/#{replication_conf_dir}/00_base.conf" do
+        to "/etc/swift/base.conf-template"
+        owner node["username"]
+        group node["username"]
+      end
+      link "/#{replication_conf_dir}/10_node.conf" do
+        to "/etc/swift/node#{i}.conf-template"
+        owner node["username"]
+        group node["username"]
+      end
+      link "/#{replication_conf_dir}/20_server.conf" do
+        to "/#{service_dir}/replication-server.conf-template"
+        owner node["username"]
+        group node["username"]
+      end
+      template "/#{replication_conf_dir}/30_settings.conf" do
+        source "#{service_dir}/settings.conf.erb"
+        owner node["username"]
+        group node["username"]
+        variables({
+         :bind_port => replication_bind_port,
+         :include_replication_settings => true,
+        })
+      end
+      link "/#{replication_conf_dir}/40_replication.conf" do
+        to "/#{service_dir}/replication-daemons.conf-template"
+        owner node["username"]
+        group node["username"]
+      end
+    else
+      directory "/#{replication_conf_dir}" do
+        action :delete
+      end
+      link "/#{server_conf_dir}/40_replication.conf" do
+        to "/#{service_dir}/replication-daemons.conf-template"
+        owner node["username"]
+        group node["username"]
+      end
     end
   end
 end

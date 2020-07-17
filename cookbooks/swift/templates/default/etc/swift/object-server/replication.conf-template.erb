@@ -1,0 +1,9 @@
+[object-updater]
+
+[object-auditor]
+
+[object-replicator]
+sync_method = <%= @sync_method %>
+rsync_module = {replication_ip}::object_{device}
+
+[object-reconstructor]
