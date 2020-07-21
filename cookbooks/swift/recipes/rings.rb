@@ -27,10 +27,10 @@
   end
   (1..node['disks']).each do |i|
     n_idx = ((i - 1) % node['nodes']) + 1
-    z = ((i - 1) % node['zones']) + 1
+    z = ((n_idx - 1) % node['zones']) + 1
     r = ((z - 1) % node['regions']) + 1
     dev = "sdb#{i}"
-    ip = "127.0.0.#{i}"
+    ip = "127.0.0.#{n_idx}"
     port = "60#{n_idx}#{p + 1}"
     replication_port = "60#{n_idx + 4}#{p + 1}"
     dsl = "r#{r}z#{z}-#{ip}:#{port}/#{dev}"
