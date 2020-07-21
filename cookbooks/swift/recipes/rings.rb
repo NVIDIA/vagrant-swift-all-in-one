@@ -76,7 +76,7 @@ node['storage_policies'].each_with_index do |name, p|
   end
   (1..num_disks).each do |i|
     n_idx = ((i - 1) % node['nodes']) + 1
-    z = ((i - 1) % node['zones']) + 1
+    z = ((n_idx - 1) % node['zones']) + 1
     r = ((z - 1) % node['regions']) + 1
     dev = "sdb#{i}"
     ip = "127.0.0.#{n_idx}"
