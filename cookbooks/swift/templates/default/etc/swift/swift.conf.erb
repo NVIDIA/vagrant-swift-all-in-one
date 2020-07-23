@@ -15,5 +15,8 @@ ec_type = <%= @ec_type %>
 ec_num_data_fragments = <%= @ec_replicas - @ec_parity %>
 ec_num_parity_fragments = <%= @ec_parity %>
 ec_duplication_factor = <%= @ec_duplication %>
+diskfile_module = egg:swift#erasure_coding.kv
+<% else %>
+diskfile_module = egg:swift#replication.kv
 <% end %>
 <% end %>

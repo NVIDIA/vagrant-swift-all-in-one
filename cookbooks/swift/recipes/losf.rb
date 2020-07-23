@@ -1,4 +1,4 @@
-# Copyright (c) 2015 SwiftStack, Inc.
+# Copyright (c) 2019 SwiftStack, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,22 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-include_recipe "swift::setup"
-include_recipe "swift::source"
-include_recipe "swift::data"
-include_recipe "swift::configs"
-include_recipe "swift::pykmip"
-include_recipe "swift::zipkin"
-include_recipe "swift::rings"
-include_recipe "swift::ansible"
-include_recipe "swift::losf"
-
-# start main
-
-execute "startmain" do
-  command "swift-init start main"
-  user node['username']
-  group node["username"]
+[
+  "common/install_losf_dependencies.yaml",
+  "losf_setup/pre.yaml",
+  "losf_setup/run.yaml",
+].each do |playbook|
+  execute "ansible #{playbook}" do
+    full_path = "/vagrant/swift/tools/playbooks/#{playbook}"
+    command "ansible-playbook #{full_path}"
+  end
 end
 
