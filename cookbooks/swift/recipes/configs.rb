@@ -378,6 +378,7 @@ end
     else
       directory "/#{replication_conf_dir}" do
         action :delete
+        recursive true
       end
       link "/#{server_conf_dir}/40_replication.conf" do
         to "/#{service_dir}/replication-daemons.conf-template"
