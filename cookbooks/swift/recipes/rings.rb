@@ -27,13 +27,17 @@
   end
   (1..node['disks']).each do |i|
     n_idx = ((i - 1) % node['nodes']) + 1
-    z = ((i - 1) % node['zones']) + 1
+    z = ((n_idx - 1) % node['zones']) + 1
     r = ((z - 1) % node['regions']) + 1
     dev = "sdb#{i}"
-    ip = "127.0.0.1"
-    port = "60#{n_idx}#{p + 1}"
+    ip = "127.0.0.#{n_idx}"
+    port = 6000 + 10 * n_idx + (p + 1)
+    replication_port = 6000 + 10 * (n_idx + node['nodes']) + (p + 1)
+    dsl = "r#{r}z#{z}-#{ip}:#{port}/#{dev}"
+    if node['replication_servers'] then
+      dsl = "r#{r}z#{z}-#{ip}:#{port}R#{ip}:#{replication_port}/#{dev}"
+    end
     execute "#{service}.builder-add-#{dev}" do
-      dsl = "r#{r}z#{z}-#{ip}:#{port}/#{dev}"
       command "swift-ring-builder #{service}.builder add " \
         "#{dsl} 1 && rm -f /etc/swift/#{service}.ring.gz || true"
       user node['username']
@@ -47,6 +51,7 @@
     user node['username']
     group node["username"]
     cwd "/etc/swift"
+    returns [0, 1]  # Allow EXIT_WARNING
   end
 end
 
@@ -72,26 +77,29 @@ node['storage_policies'].each_with_index do |name, p|
   end
   (1..num_disks).each do |i|
     n_idx = ((i - 1) % node['nodes']) + 1
-    z = ((i - 1) % node['zones']) + 1
+    z = ((n_idx - 1) % node['zones']) + 1
     r = ((z - 1) % node['regions']) + 1
     dev = "sdb#{i}"
-    ip = "127.0.0.1"
-    port = "60#{n_idx}0"
+    ip = "127.0.0.#{n_idx}"
+    port = 6000 + 10 * n_idx
+    replication_port = 6000 + 10 * (n_idx + node['nodes'])
     if node['servers_per_port'] > 0 then
-      ip = "127.0.0.#{n_idx}"
-
       # Range ports per disk per node from 60j6 - 60j9
       # NOTE: this only supports DISKS <= 4 * NODES
       p = 5 + (i / Float(node['nodes'])).ceil.to_int
-      port = "60#{n_idx}#{p}"
+      port = 6000 + 10 * n_idx + p
+      replication_port = 6000 + 10 * (n_idx + node['nodes']) + p
+    end
+    dsl = "r#{r}z#{z}-#{ip}:#{port}/#{dev}"
+    if node['replication_servers'] then
+      dsl = "r#{r}z#{z}-#{ip}:#{port}R#{ip}:#{replication_port}/#{dev}"
     end
     execute "#{service}.builder-add-#{dev}" do
       command "swift-ring-builder #{service}.builder add " \
-        "r#{r}z#{z}-#{ip}:#{port}/#{dev} 1 && " \
-        "rm -f /etc/swift/#{service}.ring.gz || true"
+        "#{dsl} 1 && rm -f /etc/swift/#{service}.ring.gz || true"
       user node['username']
       group node["username"]
-      not_if "swift-ring-builder /etc/swift/#{service}.builder search /#{dev}"
+      not_if "swift-ring-builder /etc/swift/#{service}.builder search /#{dsl}"
       cwd "/etc/swift"
     end
   end
@@ -100,5 +108,6 @@ node['storage_policies'].each_with_index do |name, p|
     user node['username']
     group node["username"]
     cwd "/etc/swift"
+    returns [0, 1]  # Allow EXIT_WARNING
   end
 end

@@ -1,16 +1,3 @@
-[DEFAULT]
-disable_fallocate = true
-workers = 1
-
-[pipeline:main]
-pipeline = <%= @zipkin %> recon container-server
-
-[app:container-server]
-use = egg:swift#container
-
-[filter:recon]
-use = egg:swift#recon
-
 [container-replicator]
 rsync_module = {replication_ip}::container_{device}
 
