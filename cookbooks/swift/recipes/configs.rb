@@ -309,7 +309,7 @@ end
       replication_bind_port = 6000 + 10 * (i + node['nodes']) + 6
     end
     server_conf_dir = "#{service_dir}/#{i}.conf.d"
-    replication_conf_dir = "#{service_dir}/#{i + node['nodes']}-replication.conf.d"
+    replication_conf_dir = "#{service_dir}/#{i}-replication.conf.d"
     directory "/#{server_conf_dir}" do
       owner node["username"]
       group node["username"]
