@@ -7,7 +7,9 @@ pipeline = <%= @zipkin %> recon account-server
 
 [app:account-server]
 use = egg:swift#account
-replication_server = <%= @replication_server %>
+<% if ! @replication_server -%>
+replication_server = false
+<% end -%>
 
 [filter:recon]
 use = egg:swift#recon
