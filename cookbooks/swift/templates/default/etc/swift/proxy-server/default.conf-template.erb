@@ -7,6 +7,11 @@ use = egg:swift#catch_errors
 [filter:proxy-logging]
 use = egg:swift#proxy_logging
 
+[filter:subrequest-logging]
+use = egg:swift#proxy_logging
+access_log_route = subrequest
+access_log_statsd_metric_prefix = subrequest
+
 [filter:healthcheck]
 use = egg:swift#healthcheck
 
