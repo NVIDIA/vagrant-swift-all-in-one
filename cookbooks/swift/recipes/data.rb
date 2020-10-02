@@ -78,7 +78,7 @@ end
 end
 
 # for unittest xfs scratch
-make_disk "/var/lib/swift/tmp-disk", "/mnt/tmp", "100MB"
+make_disk "/var/lib/swift/tmp-disk", "/mnt/tmp", "400MB"
 
 # run dirs
 
