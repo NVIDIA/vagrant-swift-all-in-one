@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import print_function
 import argparse
 import os
 import Queue
@@ -101,16 +102,16 @@ def main():
     extra_dirs = [os.path.join(root, path) for path in montior_paths]
 
     # intial build
-    rv = os.system('sphinx-build -b html %s %s' % (source_dir, build_dir))
+    rv = os.system('tox -e docs')
     if rv != 0:
         # bail on build fail
         return rv
     os.chdir(build_dir)
     os.system('swift post %s -r .r:*,.rlistings -m web-index:index.html' %
               container)
-    print 'uploading...'
+    print('uploading...')
     os.system('swift upload --changed %s . > /dev/null' % container)
-    print 'done...'
+    print('done...')
     os.system('swift stat -v %s index.html | grep URL' % container)
     # we're gunna let the user hit enter to rebuild immediately
     q = Queue.Queue()
@@ -122,12 +123,12 @@ def main():
     continue_thread.daemon = True
     continue_thread.start()
     for filename in watch_changed_files(q, source_dir, *extra_dirs):
-        print '%s has CHANGED!' % filename
-        print 'rebuilding...'
-        os.system('sphinx-build -q -b html %s %s' % (source_dir, build_dir))
-        print 'uploading...'
+        print('%s has CHANGED!' % filename)
+        print('rebuilding...')
+        os.system('tox -e docs')
+        print('uploading...')
         os.system('swift upload --changed %s . > /dev/null' % container)
-        print 'done...'
+        print('done...')
         os.system('swift stat -v %s index.html | grep URL' % container)
 
 
@@ -135,4 +136,4 @@ if __name__ == "__main__":
     try:
         sys.exit(main())
     except KeyboardInterrupt:
-        print 'quit.'
+        print('quit.')
