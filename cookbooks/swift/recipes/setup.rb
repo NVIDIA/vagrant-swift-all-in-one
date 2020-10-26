@@ -61,6 +61,11 @@ execute "apt-get-update" do
   action :run
 end
 
+systemd_unit "multipathd" do
+  # focal boxes generate a lot of useless logs with this guy running
+  action [:disable, :stop]
+end
+
 # packages
 required_packages = [
   "libssl-dev", # libssl-dev is required for building wheels from the cryptography package in swift.
