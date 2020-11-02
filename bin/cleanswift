@@ -17,6 +17,7 @@
 set -e
 
 swift-init all stop || :
+swift-orphans -a 0 -k KILL || :
 find /var/log/swift -type f -delete || :
 find /var/cache/swift* -type f -name *.recon -delete
 
