@@ -109,7 +109,7 @@ end
 
 execute "python-swiftclient-install" do
   cwd "#{node['source_root']}/python-swiftclient"
-  command "pip install -e . && pip install -r test-requirements.txt"
+  command "pip install -e . && pip install --ignore-installed -r test-requirements.txt"
   if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/python-swiftclient.egg-link"
   end
