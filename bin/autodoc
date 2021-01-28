@@ -92,7 +92,7 @@ def main():
     extra_dirs = [os.path.join(root, path) for path in montior_paths]
 
     # intial build
-    rv = os.system('tox -e docs')
+    rv = os.system('vtox -e docs')
     if rv != 0:
         # bail on build fail
         return rv
