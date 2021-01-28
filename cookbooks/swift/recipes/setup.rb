@@ -84,8 +84,15 @@ unrequired_packages.each do |pkg|
   end
 end
 
+if node['use_python3']
+  default_python = 'python3'
+  pip_url = 'https://bootstrap.pypa.io/get-pip.py'
+else
+  default_python = 'python2'
+  pip_url = 'https://bootstrap.pypa.io/2.7/get-pip.py'
+end
+
 execute "select default python version" do
-  default_python = node['use_python3'] ? 'python3' : 'python2'
   command "ln -sf #{default_python} /usr/bin/python"
 end
 
@@ -93,7 +100,7 @@ end
 bash 'install pip' do
   code <<-EOF
     set -o pipefail
-    curl https://bootstrap.pypa.io/get-pip.py | python
+    curl #{pip_url} | python
     EOF
   if not node['full_reprovision']
     not_if "which pip"
