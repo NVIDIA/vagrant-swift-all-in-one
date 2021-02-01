@@ -2,12 +2,3 @@
 user = <%= @username %>
 eventlet_debug = true
 log_level = DEBUG
-
-<% if @zipkin -%>
-[filter:zipkin]
-use = egg:swift_zipkin#zipkin
-zipkin_enable = True
-zipkin_v2_host = localhost
-zipkin_v2_port = 9411
-zipkin_sample_rate = 1.0
-<% end -%>

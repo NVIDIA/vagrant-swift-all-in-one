@@ -224,7 +224,6 @@ end
       group node["username"]
       variables({
         :ssl => node['ssl'],
-        :zipkin => if node["zipkin"] then "zipkin" else "" end,
         :keymaster_pipeline => keymaster_pipeline,
       })
     end
@@ -256,7 +255,6 @@ end
     owner node["username"]
     group node["username"]
     variables({
-      :zipkin => if node["zipkin"] then "zipkin" else "" end,
       :servers_per_port => node['servers_per_port'],
       :replication_server => !node["replication_servers"],
     })
@@ -267,7 +265,6 @@ end
       owner node["username"]
       group node["username"]
       variables({
-        :zipkin => if node["zipkin"] then "zipkin" else "" end,
         :servers_per_port => node['servers_per_port'],
         :replication_server => true,
       })

@@ -7,7 +7,6 @@ include_recipe "swift::source"
 include_recipe "swift::data"
 include_recipe "swift::configs"
 include_recipe "swift::pykmip"
-include_recipe "swift::zipkin"
 include_recipe "swift::rings"
 include_recipe "swift::ansible"
 
