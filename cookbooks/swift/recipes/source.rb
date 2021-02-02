@@ -57,15 +57,6 @@ execute "git pyeclib" do
   action :run
 end
 
-execute "git swift-zipkin" do
-  cwd "#{node['source_root']}"
-  command "git clone -b #{node['swift_zipkin_repo_branch']} #{node['swift_zipkin_repo']}"
-  user node['username']
-  group node["username"]
-  creates "#{node['source_root']}/swift-zipkin"
-  action :run
-end
-
 
 execute "fix semantic_version error from testtools" do
   command "pip install --upgrade testtools"
@@ -112,15 +103,6 @@ execute "swift-bench-install" do
   command "pip install -e ."
   if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/swift-bench.egg-link"
-  end
-  action :run
-end
-
-execute "swift-zipkin-install" do
-  cwd "#{node['source_root']}/swift-zipkin"
-  command "pip install -e ."
-  if not node['full_reprovision']
-    creates "/usr/local/lib/python2.7/dist-packages/swift-zipkin.egg-link"
   end
   action :run
 end
