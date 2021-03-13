@@ -89,7 +89,7 @@ if node['use_python3']
   pip_url = 'https://bootstrap.pypa.io/get-pip.py'
 else
   default_python = 'python2'
-  pip_url = 'https://bootstrap.pypa.io/2.7/get-pip.py'
+  pip_url = 'https://bootstrap.pypa.io/pip/2.7/get-pip.py'
 end
 
 execute "select default python version" do
