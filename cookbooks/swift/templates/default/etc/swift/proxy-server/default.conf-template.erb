@@ -48,6 +48,7 @@ use = egg:swift#s3api
 s3_acl = True
 check_bucket_owner = True
 force_swift_request_proxy_log = true
+ratelimit_as_client_error = true
 
 [filter:staticweb]
 use = egg:swift#staticweb
