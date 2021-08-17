@@ -130,7 +130,8 @@ Vagrant.configure("2") do |global_config|
           "sudo -E apt-get -q --option \"Dpkg::Options::=--force-confold\" --assume-yes install libssl1.1"
 
       config.vm.provision :chef_solo do |chef|
-        chef.custom_config_path = "chef.conf"
+        chef.product = "chef-workstation"
+        chef.arguments = "--chef-license accept"
         chef.provisioning_path = "/etc/chef"
         chef.add_recipe "swift"
         chef.json = {
