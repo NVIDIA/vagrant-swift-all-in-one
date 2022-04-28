@@ -6,7 +6,7 @@ log_facility = LOG_LOCAL2
 servers_per_port = <%= @servers_per_port %>
 
 [pipeline:main]
-pipeline = recon object-server
+pipeline = backend_ratelimit recon object-server
 
 [app:object-server]
 use = egg:swift#object
@@ -16,3 +16,7 @@ replication_server = false
 
 [filter:recon]
 use = egg:swift#recon
+
+[filter:backend_ratelimit]
+use = egg:swift#backend_ratelimit
+requests_per_device_per_second = 10.0

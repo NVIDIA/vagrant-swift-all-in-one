@@ -3,7 +3,7 @@ disable_fallocate = true
 workers = 1
 
 [pipeline:main]
-pipeline = recon account-server
+pipeline = backend_ratelimit recon account-server
 
 [app:account-server]
 use = egg:swift#account
@@ -13,3 +13,7 @@ replication_server = false
 
 [filter:recon]
 use = egg:swift#recon
+
+[filter:backend_ratelimit]
+use = egg:swift#backend_ratelimit
+requests_per_device_per_second = 10.0
