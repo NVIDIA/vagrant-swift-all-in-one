@@ -7,10 +7,11 @@
 
 require 'ipaddr'
 
-DEFAULT_BOX = "bionic"
+DEFAULT_BOX = "jammy"
 
 # Note: 18.04/bionic requires Vagrant 2.02 or newer because 18.04 ships without ifup/ifdown by default.
 vagrant_boxes = {
+  "jammy" => "http://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-vagrant.box",
   "precise" => "https://hashicorp-files.hashicorp.com/precise64.box",
   "xenial" => "http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-vagrant.box",
   "bionic" => "http://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64-vagrant.box",
@@ -124,10 +125,12 @@ Vagrant.configure("2") do |global_config|
       end
 
       # Install libssl for Chef (https://github.com/hashicorp/vagrant/issues/10914)
-      config.vm.provision "shell",
-        inline: "sudo apt-get update -y -qq && "\
-          "export DEBIAN_FRONTEND=noninteractive && "\
-          "sudo -E apt-get -q --option \"Dpkg::Options::=--force-confold\" --assume-yes install libssl1.1"
+      if vagrant_box != 'jammy' then
+        config.vm.provision "shell",
+          inline: "sudo apt-get update -y -qq && "\
+            "export DEBIAN_FRONTEND=noninteractive && "\
+            "sudo -E apt-get -q --option \"Dpkg::Options::=--force-confold\" --assume-yes install libssl1.1"
+      end
 
       config.vm.provision :chef_solo do |chef|
         chef.product = "chef-workstation"
