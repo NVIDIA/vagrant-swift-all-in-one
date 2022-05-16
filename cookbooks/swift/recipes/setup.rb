@@ -146,6 +146,12 @@ end
   end
 end
 
+# this works around some PBR/git interaction
+cookbook_file "/etc/gitconfig" do
+  source "etc/gitconfig"
+  owner node['username']
+  group node['username']
+end
 
 # setup environment
 

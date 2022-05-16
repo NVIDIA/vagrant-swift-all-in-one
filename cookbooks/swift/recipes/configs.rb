@@ -423,10 +423,3 @@ template "/etc/swift/internal-client.conf" do
     :keymaster_pipeline => keymaster_pipeline,
   })
 end
-
-# gitconfig
-cookbook_file "/etc/gitconfig" do
-  source "etc/gitconfig"
-  owner node['username']
-  group node['username']
-end
