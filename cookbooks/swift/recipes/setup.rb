@@ -58,12 +58,25 @@ end
 required_packages = [
   "libssl-dev", # libssl-dev is required for building wheels from the cryptography package in swift.
   "curl", "gcc", "memcached", "rsync", "sqlite3", "xfsprogs", "git-core", "build-essential",
-  "python-dev", "libffi-dev", "python3.5", "python3.5-dev",
-  "python3.6", "python3.6-dev", "python3.7", "python3.7-dev",
- "python3.8", "python3.8-dev",
-  "libxml2-dev", "libxml2", "libxslt1-dev", "zlib1g-dev", "autoconf", "libtool",
+  "libffi-dev",  "libxml2-dev", "libxml2", "libxslt1-dev", "zlib1g-dev", "autoconf", "libtool",
   "openjdk-11-jre-headless", "haproxy",
 ]
+
+if node['platform_version'] == '22.04'
+  required_packages += [
+    "python2-dev", "python2", "python3", "python3-dev",
+    "python3.7", "python3.7-dev", "python3.7-distutils",
+    "python3.8", "python3.8-dev", "python3.8-distutils",
+    "python3.9", "python3.9-dev", "python3.9-distutils",
+  ]
+else
+  required_packages += [
+    "python-dev", "python3.5", "python3.5-dev",
+    "python3.6", "python3.6-dev", "python3.7", "python3.7-dev",
+    "python3.8", "python3.8-dev",
+  ]
+end
+
 extra_packages = node['extra_packages']
 (required_packages + extra_packages).each do |pkg|
   package pkg do
@@ -133,6 +146,12 @@ end
   end
 end
 
+# this works around some PBR/git interaction
+cookbook_file "/etc/gitconfig" do
+  source "etc/gitconfig"
+  owner node['username']
+  group node['username']
+end
 
 # setup environment
 
