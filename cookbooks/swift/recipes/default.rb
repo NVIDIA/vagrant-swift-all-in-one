@@ -16,4 +16,5 @@ execute "startmain" do
   command "swift-init start main"
   user node['username']
   group node["username"]
+  default_env true
 end

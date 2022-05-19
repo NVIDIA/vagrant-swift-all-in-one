@@ -3,19 +3,29 @@
 #SPDX-License-Identifier: Apache-2.0
 
 # rsync
+if node['platform']  == 'ubuntu'
+  rsync_name = 'rsync'
+  update_ca_certs = 'update-ca-certificates'
+else
+  rsync_name = 'rsyncd'
+  update_ca_certs = 'update-ca-trust'
+end
 
 template "/etc/rsyncd.conf" do
   source "etc/rsyncd.conf.erb"
-  notifies :restart, 'service[rsync]'
+  notifies :restart, "service[#{rsync_name}]"
   variables({
     :username => node['username'],
   })
 end
 
-execute "enable-rsync" do
-  command "sed -i 's/ENABLE=false/ENABLE=true/' /etc/default/rsync"
-  not_if "grep ENABLE=true /etc/default/rsync"
-  action :run
+case node['platform']
+when 'ubuntu'
+  execute "enable-rsync" do
+    command "sed -i 's/ENABLE=false/ENABLE=true/' /etc/default/rsync"
+    not_if "grep ENABLE=true /etc/default/rsync"
+    action :run
+  end
 end
 
 # pre device rsync modules
@@ -61,16 +71,22 @@ end
 # services
 
 [
-  "rsync",
+  rsync_name,
   "memcached",
   "rsyslog",
 ].each do |daemon|
   service daemon do
-    action :start
+    action [ :enable, :start ]
   end
 end
 
 # haproxy
+directory "/etc/ssl/private/" do
+  owner "vagrant"
+  group "vagrant"
+  mode '0640'
+  action :create
+end
 
 execute "create key" do
   command "openssl genpkey -algorithm EC -out saio.key " \
@@ -80,6 +96,7 @@ execute "create key" do
   #  "-pkeyopt rsa_keygen_bits:2048"
   cwd "/etc/ssl/private/"
   creates "/etc/ssl/private/saio.key"
+  default_env true
 end
 
 template "/etc/ssl/private/saio.conf" do
@@ -97,19 +114,26 @@ execute "create cert" do
   creates "/etc/ssl/private/saio.crt"
 end
 
+default_python = 'python2'
+if node['use_python3']
+  default_python = 'python3'
+end
+
 execute "install cert" do
   cert_to_install = "/etc/ssl/private/saio.crt"
   command "mkdir -p /usr/local/share/ca-certificates/extra && " \
     "cp #{cert_to_install} /usr/local/share/ca-certificates/extra/saio_ca.crt && " \
-    "update-ca-certificates && " \
-    "cat #{cert_to_install} >> $(python -m certifi)"
+    "#{update_ca_certs} && " \
+    "cat #{cert_to_install} >> $(#{default_python} -m certifi)"
   creates "/usr/local/share/ca-certificates/extra/saio_ca.crt"
+  default_env true
 end
 
 execute "create pem" do
   command "cat saio.crt saio.key > saio.pem"
   cwd "/etc/ssl/private/"
   creates "/etc/ssl/private/saio.pem"
+  default_env true
 end
 
 cookbook_file "/etc/haproxy/haproxy.cfg" do

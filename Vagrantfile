@@ -16,6 +16,9 @@ vagrant_boxes = {
   "bionic" => "http://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64-vagrant.box",
   "focal" => "http://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-vagrant.box",
   "jammy" => "http://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-vagrant.box",
+  "centos8" => "https://cloud.centos.org/centos/8/vagrant/x86_64/images/CentOS-8-Vagrant-8.0.1905-1.x86_64.vagrant-virtualbox.box",
+  "centos7" => "https://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7.box",
+  "centos7-arm" => "https://vagrantcloud.com/ppggff/boxes/centos-7-aarch64-2009-4K/versions/1.0.0/providers/libvirt.box",
   "dummy" => "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box",
 }
 vagrant_box = (ENV['VAGRANT_BOX'] || DEFAULT_BOX)
@@ -96,6 +99,10 @@ Vagrant.configure("2") do |global_config|
       end
 
       config.vm.provider :virtualbox do |vb, override|
+        if vagrant_box.include?('centos') then
+          config.vbguest.installer_options = { allow_kernel_upgrade: true }
+          override.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+        end
         override.vm.hostname = hostname
         override.vm.network :private_network, ip: ip
 
@@ -124,7 +131,7 @@ Vagrant.configure("2") do |global_config|
         v.tags = {'Name' => 'swift'}
       end
 
-      if vagrant_box != 'jammy' then
+      if vagrant_box != 'jammy' && ! vagrant_box.include?('centos') then
         # Install libssl for Chef (https://github.com/hashicorp/vagrant/issues/10914)
         config.vm.provision "shell",
           inline: "sudo apt-get update -y -qq && "\
