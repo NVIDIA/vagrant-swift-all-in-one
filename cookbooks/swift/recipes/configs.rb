@@ -3,25 +3,34 @@
 #SPDX-License-Identifier: Apache-2.0
 
 # rsync
+if node['platform']  == 'ubuntu'
+  rsync_name = 'rsync'
+  update_ca_certs = 'update-ca-certificates'
+else
+  rsync_name = 'rsyncd'
+  update_ca_certs = 'update-ca-trust'
+end
 
 template "/etc/rsyncd.conf" do
   source "etc/rsyncd.conf.erb"
-  notifies :restart, 'service[rsync]'
+  notifies :restart, "service[#{rsync_name}]"
   variables({
     :username => node['username'],
   })
 end
 
-if node['platform_version'] == '22.04' then
-  execute "enable-rsync" do
-    command "systemctl enable rsync.service"
-    action :run
-  end
-else
-  execute "enable-rsync" do
-    command "sed -i 's/ENABLE=false/ENABLE=true/' /etc/default/rsync"
-    not_if "grep ENABLE=true /etc/default/rsync"
-    action :run
+if node['platform'] == "ubuntu" then
+  if node['platform_version'] == '22.04' then
+    execute "enable-rsync" do
+      command "systemctl enable rsync.service"
+      action :run
+    end
+  else
+    execute "enable-rsync" do
+      command "sed -i 's/ENABLE=false/ENABLE=true/' /etc/default/rsync"
+      not_if "grep ENABLE=true /etc/default/rsync"
+      action :run
+    end
   end
 end
 
@@ -68,16 +77,22 @@ end
 # services
 
 [
-  "rsync",
+  rsync_name,
   "memcached",
   "rsyslog",
 ].each do |daemon|
   service daemon do
-    action :start
+    action [ :enable, :start ]
   end
 end
 
 # haproxy
+directory "/etc/ssl/private/" do
+  owner "vagrant"
+  group "vagrant"
+  mode '0640'
+  action :create
+end
 
 execute "create key" do
   command "openssl genpkey -algorithm EC -out saio.key " \
@@ -87,6 +102,7 @@ execute "create key" do
   #  "-pkeyopt rsa_keygen_bits:2048"
   cwd "/etc/ssl/private/"
   creates "/etc/ssl/private/saio.key"
+  default_env true
 end
 
 template "/etc/ssl/private/saio.conf" do
@@ -104,11 +120,17 @@ execute "create cert" do
   creates "#{node['saio_crt_path']}"
 end
 
+default_python = 'python2'
+if node['use_python3']
+  default_python = 'python3'
+end
+
 execute "install cert" do
   command "mkdir -p /usr/local/share/ca-certificates/extra && " \
     "cp #{node['saio_crt_path']} /usr/local/share/ca-certificates/extra/saio_ca.crt && " \
     "update-ca-certificates"
   creates "/usr/local/share/ca-certificates/extra/saio_ca.crt"
+  default_env true
 end
 
 execute "fix certifi" do
@@ -119,6 +141,7 @@ execute "create pem" do
   command "cat saio.crt saio.key > saio.pem"
   cwd "/etc/ssl/private/"
   creates "/etc/ssl/private/saio.pem"
+  default_env true
 end
 
 cookbook_file "/etc/haproxy/haproxy.cfg" do

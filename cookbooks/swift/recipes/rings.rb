@@ -12,6 +12,7 @@
     group node["username"]
     creates "/etc/swift/#{service}.builder"
     cwd "/etc/swift"
+    default_env true
   end
   (1..node['disks']).each do |i|
     n_idx = ((i - 1) % node['nodes']) + 1
@@ -30,7 +31,8 @@
         "#{dsl} 1 && rm -f /etc/swift/#{service}.ring.gz || true"
       user node['username']
       group node["username"]
-      not_if "swift-ring-builder /etc/swift/#{service}.builder search #{dsl}"
+      default_env true
+      not_if "/usr/local/bin/swift-ring-builder /etc/swift/#{service}.builder search #{dsl}"
       cwd "/etc/swift"
     end
   end
@@ -40,6 +42,7 @@
     group node["username"]
     cwd "/etc/swift"
     returns [0, 1]  # Allow EXIT_WARNING
+    default_env true
   end
 end
 
@@ -62,6 +65,7 @@ node['storage_policies'].each_with_index do |name, p|
     group node["username"]
     creates "/etc/swift/#{service}.builder"
     cwd "/etc/swift"
+    default_env true
   end
   (1..num_disks).each do |i|
     n_idx = ((i - 1) % node['nodes']) + 1
@@ -87,8 +91,9 @@ node['storage_policies'].each_with_index do |name, p|
         "#{dsl} 1 && rm -f /etc/swift/#{service}.ring.gz || true"
       user node['username']
       group node["username"]
-      not_if "swift-ring-builder /etc/swift/#{service}.builder search /#{dsl}"
+      not_if "/usr/local/bin/swift-ring-builder /etc/swift/#{service}.builder search /#{dsl}"
       cwd "/etc/swift"
+      default_env true
     end
   end
   execute "#{service}.builder-rebalance" do
@@ -97,5 +102,6 @@ node['storage_policies'].each_with_index do |name, p|
     group node["username"]
     cwd "/etc/swift"
     returns [0, 1]  # Allow EXIT_WARNING
+    default_env true
   end
 end
