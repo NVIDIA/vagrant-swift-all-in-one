@@ -19,6 +19,19 @@ required_packages = [
   "rclone",
 ]
 
+if node['platform_version'] >= 8
+  required_packages += [
+    "rsync-daemon",
+    "python2", "python2-devel",
+    "python38", "python38-devel",
+    "python39", "python39-devel"
+  ]
+else
+  required_packages += [
+    "python", "python-devel"
+  ]
+end
+
 required_groupinstall_packages = ["Development Tools",]
 
 # Group installs
@@ -43,8 +56,18 @@ unrequired_packages.each do |pkg|
   end
 end
 
-if node['platform_version'].to_i < 8 && node['use_python3']
-  node.default['pip_url'] = "https://bootstrap.pypa.io/pip/3.6/get-pip.py"
+if node['platform_version'] >= 8
+  execute "update-alternatives-py39" do
+    command "update-alternatives --set python3 /usr/bin/python3.9"
+    default_env true
+  end
+  directory "/run/haproxy" do
+    action :create
+  end
+else
+  if node['use_python3']
+    node.default['pip_url'] = "https://bootstrap.pypa.io/pip/3.6/get-pip.py"
+  end
 end
 
 execute "source-profile" do
