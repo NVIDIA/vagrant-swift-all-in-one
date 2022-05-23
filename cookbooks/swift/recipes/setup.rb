@@ -20,12 +20,8 @@ if node['extra_key'] then
 end
 
 if node['use_python3']
-  default_python = 'python3'
-  default_pip = 'pip3'
   node.default['pip_url'] = 'https://bootstrap.pypa.io/get-pip.py'
 else
-  default_python = 'python2'
-  default_pip = 'pip2'
   node.default['pip_url'] = 'https://bootstrap.pypa.io/pip/2.7/get-pip.py'
 end
 
@@ -37,18 +33,11 @@ when 'ubuntu'
   include_recipe "swift::setup-ubuntu"
 end
 
-case node['platform']
-when 'ubuntu'
-  execute "select default python version" do
-    command "ln -sf #{default_python} /usr/bin/python"
-  end
-end
-
 # it's a brave new world
 bash 'install pip' do
   code <<-EOF
     set -o pipefail
-    curl #{node['pip_url']} | #{default_python}
+    curl #{node['pip_url']} | #{node['default_python']}
     EOF
   if not node['full_reprovision']
     not_if "which pip"
@@ -57,7 +46,7 @@ end
 
 # pip 8.0 is more or less broken on trusty -> https://github.com/pypa/pip/issues/3384
 execute "upgrade pip" do
-  command "#{default_pip} install --upgrade 'pip>=8.0.2'"
+  command "#{node['default_pip']} install --upgrade 'pip>=8.0.2'"
   default_env true
 end
 
@@ -68,7 +57,7 @@ execute "fix pip warning 1" do
 end
 
 execute "fix pip warning 2" do
-  command "#{default_pip} install --upgrade ndg-httpsclient"
+  command "#{node['default_pip']} install --upgrade ndg-httpsclient"
   default_env true
 end
 
@@ -80,7 +69,7 @@ end
   "bandit==1.5.1",  # pin bandit to avoid pyyaml issues on bionic (at least)
 ].each do |pkg|
   execute "pip install #{pkg}" do
-    command "#{default_pip} install #{pkg}"
+    command "#{node['default_pip']} install #{pkg}"
     default_env true
   end
 end

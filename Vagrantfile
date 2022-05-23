@@ -53,7 +53,7 @@ local_config = {
   "replication_servers" => (ENV['REPLICATION_SERVERS'] || 'false').downcase == 'true',
   "container_auto_shard" => (ENV['CONTAINER_AUTO_SHARD'] || 'true').downcase == 'true',
   "object_sync_method" => (ENV['OBJECT_SYNC_METHOD'] || 'rsync'),
-  "use_python3" => (ENV['USE_PYTHON3'] || 'false').downcase == 'true',
+  "use_python3" => (ENV['USE_PYTHON3'] || 'true').downcase == 'true',
   "encryption" => (ENV['ENCRYPTION'] || 'false').downcase == 'true',
   "ssl" => (ENV['SSL'] || 'false').downcase == 'true',
   "kmip" => (ENV['KMIP'] || 'false').downcase == 'true',
@@ -149,6 +149,13 @@ Vagrant.configure("2") do |global_config|
           "hostname" => hostname,
         }
         chef.json.merge! local_config
+        if chef.json['use_python3'] then
+          chef.json['default_pip'] = 'pip3'
+          chef.json['default_python'] = 'python3'
+        else
+          chef.json['default_pip'] = 'pip2'
+          chef.json['default_python'] = 'python2'
+        end
         if chef.json['ssl'] then
           chef.json['base_uri'] = "https://#{hostname}"
         else

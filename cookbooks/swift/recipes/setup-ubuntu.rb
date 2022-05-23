@@ -48,12 +48,13 @@ if node['platform_version'] == '22.04'
     "python3.7", "python3.7-dev", "python3.7-distutils",
     "python3.8", "python3.8-dev", "python3.8-distutils",
     "python3.9", "python3.9-dev", "python3.9-distutils",
+    "ipython3",
   ]
 else
   required_packages += [
     "python-dev", "python3.5", "python3.5-dev",
     "python3.6", "python3.6-dev", "python3.7", "python3.7-dev",
-    "python3.8", "python3.8-dev",
+    "python3.8", "python3.8-dev", "ipython",
   ]
 end
 
@@ -75,4 +76,8 @@ unrequired_packages.each do |pkg|
   package pkg do
     action :purge
   end
+end
+
+execute "select default python version" do
+  command "ln -sf #{node['default_python']} /usr/bin/python"
 end

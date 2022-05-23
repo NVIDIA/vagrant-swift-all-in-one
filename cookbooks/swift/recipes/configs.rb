@@ -26,6 +26,10 @@ when 'ubuntu'
     not_if "grep ENABLE=true /etc/default/rsync"
     action :run
   end
+when 'centos'
+  cookbook_file "/etc/sysconfig/memcached" do
+    source "etc/sysconfig/memcached"
+  end
 end
 
 # pre device rsync modules
@@ -112,11 +116,6 @@ execute "create cert" do
     "-out saio.crt -config saio.conf"
   cwd "/etc/ssl/private/"
   creates "/etc/ssl/private/saio.crt"
-end
-
-default_python = 'python2'
-if node['use_python3']
-  default_python = 'python3'
 end
 
 execute "install cert" do

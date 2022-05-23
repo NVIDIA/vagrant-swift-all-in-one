@@ -15,7 +15,7 @@ required_packages = [
   "openssl-devel", # libssl-dev is required for building wheels from the cryptography package in swift.
   "curl", "gcc", "memcached", "rsync", "sqlite", "xfsprogs", "git-core",
   "libffi-devel",  "libxml2-devel", "libxml2", "libxslt-devel", "zlib-devel", "autoconf", "libtool",
-  "java-latest-openjdk", "haproxy", "python3", "python3-devel"
+  "java-latest-openjdk", "haproxy", "python3", "python3-devel", "ipython"
 ]
 
 if node['platform_version'] >= 8

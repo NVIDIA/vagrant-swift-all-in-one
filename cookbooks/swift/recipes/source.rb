@@ -2,12 +2,6 @@
 #Copyright (c) 2015-2021, NVIDIA CORPORATION.
 #SPDX-License-Identifier: Apache-2.0
 
-if node['use_python3']
-  default_pip = 'pip3'
-else
-  default_pip = 'pip2'
-end
-
 # ensure source_root
 directory "#{node['source_root']}" do
   owner node["username"]
@@ -64,7 +58,7 @@ end
 
 
 execute "fix semantic_version error from testtools" do
-  command "pip install --upgrade testtools"
+  command "#{node['default_pip']} install --upgrade testtools"
   default_env true
 end
 
@@ -91,7 +85,7 @@ end
 
 execute "python-pyeclib-install" do
   cwd "#{node['source_root']}/pyeclib"
-  command "#{default_pip} install -e . && #{default_pip} install -r test-requirements.txt"
+  command "#{node['default_pip']} install -e . && #{node['default_pip']} install -r test-requirements.txt"
   if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/pyeclib.egg-link"
   end
@@ -101,7 +95,7 @@ end
 
 execute "python-swiftclient-install" do
   cwd "#{node['source_root']}/python-swiftclient"
-  command "#{default_pip} install -e . && #{default_pip} install --ignore-installed -r test-requirements.txt"
+  command "#{node['default_pip']} install -e . && #{node['default_pip']} install --ignore-installed -r test-requirements.txt"
   if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/python-swiftclient.egg-link"
   end
@@ -114,7 +108,7 @@ execute "swift-bench-install" do
   # swift-bench has an old version of hacking in the test requirements,
   # seems to pull back pbr to 0.11 and break everything; not installing
   # swift-bench's test-requirements is probably better than that
-  command "#{default_pip} install -e ."
+  command "#{node['default_pip']} install -e ."
   if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/swift-bench.egg-link"
   end
@@ -124,7 +118,7 @@ end
 
 execute "python-swift-install" do
   cwd "#{node['source_root']}/swift"
-  command "#{default_pip} install -e .[kmip_keymaster] && #{default_pip} install -r test-requirements.txt"
+  command "#{node['default_pip']} install -e .[kmip_keymaster] && #{node['default_pip']} install -r test-requirements.txt"
   if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/swift.egg-link"
   end
@@ -133,7 +127,7 @@ execute "python-swift-install" do
 end
 
 execute "install tox" do
-  command "#{default_pip} install tox"
+  command "#{node['default_pip']} install tox"
   if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/tox"
   end
