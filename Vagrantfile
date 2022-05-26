@@ -15,6 +15,7 @@ vagrant_boxes = {
   "xenial" => "http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-vagrant.box",
   "bionic" => "http://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64-vagrant.box",
   "focal" => "http://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-vagrant.box",
+  "focal-m1" => "https://app.vagrantup.com/luminositylabsllc/boxes/ubuntu-20.04-arm64/versions/20211119.043850.01/providers/parallels.box",
   "jammy" => "http://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-vagrant.box",
   "dummy" => "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box",
 }
@@ -107,6 +108,13 @@ Vagrant.configure("2") do |global_config|
         end
       end
 
+      config.vm.provider "parallels" do |prl, override|
+        prl.name = "vagrant-#{hostname}-#{current_datetime}"
+        override.vm.network :private_network, ip: ip
+        prl.memory = Integer(ENV['VAGRANT_RAM'] || 2048)
+        prl.cpus = Integer(ENV['VAGRANT_CPUS'] || 1)
+      end
+
       config.vm.provider :aws do |v, override|
         override.vm.synced_folder ".", "/vagrant", type: "rsync",
           rsync__args: ["--verbose", "--archive", "--delete", "-z"]
@@ -133,7 +141,6 @@ Vagrant.configure("2") do |global_config|
       end
 
       config.vm.provision :chef_solo do |chef|
-        chef.product = "chef-workstation"
         chef.arguments = "--chef-license accept"
         chef.provisioning_path = "/etc/chef"
         chef.add_recipe "swift"
