@@ -35,7 +35,6 @@ export SWIFTCLIENT_REPO=https://github.com/openstack/python-swiftclient
 export SWIFTBENCH_REPO=https://github.com/openstack/swift-bench
 export LIBERASURECODE_REPO=https://github.com/openstack/liberasurecode
 export PYECLIB_REPO=https://github.com/openstack/pyeclib
-export SWIFTZIPKIN_REPO=https://github.com/swiftstack/swift-zipkin
 export EXTRA_KEY=  # additional pubkey for ~vagrant/.ssh/authorized_keys
 export GUI=   # non-empty shows VirtualBox console window
 export SOURCE_ROOT=/vagrant # clone git repositories at this location

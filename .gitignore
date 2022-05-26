@@ -1,4 +1,5 @@
 .vagrant
+.idea
 localrc*
 /*console.log
 /swift

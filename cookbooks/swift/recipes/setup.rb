@@ -59,7 +59,7 @@ required_packages = [
   "libssl-dev", # libssl-dev is required for building wheels from the cryptography package in swift.
   "curl", "gcc", "memcached", "rsync", "sqlite3", "xfsprogs", "git-core", "build-essential",
   "libffi-dev",  "libxml2-dev", "libxml2", "libxslt1-dev", "zlib1g-dev", "autoconf", "libtool",
-  "openjdk-11-jre-headless", "haproxy",
+  "openjdk-11-jre-headless", "haproxy", "python3-pip",
 ]
 
 if node['platform_version'] == '22.04'
@@ -87,9 +87,8 @@ end
 # no-no packages (PIP is the bomb, system packages are OLD SKOOL)
 unrequired_packages = [
   "python-requests",  "python-six", "python-urllib3",
-  "python-pbr", "python-pip",
-  "python3-requests",  "python3-six", "python3-urllib3",
-  "python3-pbr", "python3-pip",
+  "python-pbr", "python3-requests",  "python3-six", "python3-urllib3",
+  "python3-pbr",
 ]
 unrequired_packages.each do |pkg|
   package pkg do
