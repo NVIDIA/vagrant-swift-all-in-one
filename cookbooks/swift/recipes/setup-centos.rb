@@ -69,6 +69,18 @@ else
   end
 end
 
+execute "disable-selinux" do
+  command "setenforce 0"
+  action :run
+end
+
+execute "disable-selinux-at-boot" do
+  command "sed -i 's/SELINUX=enforcing/SELINUX=permissive/' /etc/selinux/config"
+  not_if "grep SELINUX=permissive /etc/selinux/config"
+  action :run
+end
+
+
 execute "source-profile" do
   command "echo 'source ~/.profile' >> ~#{node['username']}/.bashrc"
   not_if "grep 'source ~/.profile' ~#{node['username']}/.bashrc"

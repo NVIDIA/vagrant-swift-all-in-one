@@ -123,7 +123,7 @@ execute "install cert" do
   command "mkdir -p /usr/local/share/ca-certificates/extra && " \
     "cp #{cert_to_install} /usr/local/share/ca-certificates/extra/saio_ca.crt && " \
     "#{update_ca_certs} && " \
-    "cat #{cert_to_install} >> $(#{default_python} -m certifi)"
+    "cat #{cert_to_install} >> $(#{node['default_python']} -m certifi)"
   creates "/usr/local/share/ca-certificates/extra/saio_ca.crt"
   default_env true
 end
