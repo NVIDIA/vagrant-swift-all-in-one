@@ -1,7 +1,7 @@
 vagrant-swift-all-in-one setup on Macbook M1 aarch64 processor with Parallels
 ========================
 
-Host setup or installations 
+Host setup or installations
 
  1. Install HomeBrew
     `xcode-select --install`
@@ -13,7 +13,7 @@ Host setup or installations
  4. Changes into localrc
     `export VAGRANT_BOX=focal-m1`
     `source localrc`
- 5. Add "192.168.8.80    saio" into /etc/hosts 
+ 5. Add "192.168.8.80    saio" into /etc/hosts
  6. `vagrant up --provider parallels`
 
 The above setup was verified on macOS Monterey on Apple M1 Pro.

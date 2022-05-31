@@ -141,6 +141,9 @@ Vagrant.configure("2") do |global_config|
       end
 
       config.vm.provision :chef_solo do |chef|
+        unless vagrant_box.include? "m1" then
+          chef.product = "chef-workstation"
+        end
         chef.arguments = "--chef-license accept"
         chef.provisioning_path = "/etc/chef"
         chef.add_recipe "swift"
