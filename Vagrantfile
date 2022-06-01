@@ -79,6 +79,8 @@ local_config = {
   "source_root" => (ENV['SOURCE_ROOT'] || '/vagrant'),
 }
 
+# This patch is to address [vagrant-aws#566](https://github.com/mitchellh/vagrant-aws/issues/566#issuecomment-580812210)
+
 class Hash
   def slice(*keep_keys)
     h = {}
@@ -121,6 +123,7 @@ Vagrant.configure("2") do |global_config|
         override.vm.synced_folder ".", "/vagrant", type: "rsync",
           rsync__args: ["--verbose", "--archive", "--delete", "-z"]
         override.ssh.private_key_path = ENV['SSH_PRIVATE_KEY_PATH']
+        override.chef.synced_folder_type = 'rsync'
 
         v.access_key_id = ENV['AWS_ACCESS_KEY_ID']
         v.secret_access_key = ENV['AWS_SECRET_ACCESS_KEY']
@@ -135,12 +138,19 @@ Vagrant.configure("2") do |global_config|
         v.tags = {'Name' => 'swift'}
       end
 
+      if vagrant_box != 'jammy' || ENV['VAGRANT_DEFAULT_PROVIDER'] != 'aws' then
+        # Install libssl for Chef (https://github.com/hashicorp/vagrant/issues/10914)
+        config.vm.provision "shell",
+           inline: "sudo apt-get update -y -qq && "\
+             "export DEBIAN_FRONTEND=noninteractive && "\
+             "sudo -E apt-get -q --option \"Dpkg::Options::=--force-confold\" --assume-yes install libssl1.1"
+      end
+
       config.vm.provision :chef_solo do |chef|
         chef.product = "chef-workstation"
         chef.arguments = "--chef-license accept"
         chef.provisioning_path = "/etc/chef"
         chef.add_recipe "swift"
-        chef.synced_folder_type = 'rsync'
         chef.json = {
           "ip" => ip,
           "hostname" => hostname,
