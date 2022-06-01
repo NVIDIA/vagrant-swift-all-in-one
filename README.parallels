@@ -10,10 +10,12 @@ Host setup or installations
     `brew cask install vagrant`
  3. Install Parallels
     Download and install from https://www.parallels.com/products/desktop/trial/
- 4. Changes into localrc
-    `export VAGRANT_BOX=focal-m1`
+ 4. Copy "localrc-template" file to your "localrc" file, and make changes to the below environment variables
+    export VAGRANT_BOX=focal-m1
+    export VAGRANT_DEFAULT_PROVIDER="parallels"
+ 5. Make those environment variables to take effect
     `source localrc`
- 5. Add "192.168.8.80    saio" into /etc/hosts
- 6. `vagrant up --provider parallels`
+ 6. Add "192.168.8.80    saio" into /etc/hosts
+ 7. `vagrant up`
 
 The above setup was verified on macOS Monterey on Apple M1 Pro.
