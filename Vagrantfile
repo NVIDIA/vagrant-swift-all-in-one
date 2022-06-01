@@ -123,7 +123,6 @@ Vagrant.configure("2") do |global_config|
         override.vm.synced_folder ".", "/vagrant", type: "rsync",
           rsync__args: ["--verbose", "--archive", "--delete", "-z"]
         override.ssh.private_key_path = ENV['SSH_PRIVATE_KEY_PATH']
-        override.chef.synced_folder_type = 'rsync'
 
         v.access_key_id = ENV['AWS_ACCESS_KEY_ID']
         v.secret_access_key = ENV['AWS_SECRET_ACCESS_KEY']
@@ -138,7 +137,7 @@ Vagrant.configure("2") do |global_config|
         v.tags = {'Name' => 'swift'}
       end
 
-      if vagrant_box != 'jammy' || ENV['VAGRANT_DEFAULT_PROVIDER'] != 'aws' then
+      unless ['dummy', 'jammy'].include? vagrant_box then
         # Install libssl for Chef (https://github.com/hashicorp/vagrant/issues/10914)
         config.vm.provision "shell",
            inline: "sudo apt-get update -y -qq && "\
@@ -162,6 +161,9 @@ Vagrant.configure("2") do |global_config|
           chef.json['base_uri'] = "http://#{hostname}:8080"
         end
         chef.json['auth_uri'] = "#{chef.json['base_uri']}/auth/v1.0"
+        if vagrant_box != 'dummy' then
+          chef.synced_folder_type = :rsync
+        end
       end
     end
   end
