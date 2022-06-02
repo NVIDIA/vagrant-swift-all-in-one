@@ -161,7 +161,7 @@ Vagrant.configure("2") do |global_config|
           chef.json['base_uri'] = "http://#{hostname}:8080"
         end
         chef.json['auth_uri'] = "#{chef.json['base_uri']}/auth/v1.0"
-        if vagrant_box != 'dummy' then
+        if vagrant_box == 'dummy' then
           chef.synced_folder_type = :rsync
         end
       end
