@@ -35,3 +35,23 @@ export VAGRANT_USERNAME="ubuntu" # or whatever other username you want it to be
 *NOTE:* After your instance has been provisioned and is ssh reachable, you can follow the steps mentioned [here](https://github.com/NVIDIA/vagrant-swift-all-in-one#running-tests).
 It is important to note that you might have to `tox -e py38` so it can run all your unittests, functional tests, etc. in a
 supported python virtual environment.
+
+Issues
+======
+
+The vagrant-aws provider is [unmaintained](https://github.com/mitchellh/vagrant-aws/issues/579#issuecomment-1035517879)
+
+During `vagrant destroy` I see this error:
+
+```
+InvalidParameterValue => You must specify an association id when unmapping an address from a VPC instance (Fog::Compute::AWS::Error)
+```
+
+I have to remove the AWS Elastic IP "by hand" using the web console, then clear out the vagrant state:
+
+```
+cat .vagrant/machines/default/aws/elastic_ip
+# delete the ip
+rm !$
+nvwrapit vagrant destroy
+```
