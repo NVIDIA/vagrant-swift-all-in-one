@@ -16,6 +16,7 @@ Host setup or installations
  5. Make those environment variables to take effect
     `source localrc`
  6. Add "192.168.8.80    saio" into /etc/hosts
- 7. `vagrant up`
+ 7. Install the vagrant plugin for parallels with `vagrant plugin install vagrant-parallels`
+ 8. `vagrant up`
 
 The above setup was verified on macOS Monterey on Apple M1 Pro.
