@@ -137,6 +137,7 @@ end
 
 [
   "s3cmd",
+  "poetry",
   "awscli-plugin-endpoint",
   "bandit==1.5.1",  # pin bandit to avoid pyyaml issues on bionic (at least)
 ].each do |pkg|
