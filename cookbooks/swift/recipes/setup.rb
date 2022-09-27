@@ -118,11 +118,21 @@ bash 'install pip' do
 end
 
 # install pip packages
-
-[
+pip_packages = [
   "s3cmd",
   "awscli-plugin-endpoint",
-].each do |pkg|
+]
+if node['tracing']
+  # Install OpenTelemetry tracing pip packages
+  pip_packages.concat [
+    "opentelemetry-api",
+    "opentelemetry-sdk",
+    "opentelemetry-semantic-conventions",
+    "opentelemetry-exporter-jaeger",
+  ]
+end
+
+pip_packages.each do |pkg|
   execute "pip install #{pkg}" do
     command "pip install #{pkg}"
   end
