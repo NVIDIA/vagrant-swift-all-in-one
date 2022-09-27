@@ -206,6 +206,7 @@ end
   'container-sync-realms.conf',
   'test.conf',
   'swift.conf',
+  'jaeger_exporter.json',
 ].each do |filename|
   template "/etc/swift/#{filename}" do
     source "/etc/swift/#{filename}.erb"
@@ -228,6 +229,7 @@ template "/etc/swift/proxy-server/default.conf-template" do
   group node["username"]
   variables({
     :disable_encryption => ! node['encryption'],
+    :tracing => node['tracing'],
   })
 end
 
@@ -265,6 +267,7 @@ end
       :keymaster_pipeline => keymaster_pipeline,
       :nvratelimit_pipeline => node['nvratelimit'] ? 'nvratelimit' : '',
       :statsd_exporter => node["statsd_exporter"],
+      :tracing => node['tracing'],
     })
   end
 end
@@ -298,6 +301,7 @@ end
     variables({
       :servers_per_port => node['servers_per_port'],
       :replication_server => !node["replication_servers"],
+      :tracing => node['tracing'],
     })
   end
   if node["replication_servers"] then
@@ -308,6 +312,7 @@ end
       variables({
         :servers_per_port => node['servers_per_port'],
         :replication_server => true,
+        :tracing => node['tracing'],
       })
     end
   else
