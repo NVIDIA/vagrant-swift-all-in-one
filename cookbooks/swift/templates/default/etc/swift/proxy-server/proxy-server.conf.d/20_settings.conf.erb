@@ -6,7 +6,7 @@ log_statsd_port = 9120
 <% end -%>
 
 [pipeline:main]
-pipeline = catch_errors healthcheck proxy-logging domain_remap cache <%= @nvratelimit_pipeline %> etag-quoter container_sync bulk tempurl s3api tempauth ratelimit staticweb slo dlo versioned_writes symlink <%= @keymaster_pipeline %> encryption subrequest-logging proxy-server
+pipeline = catch_errors healthcheck proxy-logging domain_remap cache <%= @nvratelimit_pipeline %> etag-quoter container_sync bulk tempurl s3api tempauth <%= @nvauth_pipeline %> ratelimit staticweb slo dlo versioned_writes symlink <%= @keymaster_pipeline %> encryption subrequest-logging proxy-server
 
 [app:proxy-server]
 require_proxy_protocol = <%= @ssl %>
@@ -21,3 +21,16 @@ user_test2_tester2 = testing2 .admin
 
 [filter:nvratelimit]
 use = egg:nvratelimit#nvratelimit
+
+[filter:nvauth]
+use = egg:nvauth_middleware#nvauth_middleware
+
+[filter:nvsts]
+use = egg:nvsts_middleware#nvsts_middleware
+jwks_endpoint_1 = https://maglev-dev-sjc4.nvda.ai/authn/storage/.well-known/jwks.json
+jwks_issuer_1 = maglev-stage
+jwks_ttl_1 = 3600000
+jwks_get_groups_1 = maglev
+jwks_aud_1 = swiftstack
+jwks_roles_endpoint_1 = https://example.api.nvidia.com/roles
+jwks_roles_ttl_1 = 60000
