@@ -124,6 +124,22 @@ execute "install tox" do
   action :run
 end
 
+# nvsts/nvauth stuff
+
+execute "nvsts-middleware-install" do
+  cwd "#{node['extra_source']}/nvsts-middleware"
+  command "pip install -e ."
+  action :run
+  only_if { ::File.directory?("#{node['extra_source']}/nvsts-middleware") }
+end
+
+execute "nvauth-middleware-install" do
+  cwd "#{node['extra_source']}/nvauth-middleware"
+  command "pip install -e ."
+  action :run
+  only_if { ::File.directory?("#{node['extra_source']}/nvauth-middleware") }
+end
+
 # add some helpful symlinks
 
 [
