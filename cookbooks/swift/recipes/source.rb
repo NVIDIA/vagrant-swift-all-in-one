@@ -3,7 +3,6 @@
 #SPDX-License-Identifier: Apache-2.0
 
 # ensure source_root
-
 directory "#{node['source_root']}" do
   owner node["username"]
   group node["username"]
@@ -59,7 +58,8 @@ end
 
 
 execute "fix semantic_version error from testtools" do
-  command "pip install --upgrade testtools"
+  command "#{node['default_pip']} install --upgrade testtools"
+  default_env true
 end
 
 execute "liberasurecode-install" do
@@ -77,22 +77,30 @@ execute "liberasurecode-install" do
   action :run
 end
 
+execute "libec-in-ld.so.conf" do
+  command "echo '/usr/local/lib' |tee /etc/ld.so.conf.d/lib_ec.conf && ldconfig"
+  default_env true
+end
+
+
 execute "python-pyeclib-install" do
   cwd "#{node['source_root']}/pyeclib"
-  command "pip install -e . && pip install -r test-requirements.txt"
+  command "#{node['default_pip']} install -e . && #{node['default_pip']} install -r test-requirements.txt"
   if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/pyeclib.egg-link"
   end
   action :run
+  default_env true
 end
 
 execute "python-swiftclient-install" do
   cwd "#{node['source_root']}/python-swiftclient"
-  command "pip install -e . && pip install --ignore-installed -r test-requirements.txt"
+  command "#{node['default_pip']} install -e . && #{node['default_pip']} install --ignore-installed -r test-requirements.txt"
   if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/python-swiftclient.egg-link"
   end
   action :run
+  default_env true
 end
 
 execute "swift-bench-install" do
@@ -100,28 +108,31 @@ execute "swift-bench-install" do
   # swift-bench has an old version of hacking in the test requirements,
   # seems to pull back pbr to 0.11 and break everything; not installing
   # swift-bench's test-requirements is probably better than that
-  command "pip install -e ."
+  command "#{node['default_pip']} install -e ."
   if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/swift-bench.egg-link"
   end
   action :run
+  default_env true
 end
 
 execute "python-swift-install" do
   cwd "#{node['source_root']}/swift"
-  command "pip install -e .[kmip_keymaster] && pip install -r test-requirements.txt"
+  command "#{node['default_pip']} install -e .[kmip_keymaster] && #{node['default_pip']} install -r test-requirements.txt"
   if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/swift.egg-link"
   end
   action :run
+  default_env true
 end
 
 execute "install tox" do
-  command "pip install tox"
+  command "#{node['default_pip']} install tox"
   if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/tox"
   end
   action :run
+  default_env true
 end
 
 # add some helpful symlinks

@@ -17,6 +17,9 @@ vagrant_boxes = {
   "focal" => "http://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-vagrant.box",
   "focal-m1" => "https://app.vagrantup.com/luminositylabsllc/boxes/ubuntu-20.04-arm64/versions/20211119.043850.01/providers/parallels.box",
   "jammy" => "http://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-vagrant.box",
+  "centos8" => "https://vagrantcloud.com/generic/boxes/centos8/versions/3.6.14/providers/virtualbox.box",
+  "centos7" => "https://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7.box",
+  "centos7-arm" => "https://vagrantcloud.com/ppggff/boxes/centos-7-aarch64-2009-4K/versions/1.0.0/providers/libvirt.box",
   "dummy" => "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box",
 }
 vagrant_box = (ENV['VAGRANT_BOX'] || DEFAULT_BOX)
@@ -51,7 +54,7 @@ local_config = {
   "replication_servers" => (ENV['REPLICATION_SERVERS'] || 'false').downcase == 'true',
   "container_auto_shard" => (ENV['CONTAINER_AUTO_SHARD'] || 'true').downcase == 'true',
   "object_sync_method" => (ENV['OBJECT_SYNC_METHOD'] || 'rsync'),
-  "use_python3" => (ENV['USE_PYTHON3'] || 'false').downcase == 'true',
+  "use_python3" => (ENV['USE_PYTHON3'] || 'true').downcase == 'true',
   "encryption" => (ENV['ENCRYPTION'] || 'false').downcase == 'true',
   "ssl" => (ENV['SSL'] || 'false').downcase == 'true',
   "kmip" => (ENV['KMIP'] || 'false').downcase == 'true',
@@ -97,6 +100,10 @@ Vagrant.configure("2") do |global_config|
       end
 
       config.vm.provider :virtualbox do |vb, override|
+        if vagrant_box.include?('centos') then
+          config.vbguest.installer_options = { allow_kernel_upgrade: true }
+          override.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+        end
         override.vm.hostname = hostname
         override.vm.network :private_network, ip: ip
 
@@ -132,7 +139,7 @@ Vagrant.configure("2") do |global_config|
         v.tags = {'Name' => 'swift'}
       end
 
-      if vagrant_box != 'jammy' then
+      if vagrant_box != 'jammy' && ! vagrant_box.include?('centos') then
         # Install libssl for Chef (https://github.com/hashicorp/vagrant/issues/10914)
         config.vm.provision "shell",
           inline: "sudo apt-get update -y -qq && "\
@@ -152,6 +159,13 @@ Vagrant.configure("2") do |global_config|
           "hostname" => hostname,
         }
         chef.json.merge! local_config
+        if chef.json['use_python3'] then
+          chef.json['default_pip'] = 'pip3'
+          chef.json['default_python'] = 'python3'
+        else
+          chef.json['default_pip'] = 'pip2'
+          chef.json['default_python'] = 'python2'
+        end
         if chef.json['ssl'] then
           chef.json['base_uri'] = "https://#{hostname}"
         else
