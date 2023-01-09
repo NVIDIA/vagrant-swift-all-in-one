@@ -39,3 +39,5 @@ export PYECLIB_REPO=https://github.com/openstack/pyeclib
 export EXTRA_KEY=  # additional pubkey for ~vagrant/.ssh/authorized_keys
 export GUI=   # non-empty shows VirtualBox console window
 export SOURCE_ROOT=/vagrant # clone git repositories at this location
+export EXTRA_SOURCE=/vagrant/.scratch
+export NVRATELIMIT=false # or true

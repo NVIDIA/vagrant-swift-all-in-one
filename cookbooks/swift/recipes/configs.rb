@@ -225,6 +225,7 @@ end
       variables({
         :ssl => node['ssl'],
         :keymaster_pipeline => keymaster_pipeline,
+        :nvratelimit_pipeline => node['nvratelimit'] ? 'nvratelimit' : '',
       })
     end
   end
