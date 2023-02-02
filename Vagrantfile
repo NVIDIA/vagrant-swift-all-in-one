@@ -97,6 +97,10 @@ Vagrant.configure("2") do |global_config|
       end
 
       config.vm.provider :virtualbox do |vb, override|
+        if Vagrant::Util::Platform.wsl?
+          # See https://github.com/hashicorp/vagrant/issues/8604
+          vb.customize [ "modifyvm", :id, "--uartmode1", "disconnected" ]
+        end
         override.vm.hostname = hostname
         override.vm.network :private_network, ip: ip
 
@@ -113,6 +117,17 @@ Vagrant.configure("2") do |global_config|
         override.vm.network :private_network, ip: ip
         prl.memory = Integer(ENV['VAGRANT_RAM'] || 2048)
         prl.cpus = Integer(ENV['VAGRANT_CPUS'] || 1)
+      end
+
+      if Vagrant::Util::Platform.wsl?
+        hostpath = File.dirname(__FILE__)
+        if !Vagrant::Util::Platform.wsl_drvfs_path? hostpath
+          puts "/vagrant will be one-way-synced! Consider using a "\
+               "Windows checkout, rather than keeping it under WSL."
+          # DO NOT include --delete; with that, we blow away our git repos on reload
+          override.vm.synced_folder hostpath, "/vagrant", type: "rsync",
+            rsync__args: ["--verbose", "--archive", "-z"]
+        end
       end
 
       config.vm.provider :aws do |v, override|
