@@ -106,6 +106,13 @@ execute "install cert" do
   creates "/usr/local/share/ca-certificates/extra/saio_ca.crt"
 end
 
+if node['full_reprovision'] then
+  execute "reinstall cert for certifi" do
+    cert_to_install = "/etc/ssl/private/saio.crt"
+    command "cat #{cert_to_install} >> $(python -m certifi)"
+  end
+end
+
 execute "create pem" do
   command "cat saio.crt saio.key > saio.pem"
   cwd "/etc/ssl/private/"
