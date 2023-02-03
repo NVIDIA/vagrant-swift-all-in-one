@@ -51,7 +51,7 @@ local_config = {
   "replication_servers" => (ENV['REPLICATION_SERVERS'] || 'false').downcase == 'true',
   "container_auto_shard" => (ENV['CONTAINER_AUTO_SHARD'] || 'true').downcase == 'true',
   "object_sync_method" => (ENV['OBJECT_SYNC_METHOD'] || 'rsync'),
-  "use_python3" => (ENV['USE_PYTHON3'] || 'false').downcase == 'true',
+  "use_python3" => (ENV['USE_PYTHON3'] || 'true').downcase == 'true',
   "encryption" => (ENV['ENCRYPTION'] || 'false').downcase == 'true',
   "ssl" => (ENV['SSL'] || 'false').downcase == 'true',
   "kmip" => (ENV['KMIP'] || 'false').downcase == 'true',
