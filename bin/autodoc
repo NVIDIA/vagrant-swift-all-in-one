@@ -7,7 +7,11 @@
 from __future__ import print_function
 import argparse
 import os
-import Queue
+try:
+    import queue
+except ImportError:
+    # py2
+    import Queue as queue
 import sys
 import threading
 
@@ -69,7 +73,7 @@ def watch_changed_files(q, *source_dirs):
             # sleep for one second (or till user hits enter...)
             try:
                 q.get(timeout=1.0)
-            except Queue.Empty:
+            except queue.Empty:
                 pass
             else:
                 yield 'User says path...'
@@ -104,11 +108,14 @@ def main():
     print('done...')
     os.system('swift stat -v %s index.html | grep URL' % container)
     # we're gunna let the user hit enter to rebuild immediately
-    q = Queue.Queue()
+    q = queue.Queue()
 
     def get_input():
         while True:
-            q.put(raw_input())
+            if sys.version_info < (3,):
+                q.put(raw_input())
+            else:
+                q.put(input())
     continue_thread = threading.Thread(target=get_input)
     continue_thread.daemon = True
     continue_thread.start()
