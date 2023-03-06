@@ -4,6 +4,26 @@ vagrant-swift-all-in-one
 A Swift-All-In-One in a few easy steps.
 
  1. `vagrant up`
+    - This may fail like
+      ```
+      The IP address configured for the host-only network is not within the
+      allowed ranges. Please update the address used to be within the allowed
+      ranges and run the command again.
+
+        Address: 192.168.8.80
+        Ranges: 192.168.56.0/21
+
+      Valid ranges can be modified in the /etc/vbox/networks.conf file. For
+      more information including valid format see:
+
+        https://www.virtualbox.org/manual/ch06.html#network_hostonly
+      ```
+    - You can fix this by ensuring `/etc/vbox/networks.conf` exists and updating
+      it appropriately:
+      ```
+      sudo mkdir -p /etc/vbox
+      echo "* 192.168.8.0/24" | sudo tee -a /etc/vbox/networks.conf
+      ```
  1. `vagrant ssh`
  1. `echo "awesome" > test`
  1. `swift upload test test`
