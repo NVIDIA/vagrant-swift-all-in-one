@@ -225,6 +225,7 @@ end
       variables({
         :ssl => node['ssl'],
         :keymaster_pipeline => keymaster_pipeline,
+        :nvauth_pipeline => node['nvauth'] ? 'nvsts nvauth' : '',
       })
     end
   end
