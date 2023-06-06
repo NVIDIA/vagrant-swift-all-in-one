@@ -12,10 +12,17 @@ template "/etc/rsyncd.conf" do
   })
 end
 
-execute "enable-rsync" do
-  command "sed -i 's/ENABLE=false/ENABLE=true/' /etc/default/rsync"
-  not_if "grep ENABLE=true /etc/default/rsync"
-  action :run
+if node['platform_version'] == '22.04' then
+  execute "enable-rsync" do
+    command "systemctl enable rsync.service"
+    action :run
+  end
+else
+  execute "enable-rsync" do
+    command "sed -i 's/ENABLE=false/ENABLE=true/' /etc/default/rsync"
+    not_if "grep ENABLE=true /etc/default/rsync"
+    action :run
+  end
 end
 
 # pre device rsync modules
