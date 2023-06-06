@@ -172,6 +172,12 @@ end
   end
 end
 
+cookbook_file "/home/#{node['username']}/.nanorc" do
+  source "home/nanorc"
+  owner node['username']
+  group node['username']
+end
+
 
 # swift command line env setup
 
