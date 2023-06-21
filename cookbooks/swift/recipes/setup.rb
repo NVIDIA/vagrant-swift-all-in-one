@@ -59,7 +59,7 @@ required_packages = [
   "libssl-dev", # libssl-dev is required for building wheels from the cryptography package in swift.
   "curl", "gcc", "memcached", "rsync", "sqlite3", "xfsprogs", "git-core", "build-essential",
   "libffi-dev",  "libxml2-dev", "libxml2", "libxslt1-dev", "zlib1g-dev", "autoconf", "libtool",
-  "openjdk-11-jre-headless", "haproxy", "docker-compose",
+  "haproxy", "docker-compose",
 ]
 
 if node['platform_version'] == '22.04'
