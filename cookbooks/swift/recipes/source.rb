@@ -86,6 +86,14 @@ execute "python-pyeclib-install" do
   action :run
 end
 
+if not node['use_python3']
+  execute "python-swiftclient-rollback" do
+    cwd "#{node['source_root']}/python-swiftclient"
+    command "git checkout 3.13.1"
+    action :run
+  end
+end
+
 execute "python-swiftclient-install" do
   cwd "#{node['source_root']}/python-swiftclient"
   command "pip install -e . && pip install --ignore-installed -r test-requirements.txt"
@@ -109,7 +117,7 @@ end
 
 execute "python-swift-install" do
   cwd "#{node['source_root']}/swift"
-  command "pip install -e .[kmip_keymaster] && pip install -r test-requirements.txt"
+  command "pip install #{if not node['use_python3'] then '-c py2-constraints.txt' end} -e .[kmip_keymaster] -r test-requirements.txt"
   if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/swift.egg-link"
   end
