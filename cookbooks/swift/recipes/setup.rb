@@ -71,7 +71,7 @@ if node['platform_version'] == '22.04'
   ]
 else
   required_packages += [
-    "python-dev", "python3.5", "python3.5-dev",
+    "python-dev",
     "python3.6", "python3.6-dev", "python3.7", "python3.7-dev",
     "python3.8", "python3.8-dev",
   ]
