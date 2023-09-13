@@ -88,7 +88,6 @@ end
 unrequired_packages = [
   "python-requests",  "python-six", "python-urllib3",
   "python-pbr", "python-pip",
-  "python3-requests",  "python3-six", "python3-urllib3",
   "python3-pbr", "python3-pip",
 ]
 unrequired_packages.each do |pkg|
@@ -138,6 +137,7 @@ end
 
 [
   "s3cmd",
+  "poetry",
   "awscli-plugin-endpoint",
   "bandit==1.5.1",  # pin bandit to avoid pyyaml issues on bionic (at least)
 ].each do |pkg|
