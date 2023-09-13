@@ -11,7 +11,7 @@ Host setup or installations
  3. Install Parallels
     Download and install from https://www.parallels.com/products/desktop/trial/
  4. Copy "localrc-template" file to your "localrc" file, and make changes to the below environment variables
-    export VAGRANT_BOX=focal-m1
+    export VAGRANT_BOX=jammy-m1
     export VAGRANT_DEFAULT_PROVIDER="parallels"
  5. Make those environment variables to take effect
     `source localrc`
