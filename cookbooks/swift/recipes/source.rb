@@ -88,7 +88,7 @@ end
 
 execute "python-swiftclient-install" do
   cwd "#{node['source_root']}/python-swiftclient"
-  command "pip install -e . && pip install --ignore-installed -r test-requirements.txt"
+  command "git checkout 3.13.1 && pip install -e . && pip install --ignore-installed -r test-requirements.txt"
   if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/python-swiftclient.egg-link"
   end
@@ -109,7 +109,7 @@ end
 
 execute "python-swift-install" do
   cwd "#{node['source_root']}/swift"
-  command "pip install -e .[kmip_keymaster] && pip install -r test-requirements.txt"
+  command "pip install -c py2-constraints.txt -e .[kmip_keymaster] && pip install -c py2-constraints.txt -r test-requirements.txt"
   if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/swift.egg-link"
   end
