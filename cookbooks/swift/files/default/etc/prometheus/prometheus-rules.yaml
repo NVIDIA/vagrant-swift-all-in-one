@@ -1,0 +1,10 @@
+groups:
+  - name: Cluster aggregates
+    interval: 10s
+    rules:
+      - record: cluster:object_server_requests_per_second
+        expr: sum (rate(object_server_timing_count[30s])) by (method)
+      - record: cluster:container_server_requests_per_second
+        expr: sum (rate(container_server_timing_count[30s])) by (method)
+      - record: cluster:account_server_requests_per_second
+        expr: sum (rate(account_server_timing_count[30s])) by (method)

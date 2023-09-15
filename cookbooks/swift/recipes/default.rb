@@ -3,6 +3,7 @@
 #SPDX-License-Identifier: Apache-2.0
 
 include_recipe "swift::setup"
+include_recipe "swift::statsd_exporter"
 include_recipe "swift::source"
 include_recipe "swift::data"
 include_recipe "swift::configs"

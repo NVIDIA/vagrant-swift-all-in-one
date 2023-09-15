@@ -1,3 +1,20 @@
 [DEFAULT]
 bind_port = <%= @bind_port %>
-log_name = object-<%= @bind_port %>
+log_name = object-server-<%= @bind_port %>
+
+<% if @include_replication_settings -%>
+[object-updater]
+log_name = object-updater-<%= @bind_port %>
+
+[object-auditor]
+log_name = object-auditor-<%= @bind_port %>
+
+[object-replicator]
+log_name = object-replicator-<%= @bind_port %>
+
+[object-reconstructor]
+log_name = object-reconstructor-<%= @bind_port %>
+
+[object-relinker]
+log_name = object-relinker-<%= @bind_port %>
+<% end -%>

@@ -1,0 +1,13 @@
+[Unit]
+Description=StatsD Exporter Server #%I
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/local/bin/statsd_exporter \
+  --web.listen-address=":910%i" \
+  --statsd.listen-udp=":912%i" \
+  --statsd.listen-tcp="" \
+  --statsd.mapping-config="/etc/prometheus/statsd_mapping.yaml"
+
+[Install]
+WantedBy=multi-user.target

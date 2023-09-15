@@ -55,6 +55,7 @@ local_config = {
   "encryption" => (ENV['ENCRYPTION'] || 'false').downcase == 'true',
   "ssl" => (ENV['SSL'] || 'false').downcase == 'true',
   "kmip" => (ENV['KMIP'] || 'false').downcase == 'true',
+  "statsd_exporter" => (ENV['STATSD_EXPORTER'] || 'false').downcase == 'true',
   "part_power" => Integer(ENV['PART_POWER'] || 10),
   "replicas" => Integer(ENV['REPLICAS'] || 3),
   "ec_type" => (ENV['EC_TYPE'] || 'liberasurecode_rs_vand'),

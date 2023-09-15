@@ -1,8 +1,20 @@
 [DEFAULT]
 bind_port = <%= @bind_port %>
-log_name = container-<%= @bind_port %>
+log_name = container-server-<%= @bind_port %>
 
 <% if @include_replication_settings -%>
+[container-replicator]
+log_name = container-replicator-<%= @bind_port %>
+
+[container-updater]
+log_name = container-updater-<%= @bind_port %>
+
+[container-auditor]
+log_name = container-auditor-<%= @bind_port %>
+
+[container-sync]
+log_name = container-sync-<%= @bind_port %>
+
 [container-sharder]
 log_name = container-sharder-<%= @bind_port %>
 <% end -%>
