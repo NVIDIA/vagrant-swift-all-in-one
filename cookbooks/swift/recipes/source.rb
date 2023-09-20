@@ -103,6 +103,13 @@ execute "python-swiftclient-install" do
   action :run
 end
 
+# since swiftclient forces cert reinstall; we do this now
+# N.B. the saio_crt_path is coupled with "create cert" task in configs.rb
+# yes, we this file exists even if you have node['ssl'] == false
+execute "fix certifi" do
+  command "cat #{node['saio_crt_path']} >> $(python -m certifi)"
+end
+
 execute "swift-bench-install" do
   cwd "#{node['source_root']}/swift-bench"
   # swift-bench has an old version of hacking in the test requirements,
