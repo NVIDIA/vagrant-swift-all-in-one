@@ -151,6 +151,7 @@ Vagrant.configure("2") do |global_config|
         chef.json = {
           "ip" => ip,
           "hostname" => hostname,
+          "saio_crt_path" =>  "/etc/ssl/private/saio.crt",
         }
         chef.json.merge! local_config
         if chef.json['ssl'] then
