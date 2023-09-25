@@ -133,7 +133,7 @@ Vagrant.configure("2") do |global_config|
         v.tags = {'Name' => 'swift'}
       end
 
-      if vagrant_box != 'jammy' then
+      unless vagrant_box.start_with? 'jammy' then
         # Install libssl for Chef (https://github.com/hashicorp/vagrant/issues/10914)
         config.vm.provision "shell",
           inline: "sudo apt-get update -y -qq && "\
