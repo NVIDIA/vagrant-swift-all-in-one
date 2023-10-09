@@ -111,6 +111,10 @@ execute "install cert" do
   creates "/usr/local/share/ca-certificates/extra/saio_ca.crt"
 end
 
+execute "fix certifi" do
+  command "cat #{node['saio_crt_path']} >> $(python -m certifi)"
+end
+
 execute "create pem" do
   command "cat saio.crt saio.key > saio.pem"
   cwd "/etc/ssl/private/"
