@@ -107,6 +107,7 @@ end
 # N.B. the saio_crt_path is coupled with "create cert" task in configs.rb
 # yes, we this file exists even if you have node['ssl'] == false
 execute "fix certifi" do
+  only_if { ::File.exist?(node['saio_crt_path']) }
   command "cat #{node['saio_crt_path']} >> $(python -m certifi)"
 end
 
