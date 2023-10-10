@@ -12,10 +12,17 @@ template "/etc/rsyncd.conf" do
   })
 end
 
-execute "enable-rsync" do
-  command "sed -i 's/ENABLE=false/ENABLE=true/' /etc/default/rsync"
-  not_if "grep ENABLE=true /etc/default/rsync"
-  action :run
+if node['platform_version'] == '22.04' then
+  execute "enable-rsync" do
+    command "systemctl enable rsync.service"
+    action :run
+  end
+else
+  execute "enable-rsync" do
+    command "sed -i 's/ENABLE=false/ENABLE=true/' /etc/default/rsync"
+    not_if "grep ENABLE=true /etc/default/rsync"
+    action :run
+  end
 end
 
 # pre device rsync modules
@@ -94,16 +101,18 @@ execute "create cert" do
   command "openssl req -x509 -days 365 -key saio.key " \
     "-out saio.crt -config saio.conf"
   cwd "/etc/ssl/private/"
-  creates "/etc/ssl/private/saio.crt"
+  creates "#{node['saio_crt_path']}"
 end
 
 execute "install cert" do
-  cert_to_install = "/etc/ssl/private/saio.crt"
   command "mkdir -p /usr/local/share/ca-certificates/extra && " \
-    "cp #{cert_to_install} /usr/local/share/ca-certificates/extra/saio_ca.crt && " \
-    "update-ca-certificates && " \
-    "cat #{cert_to_install} >> $(python -m certifi)"
+    "cp #{node['saio_crt_path']} /usr/local/share/ca-certificates/extra/saio_ca.crt && " \
+    "update-ca-certificates"
   creates "/usr/local/share/ca-certificates/extra/saio_ca.crt"
+end
+
+execute "fix certifi" do
+  command "cat #{node['saio_crt_path']} >> $(python -m certifi)"
 end
 
 execute "create pem" do
@@ -230,6 +239,7 @@ end
       variables({
         :ssl => node['ssl'],
         :keymaster_pipeline => keymaster_pipeline,
+        :nvratelimit_pipeline => node['nvratelimit'] ? 'nvratelimit' : '',
       })
     end
   end

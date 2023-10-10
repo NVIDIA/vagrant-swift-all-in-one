@@ -86,6 +86,14 @@ execute "python-pyeclib-install" do
   action :run
 end
 
+if not node['use_python3']
+  execute "python-swiftclient-rollback" do
+    cwd "#{node['source_root']}/python-swiftclient"
+    command "git checkout 3.13.1"
+    action :run
+  end
+end
+
 execute "python-swiftclient-install" do
   cwd "#{node['source_root']}/python-swiftclient"
   command "pip install -e . && pip install --ignore-installed -r test-requirements.txt"
@@ -93,6 +101,14 @@ execute "python-swiftclient-install" do
     creates "/usr/local/lib/python2.7/dist-packages/python-swiftclient.egg-link"
   end
   action :run
+end
+
+# since swiftclient forces cert reinstall; we do this now
+# N.B. the saio_crt_path is coupled with "create cert" task in configs.rb
+# yes, we this file exists even if you have node['ssl'] == false
+execute "fix certifi" do
+  only_if { ::File.exist?(node['saio_crt_path']) }
+  command "cat #{node['saio_crt_path']} >> $(python -m certifi)"
 end
 
 execute "swift-bench-install" do
@@ -109,7 +125,7 @@ end
 
 execute "python-swift-install" do
   cwd "#{node['source_root']}/swift"
-  command "pip install -e .[kmip_keymaster] && pip install -r test-requirements.txt"
+  command "pip install #{if not node['use_python3'] then '-c py2-constraints.txt' end} -e .[kmip_keymaster] -r test-requirements.txt"
   if not node['full_reprovision']
     creates "/usr/local/lib/python2.7/dist-packages/swift.egg-link"
   end
@@ -122,6 +138,17 @@ execute "install tox" do
     creates "/usr/local/lib/python2.7/dist-packages/tox"
   end
   action :run
+end
+
+# nvratelimit
+
+src_dir = "#{node['extra_source']}/swift-nvratelimit"
+
+execute "nvratelimit-middleware-install" do
+  cwd src_dir
+  command "pip install -e ."
+  action :run
+  only_if { ::File.directory?(src_dir) }
 end
 
 # add some helpful symlinks

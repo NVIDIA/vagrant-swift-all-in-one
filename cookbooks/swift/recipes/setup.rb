@@ -60,6 +60,7 @@ required_packages = [
   "curl", "gcc", "memcached", "rsync", "sqlite3", "xfsprogs", "git-core", "build-essential",
   "libffi-dev",  "libxml2-dev", "libxml2", "libxslt1-dev", "zlib1g-dev", "autoconf", "libtool",
   "openjdk-11-jre-headless", "haproxy", "python3-pip",
+  "haproxy", "docker-compose",
 ]
 
 if node['platform_version'] == '22.04'
@@ -71,7 +72,7 @@ if node['platform_version'] == '22.04'
   ]
 else
   required_packages += [
-    "python-dev", "python3.5", "python3.5-dev",
+    "python-dev",
     "python3.6", "python3.6-dev", "python3.7", "python3.7-dev",
     "python3.8", "python3.8-dev",
   ]
@@ -169,6 +170,12 @@ end
     command "echo 'source #{filename}' >> #{profile_file}"
     not_if "grep 'source #{filename}' #{profile_file}"
   end
+end
+
+cookbook_file "/home/#{node['username']}/.nanorc" do
+  source "home/nanorc"
+  owner node['username']
+  group node['username']
 end
 
 

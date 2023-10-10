@@ -96,3 +96,10 @@ group "adm" do
   members node["username"]
   append true
 end
+
+# make vagrant able to docker
+group "docker" do
+  action :modify
+  members node["username"]
+  append true
+end

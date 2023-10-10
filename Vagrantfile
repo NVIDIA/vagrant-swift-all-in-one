@@ -15,7 +15,9 @@ vagrant_boxes = {
   "xenial" => "http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-vagrant.box",
   "bionic" => "http://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64-vagrant.box",
   "focal" => "http://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-vagrant.box",
+  "focal-m1" => "https://app.vagrantup.com/luminositylabsllc/boxes/ubuntu-20.04-arm64/versions/20230901.220110.01/providers/parallels.box",
   "jammy" => "http://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-vagrant.box",
+  "jammy-m1" => "https://app.vagrantup.com/luminositylabsllc/boxes/ubuntu-22.04-arm64/versions/20230901.222028.01/providers/parallels.box",
   "dummy" => "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box",
 }
 vagrant_box = (ENV['VAGRANT_BOX'] || DEFAULT_BOX)
@@ -50,7 +52,7 @@ local_config = {
   "replication_servers" => (ENV['REPLICATION_SERVERS'] || 'false').downcase == 'true',
   "container_auto_shard" => (ENV['CONTAINER_AUTO_SHARD'] || 'true').downcase == 'true',
   "object_sync_method" => (ENV['OBJECT_SYNC_METHOD'] || 'rsync'),
-  "use_python3" => (ENV['USE_PYTHON3'] || 'false').downcase == 'true',
+  "use_python3" => (ENV['USE_PYTHON3'] || 'true').downcase == 'true',
   "encryption" => (ENV['ENCRYPTION'] || 'false').downcase == 'true',
   "ssl" => (ENV['SSL'] || 'false').downcase == 'true',
   "kmip" => (ENV['KMIP'] || 'false').downcase == 'true',
@@ -65,18 +67,20 @@ local_config = {
   "nodes" => Integer(ENV['NODES'] || 4),
   "disks" => Integer(ENV['DISKS'] || 4),
   "ec_disks" => Integer(ENV['EC_DISKS'] || 8),
-  "swift_repo" => (ENV['SWIFT_REPO'] || 'git://github.com/openstack/swift.git'),
+  "swift_repo" => (ENV['SWIFT_REPO'] || 'https://github.com/openstack/swift.git'),
   "swift_repo_branch" => (ENV['SWIFT_REPO_BRANCH'] || 'master'),
-  "swiftclient_repo" => (ENV['SWIFTCLIENT_REPO'] || 'git://github.com/openstack/python-swiftclient.git'),
+  "swiftclient_repo" => (ENV['SWIFTCLIENT_REPO'] || 'https://github.com/openstack/python-swiftclient.git'),
   "swiftclient_repo_branch" => (ENV['SWIFTCLIENT_REPO_BRANCH'] || 'master'),
-  "swift_bench_repo" => (ENV['SWIFTBENCH_REPO'] || 'git://github.com/openstack/swift-bench.git'),
+  "swift_bench_repo" => (ENV['SWIFTBENCH_REPO'] || 'https://github.com/openstack/swift-bench.git'),
   "swift_bench_repo_branch" => (ENV['SWIFTBENCH_REPO_BRANCH'] || 'master'),
-  "liberasurecode_repo" => (ENV['LIBERASURECODE_REPO'] || 'git://github.com/openstack/liberasurecode.git'),
+  "liberasurecode_repo" => (ENV['LIBERASURECODE_REPO'] || 'https://github.com/openstack/liberasurecode.git'),
   "liberasurecode_repo_branch" => (ENV['LIBERASURECODE_REPO_BRANCH'] || 'master'),
-  "pyeclib_repo" => (ENV['PYECLIB_REPO'] || 'git://github.com/openstack/pyeclib.git'),
+  "pyeclib_repo" => (ENV['PYECLIB_REPO'] || 'https://github.com/openstack/pyeclib.git'),
   "pyeclib_repo_branch" => (ENV['PYECLIB_REPO_BRANCH'] || 'master'),
   "extra_key" => load_key(ENV['EXTRA_KEY'] || ''),
   "source_root" => (ENV['SOURCE_ROOT'] || '/vagrant'),
+  "extra_source" => (ENV['EXTRA_SOURCE'] || '/vagrant/.scratch'),
+  "nvratelimit" => (ENV['NVRATELIMIT'] || 'false').downcase == 'true',
 }
 
 # This patch is to address [vagrant-aws#566](https://github.com/mitchellh/vagrant-aws/issues/566#issuecomment-580812210)
@@ -119,6 +123,13 @@ Vagrant.configure("2") do |global_config|
         end
       end
 
+      config.vm.provider "parallels" do |prl, override|
+        prl.name = "vagrant-#{hostname}-#{current_datetime}"
+        override.vm.network :private_network, ip: ip
+        prl.memory = Integer(ENV['VAGRANT_RAM'] || 2048)
+        prl.cpus = Integer(ENV['VAGRANT_CPUS'] || 1)
+      end
+
       config.vm.provider :aws do |v, override|
         override.vm.synced_folder ".", "/vagrant", type: "rsync",
           rsync__args: ["--verbose", "--archive", "--delete", "-z"]
@@ -137,7 +148,7 @@ Vagrant.configure("2") do |global_config|
         v.tags = {'Name' => 'swift'}
       end
 
-      unless ['dummy', 'jammy'].include? vagrant_box then
+      unless vagrant_box.start_with? 'jammy' then
         # Install libssl for Chef (https://github.com/hashicorp/vagrant/issues/10914)
         config.vm.provision "shell",
            inline: "sudo apt-get update -y -qq && "\
@@ -146,13 +157,16 @@ Vagrant.configure("2") do |global_config|
       end
 
       config.vm.provision :chef_solo do |chef|
-        chef.product = "chef-workstation"
+        unless vagrant_box.include? "m1" then
+          chef.product = "chef-workstation"
+        end
         chef.arguments = "--chef-license accept"
         chef.provisioning_path = "/etc/chef"
         chef.add_recipe "swift"
         chef.json = {
           "ip" => ip,
           "hostname" => hostname,
+          "saio_crt_path" =>  "/etc/ssl/private/saio.crt",
         }
         chef.json.merge! local_config
         if chef.json['ssl'] then

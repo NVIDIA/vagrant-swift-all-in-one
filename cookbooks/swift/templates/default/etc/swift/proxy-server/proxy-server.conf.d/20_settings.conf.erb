@@ -2,7 +2,7 @@
 bind_port = 8080
 
 [pipeline:main]
-pipeline = catch_errors healthcheck proxy-logging domain_remap cache etag-quoter container_sync bulk tempurl s3api tempauth ratelimit slo dlo versioned_writes symlink <%= @keymaster_pipeline %> encryption subrequest-logging proxy-server
+pipeline = catch_errors healthcheck proxy-logging domain_remap cache <%= @nvratelimit_pipeline %> etag-quoter container_sync bulk tempurl s3api tempauth ratelimit slo dlo versioned_writes symlink <%= @keymaster_pipeline %> encryption subrequest-logging proxy-server
 
 [app:proxy-server]
 require_proxy_protocol = <%= @ssl %>
@@ -14,3 +14,6 @@ user_test_tester = testing .admin
 user_test_tester2 = testing2 .admin
 user_test_tester3 = testing3
 user_test2_tester2 = testing2 .admin
+
+[filter:nvratelimit]
+use = egg:nvratelimit#nvratelimit
