@@ -79,6 +79,8 @@ local_config = {
   "pyeclib_repo_branch" => (ENV['PYECLIB_REPO_BRANCH'] || 'master'),
   "extra_key" => load_key(ENV['EXTRA_KEY'] || ''),
   "source_root" => (ENV['SOURCE_ROOT'] || '/vagrant'),
+  "extra_source" => (ENV['EXTRA_SOURCE'] || '/vagrant/.scratch'),
+  "nvratelimit" => (ENV['NVRATELIMIT'] || 'false').downcase == 'true',
 }
 
 

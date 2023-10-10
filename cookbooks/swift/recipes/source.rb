@@ -140,6 +140,17 @@ execute "install tox" do
   action :run
 end
 
+# nvratelimit
+
+src_dir = "#{node['extra_source']}/swift-nvratelimit"
+
+execute "nvratelimit-middleware-install" do
+  cwd src_dir
+  command "pip install -e ."
+  action :run
+  only_if { ::File.directory?(src_dir) }
+end
+
 # add some helpful symlinks
 
 [
