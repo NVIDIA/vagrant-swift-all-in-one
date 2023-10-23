@@ -135,12 +135,22 @@ execute "fix pip warning 2" do
 end
 
 # install pip packages
-
-[
+pip_packages = [
   "s3cmd",
   "awscli-plugin-endpoint",
   "bandit==1.5.1",  # pin bandit to avoid pyyaml issues on bionic (at least)
-].each do |pkg|
+]
+if node['tracing']
+  # Install OpenTelemetry tracing pip packages
+  pip_packages.concat [
+    "opentelemetry-api",
+    "opentelemetry-sdk",
+    "opentelemetry-semantic-conventions",
+    "opentelemetry-exporter-jaeger",
+  ]
+end
+
+pip_packages.each do |pkg|
   execute "pip install #{pkg}" do
     command "pip install #{pkg}"
   end

@@ -17,3 +17,7 @@ execute "startmain" do
   user node['username']
   group node["username"]
 end
+
+if node["tracing"] then
+  include_recipe "swift::tracing_info"
+end
