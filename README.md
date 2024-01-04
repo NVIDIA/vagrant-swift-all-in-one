@@ -51,6 +51,23 @@ s3cmd mb s3://s3test
 s3cmd ls
 ```
 
+configure statsd_exporter/prometheus metrics
+============================================
+
+You should be able to optionally configure statsd_exporter/prometheus metrics for the Swift stack on the VM.
+
+```
+cp localrc-template localrc
+sed -i 's/^\(export STATSD_EXPORTER=\)\([^ ]*\) /\1true/g' localrc
+source localrc
+vagrant provision
+```
+
+These will expose /metrics endpoints on ports 9100-9105 which you can check directly, and configure prometheus to scrape these endpoints every 10s and retain data for up to a day; you can then create ad-hoc graphs at
+
+ * http://saio:9090/graph
+
+
 ninja-dev-tricks
 ================
 
