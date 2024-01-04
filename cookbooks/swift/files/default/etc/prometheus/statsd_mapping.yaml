@@ -382,6 +382,12 @@ mappings:
           hostname: "$2$1"
           metric: "$3"
 
+      ### in a labeled-metrics world, everything should have a "swift_" prefix
+      ### (hopefully?)
+      - match: ^swift_.*
+        match_type: regex
+        name: "$0"
+
       ### new metrics we're missing with hostname
       ### Note: when the metric name is unknown and may contain '.' we cannot
       ### distinguish arbitrary hostnames, so we make a best effort to match
