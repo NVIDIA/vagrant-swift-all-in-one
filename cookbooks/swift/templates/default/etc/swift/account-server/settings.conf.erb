@@ -1,3 +1,14 @@
 [DEFAULT]
 bind_port = <%= @bind_port %>
-log_name = account-<%= @bind_port %>
+log_name = account-server-<%= @bind_port %>
+
+<% if @include_replication_settings -%>
+[account-replicator]
+log_name = account-replicator-<%= @bind_port %>
+
+[account-auditor]
+log_name = account-auditor-<%= @bind_port %>
+
+[account-reaper]
+log_name = account-reaper-<%= @bind_port %>
+<% end -%>

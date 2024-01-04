@@ -1,0 +1,5 @@
+#!/bin/bash
+sudo systemctl stop prometheus.service
+sudo rm -rf /tmp/prom/data/*
+sudo systemctl restart 'statsd_exporter@*'
+sudo systemctl start prometheus.service

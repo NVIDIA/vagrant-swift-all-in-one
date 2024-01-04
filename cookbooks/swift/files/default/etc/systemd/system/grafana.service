@@ -1,0 +1,9 @@
+[Unit]
+Description=Grafana Server
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/local/bin/grafana
+
+[Install]
+WantedBy=multi-user.target

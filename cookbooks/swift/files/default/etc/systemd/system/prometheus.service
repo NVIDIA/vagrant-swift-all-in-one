@@ -1,0 +1,12 @@
+[Unit]
+Description=Prometheus Server
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/local/bin/prometheus \
+  --config.file="/etc/prometheus/prometheus.yaml" \
+  --storage.tsdb.path="/tmp/prom/data/" \
+  --storage.tsdb.retention.time=1d
+
+[Install]
+WantedBy=multi-user.target

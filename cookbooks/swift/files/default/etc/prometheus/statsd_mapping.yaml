@@ -1,0 +1,451 @@
+mappings:
+      ## Swift statsd -> statsd exporter
+      ### account/container/container auditor
+      - match: ^(internal|subrequest)*(\.)*(account|container|object)-auditor(-[0-9]*)?\.timing$
+        match_type: regex
+        name: "${3}_auditor_timing"
+        labels:
+          hostname: "$2$1"
+
+      - match: ^(internal|subrequest)*(\.)*(account|container|object)-auditor(-[0-9]*)?\.(\w+)$
+        match_type: regex
+        name: "${3}_auditor"
+        labels:
+          hostname: "$2$1"
+          metric: "$4"
+
+      ### Account-reaper
+      - match: ^(internal|subrequest)*(\.)*account-reaper(-[0-9]*)?\.timing$
+        match_type: regex
+        name: "account_reaper_timing"
+        labels:
+          hostname: "$2$1"
+
+      - match: ^(internal|subrequest)*(\.)*account-reaper(-[0-9]*)?\.return_codes.(\w+)$
+        match_type: regex
+        name: "account_reaper"
+        labels:
+          hostname: "$2$1"
+          metric: "return_codes"
+          code: "$4"
+
+      - match: ^(internal|subrequest)*(\.)*account-reaper(-[0-9]*)?\.([a-zA-Z]*)_([a-zA-Z_]*)$
+        match_type: regex
+        name: "account_reaper"
+        labels:
+          hostname: "$2$1"
+          metric: "$4"
+
+      - match: ^(internal|subrequest)*(\.)*account-reaper(-[0-9]*)?\.(\w+)$
+        match_type: regex
+        name: "account_reaper"
+        labels:
+          hostname: "$2$1"
+          metric: "$4"
+
+
+      ### account/container/object server
+
+      - match: ^(internal|subrequest)*(\.)*(account|container|object)-server(-[0-9]*)?([-r]*)\.([A-Z]*)\.errors.timing$
+        match_type: regex
+        name: "${3}_server_errors_timing"
+        labels:
+          hostname: "$2$1"
+          server: "$5"
+          method: "$6"
+
+      - match: ^(internal|subrequest)*(\.)*(account|container|object)-server(-[0-9]*)?([-r]*)\.([A-Z]*)\.timing$
+        match_type: regex
+        name: "${3}_server_timing"
+        labels:
+          hostname: "$2$1"
+          server: "$5"
+          method: "$6"
+
+      - match: ^(internal|subrequest)*(\.)*(account|container|object)-server(-[0-9]*)?([-r]*)\.([A-Z]*)\.([a-z0-9]*)\.timing$
+        match_type: regex
+        name: "${3}_server_device_timing"
+        labels:
+          hostname: "$2$1"
+          server: "$5"
+          method: "$6"
+          device: "$7"
+
+      ### object server
+
+      - match: ^(internal|subrequest)*(\.)*object-server(-[0-9]*)?([-r]*)\.(\w+)$
+        match_type: regex
+        name: "object_server"
+        labels:
+          hostname: "$2$1"
+          server: "$4"
+          method: "$5"
+
+
+      ### account/container replicator
+
+      - match: ^(internal|subrequest)*(\.)*(account|container)-replicator(-[0-9]*)?\.timing$
+        match_type: regex
+        name: "${3}_replicator_timing"
+        labels:
+          hostname: "$2$1"
+
+      - match: ^(internal|subrequest)*(\.)*(account|container)-(replicator|sharder)(-[0-9]*)?\.removes\.([a-z0-9]*)$
+        match_type: regex
+        name: "${3}_${4}_removes"
+        labels:
+          hostname: "$2$1"
+          device: "$6"
+
+      - match: ^(internal|subrequest)*(\.)*(account|container)-replicator(-[0-9]*)?\.(\w+)$
+        match_type: regex
+        name: "${3}_replicator"
+        labels:
+          hostname: "$2$1"
+          metric: "$5"
+
+      ### object replicator/reconstructor
+
+      - match: ^(internal|subrequest)*(\.)*object-(replicator|reconstructor)(-[0-9]*)?\.partition\.(\w+)\.timing$
+        match_type: regex
+        name: "object_${3}_partition_timing"
+        labels:
+          hostname: "$2$1"
+          metric: "$5"
+
+      - match: ^(internal|subrequest)*(\.)*object-(replicator|reconstructor)(-[0-9]*)?\.partition\.(.[a-zA-Z0-9-_]*)\.count(\.)*([a-z0-9]*)*$
+        match_type: regex
+        name: "object_${3}_partition_count"
+        labels:
+          hostname: "$2$1"
+          metric: "$5"
+          device: "$7"
+
+      - match: ^(internal|subrequest)*(\.)*object-(replicator|reconstructor)(-[0-9]*)?\.suffix\.(\w+)$
+        match_type: regex
+        name: "object_${3}_suffix"
+        labels:
+          hostname: "$2$1"
+          metric: "$5"
+
+
+      ### container sync
+
+      - match: ^(internal|subrequest)*(\.)*container-sync(-[0-9]*)?\.(\w+)\.timing$
+        match_type: regex
+        name: "container_sync_timing"
+        labels:
+          hostname: "$2$1"
+          metric: "$4"
+
+
+      - match: ^(internal|subrequest)*(\.)*container-sync(-[0-9]*)?\.(\w+)$
+        match_type: regex
+        name: "container_sync"
+        labels:
+          hostname: "$2$1"
+          metric: "$4"
+
+
+      ### container/object updater timing
+
+      - match: ^(internal|subrequest)*(\.)*(container|object)-updater(-[0-9]*)?\.timing$
+        match_type: regex
+        name: "${3}_updater_timing"
+        labels:
+          hostname: "$2$1"
+
+      ### object updater status timing
+      - match: ^(internal|subrequest)*(\.)*object-updater(-[0-9]*)?\.updater\.timing\.status\.([0-9]{3})$
+        match_type: regex
+        name: "object_updater_status_timing"
+        labels:
+          hostname: "$2$1"
+          status: "$4"
+
+      ### container/object updater metrics
+      - match: ^(internal|subrequest)*(\.)*(container|object)-updater(-[0-9]*)?\.(\w+)$
+        match_type: regex
+        name: "${3}_updater"
+        labels:
+          hostname: "$2$1"
+          metric: "$5"
+
+      ### object expirer
+
+      - match: ^(internal|subrequest)*(\.)*object-expirer(-[0-9]*)?\.timing$
+        match_type: regex
+        name: "object_expirer_timing"
+        labels:
+          hostname: "$2$1"
+
+      - match: ^(internal|subrequest)*(\.)*object-expirer(-[0-9]*)?\.(\w+)$
+        match_type: regex
+        name: "object_expirer"
+        labels:
+          hostname: "$2$1"
+          metric: "$4"
+
+      ### proxy server
+
+      - match: ^(internal|subrequest)*(\.)*proxy-server\.errors$
+        match_type: regex
+        name: "proxy_server_errors"
+        labels:
+          hostname: "$2$1"
+
+      - match: ^(internal|subrequest)*(\.)*proxy-server\.(account|container|object)\.([hc]{1}[a-z_]*)$
+        match_type: regex
+        name: "proxy_server"
+        labels:
+          hostname: "$2$1"
+          type: "$3"
+          metric: "$4"
+
+      - match: ^(internal|subrequest)*(\.)*proxy-server\.(account|container|object)\.GET\.([0-9]{3})\.first-byte\.timing$
+        match_type: regex
+        name: "proxy_server_get_first_byte_timing"
+        labels:
+          hostname: "$2$1"
+          type: "$3"
+          status: "$4"
+
+      - match: ^(internal|subrequest)*(\.)*proxy-server\.(account|container|object)\.([A-Z_]*)\.([0-9]{3})\.timing$
+        match_type: regex
+        name: "proxy_server_timing"
+        labels:
+          hostname: "$2$1"
+          type: "$3"
+          method: "$4"
+          status: "$5"
+
+      - match: ^(internal|subrequest)*(\.)*proxy-server\.(account|container|object)\.([A-Z_]*)\.([0-9]{3})\.xfer$
+        match_type: regex
+        name: "proxy_server_xfer"
+        labels:
+          hostname: "$2$1"
+          type: "$3"
+          method: "$4"
+          status: "$5"
+
+      - match: ^(internal|subrequest)*(\.)*proxy-server\.object\.policy\.([0-9]*)\.([A-Z_]*)\.([0-9]{3})\.timing$
+        match_type: regex
+        name: "proxy_server_policy_timing"
+        labels:
+          hostname: "$2$1"
+          policy: "$3"
+          method: "$4"
+          status: "$5"
+
+      - match: ^(internal|subrequest)*(\.)*proxy-server\.object\.policy\.([0-9]*)\.GET\.([0-9]{3})\.first-byte\.timing$
+        match_type: regex
+        name: "proxy_server_policy_get_first_byte_timing"
+        labels:
+          hostname: "$2$1"
+          policy: "$3"
+          status: "$4"
+
+      - match: ^(internal|subrequest)*(\.)*proxy-server\.object\.policy\.([0-9]*)\.([A-Z_]*)\.([0-9]{3})\.xfer$
+        match_type: regex
+        name: "proxy_server_policy_xfer"
+        labels:
+          hostname: "$2$1"
+          policy: "$3"
+          method: "$4"
+          status: "$5"
+
+      ### Memcached access timing: <service>.memcached.<command>[.<error>].timing
+      - match: ^(internal|subrequest)*(\.)*(swift|proxy-server|container[a-zA-Z0-9-]*|object[a-zA-Z0-9-]*)\.memcached\.(\w+)\.([a-z_]*)\.*timing$
+        match_type: regex
+        name: "memcached_timing"
+        labels:
+          hostname: "$2$1"
+          service: "$3"
+          command: "$4"
+          error: "$5"
+
+      ### Proxy-server error_limiter
+      - match: ^(internal|subrequest)*(\.)*proxy-server\.error_limiter\.(\w+)$
+        match_type: regex
+        name: "proxy_server_error_limiter"
+        labels:
+          hostname: "$2$1"
+          metric: "$3"
+
+      ### container sharder
+
+      - match: ^(internal|subrequest)*(\.)*container-sharder(-[0-9]*)?\.timing$
+        match_type: regex
+        name: "container_sharder_timing"
+        labels:
+          hostname: "$2$1"
+
+      - match: ^(internal|subrequest)*(\.)*container-sharder(-[0-9]*)?\.removes\.([a-z0-9]*)$
+        match_type: regex
+        name: "container_sharder_removes"
+        labels:
+          hostname: "$2$1"
+          device: "$4"
+
+      - match: ^(internal|subrequest)*(\.)*container-sharder(-[0-9]*)?\.(\w+)$
+        match_type: regex
+        name: "container_sharder"
+        labels:
+          hostname: "$2$1"
+          metric: "$4"
+
+      - match: ^(internal|subrequest)*(\.)*container-sharder(-[0-9]*)?\.sharder\.sharding\.(.*)$
+        match_type: regex
+        name: "container_sharder_sharding"
+        labels:
+          hostname: "$2$1"
+          metric: "$4"
+
+      ### container shard range: (proxy-server.[container|object].shard_[updating|listing].cache.[miss|skip|force_skip|disabled|error|bypass].{CODE})
+      ### container shard range: (proxy-server.[container|object].shard_[updating|listing].cache.hit)
+      - match: ^(internal|subrequest)*(\.)*(proxy-server)\.([\w+]*)\.*(shard_\w+)\.cache\.(miss|skip|force_skip|disabled|error|hit|bypass)\.*([0-9]{3})*$
+        match_type: regex
+        name: "container_shard_ranges_cache"
+        labels:
+          hostname: "$2$1"
+          service: "$3"
+          target: "$4"
+          method: "$5"
+          metric: "$6"
+          status: "$7"
+
+      ### container shard range: (proxy-server.[container|object].shard_[updating|listing].infocache.hit)
+      - match: ^(internal|subrequest)*(\.)*(proxy-server)\.([\w+]*)\.*(shard_\w+)\.infocache\.(\w+)$
+        match_type: regex
+        name: "container_shard_ranges_infocache"
+        labels:
+          hostname: "$2$1"
+          service: "$3"
+          target: "$4"
+          method: "$5"
+          metric: "$6"
+
+      ### account/container info cache (memcache) and infocache (infocache)
+      ### (proxy-server).[account|container].info.cache.hit)
+      ### (proxy-server).[account|container].info.cache.[miss|skip|disabled].status_int
+      - match: ^(internal|subrequest)*(\.)*(proxy-server)\.(account|container)\.info\.cache\.([a-zA-Z_]+)(\.)*([0-9]{3})*$
+        match_type: regex
+        name: "${4}_info_cache"
+        labels:
+          hostname: "$2$1"
+          service: "$3"
+          metric: "$5"
+          status: "$7"
+
+      ### (proxy-server).[account|container].info.infocache.hit)
+      - match: ^(internal|subrequest)*(\.)*(proxy-server)\.(account|container)\.info\.infocache\.([a-zA-Z_]+)$
+        match_type: regex
+        name: "${4}_info_infocache"
+        labels:
+          hostname: "$2$1"
+          service: "$3"
+          metric: "$5"
+
+      ### tempauth
+
+      - match: ^(internal|subrequest)*(\.)*tempauth\.(\w+)\.(\w+)$
+        match_type: regex
+        name: "middleware_tempauth"
+        labels:
+          hostname: "$2$1"
+          reseller_prefix: "$3"
+          metric: "$4"
+
+      ### tempurl/formpost digests
+      - match: ^(internal|subrequest)*(\.)*proxy-server\.(tempurl|formpost)\.digests\.(\w+)$
+        match_type: regex
+        name: "middleware_${3}_digests"
+        labels:
+          hostname: "$2$1"
+          digest: "$4"
+
+      ### s3api
+
+      - match: ^(internal|subrequest)*(\.)*s3api\.([0-9]{3})\.([a-zA-Z_]+)\.*([a-zA-Z_-]*)$
+        match_type: regex
+        name: "middleware_s3api"
+        labels:
+          hostname: "$2$1"
+          status: "$3"
+          error: "$4"
+          reason: "$5"
+
+      - match: ^(internal|subrequest)*(\.)*proxy-server\.info\.(\w+)$
+        match_type: regex
+        name: "proxy_server_info"
+        labels:
+          hostname: "$2$1"
+          metric: "$3"
+
+      ### in a labeled-metrics world, everything should have a "swift_" prefix
+      ### (hopefully?)
+      - match: ^swift_.*
+        match_type: regex
+        name: "$0"
+
+      ### new metrics we're missing with hostname
+      ### Note: when the metric name is unknown and may contain '.' we cannot
+      ### distinguish arbitrary hostnames, so we make a best effort to match
+      ### hostnames ending '.net'. This is unfortunately brittle.
+      - match: ([a-zA-Z0-9-]*[a-zA-Z0-9.]*\.net)\.(.*)$
+        match_type: regex
+        match_metric_type: counter
+        name: "unknown_metric_counter"
+        labels:
+          hostname: "$1"
+          name: "$2"
+          type: "counter"
+
+      - match: ([a-zA-Z0-9-]*[a-zA-Z0-9.]*\.net)\.(.*)$
+        match_type: regex
+        match_metric_type: gauge
+        name: "unknown_metric_gauge"
+        labels:
+          hostname: "$1"
+          name: "$2"
+          type: "gauge"
+
+      - match: ([a-zA-Z0-9-]*[a-zA-Z0-9.]*\.net)\.(.*)$
+        match_type: regex
+        match_metric_type: timer
+        name: "unknown_metric_timer"
+        labels:
+          hostname: "$1"
+          name: "$2"
+          type: "timer"
+
+      ### new metrics we're missing that aren't prefixed with a '*.net' hostname
+      - match: (.*)
+        match_type: regex
+        match_metric_type: counter
+        name: "unknown_raw_metric_counter"
+        labels:
+          name: "$1"
+          type: "counter"
+
+      - match: (.*)
+        match_type: regex
+        match_metric_type: gauge
+        name: "unknown_raw_metric_gauge"
+        labels:
+          name: "$1"
+          type: "gauge"
+
+      - match: (.*)
+        match_type: regex
+        match_metric_type: timer
+        name: "unknown_raw_metric_timer"
+        labels:
+          name: "$1"
+          type: "timer"
+
+      - match: (.*)
+        match_type: regex
+        name: "unknown_raw_metric_other"
+        labels:
+          name: "$1"

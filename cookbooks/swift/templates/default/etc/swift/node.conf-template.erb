@@ -2,3 +2,7 @@
 devices = <%= @srv_path %>
 bind_ip = <%= @bind_ip %>
 recon_cache_path = <%= @recon_cache_path %>
+<% if @statsd_exporter -%>
+log_statsd_host = localhost
+log_statsd_port = <%= @statsd_port %>
+<% end -%>

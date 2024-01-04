@@ -30,6 +30,7 @@ export USE_PYTHON3=true  # or false
 export SSL=false  # or true
 export ENCRYPTION=false  # or true
 export KMIP=false  # or true
+export STATSD_EXPORTER=false  # or true
 export SWIFT_REPO=https://github.com/openstack/swift
 export SWIFT_REPO_BRANCH=master
 export SWIFTCLIENT_REPO=https://github.com/openstack/python-swiftclient

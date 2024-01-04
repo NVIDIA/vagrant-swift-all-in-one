@@ -25,7 +25,7 @@ else
   end
 end
 
-# pre device rsync modules
+# per device rsync modules
 
 directory "/etc/rsyncd.d" do
   owner "vagrant"
@@ -136,6 +136,42 @@ service "haproxy" do
   end
 end
 
+# metrics pipeline
+
+directory "/etc/prometheus" do
+  owner "vagrant"
+  group "vagrant"
+  action :create
+end
+
+[
+  "statsd_mapping.yaml",
+  "prometheus.yaml",
+  "prometheus-rules.yaml",
+].each do |filename|
+  cookbook_file "/etc/prometheus/#{filename}" do
+    source "etc/prometheus/#{filename}"
+    if filename == "statsd_mapping.yaml" then
+      (0..5).each do |n|
+        notifies :restart, "service[statsd_exporter@#{n}]"
+      end
+    else
+      notifies :restart, 'service[prometheus]'
+    end
+    owner node['username']
+    group node['username']
+  end
+end
+
+service "prometheus" do
+  action (if node["statsd_exporter"] then [:enable, :start] else :stop end)
+end
+(0..5).each do |n|
+  service "statsd_exporter@#{n}" do
+    action (if node["statsd_exporter"] then [:enable, :start] else :stop end)
+  end
+end
+
 # swift
 
 directory "/etc/swift" do
@@ -215,28 +251,21 @@ end
     owner node["username"]
     group node["username"]
   end
-  if proxy == "proxy-noauth" then
-    cookbook_file "#{proxy_conf_dir}/20_settings.conf" do
-      source "#{proxy_conf_dir}/20_settings.conf"
-      owner node["username"]
-      group node["username"]
-    end
+  if node['kmip'] then
+    keymaster_pipeline = 'kmip_keymaster'
   else
-    if node['kmip'] then
-      keymaster_pipeline = 'kmip_keymaster'
-    else
-      keymaster_pipeline = 'keymaster'
-    end
-    template "/#{proxy_conf_dir}/20_settings.conf" do
-      source "#{proxy_conf_dir}/20_settings.conf.erb"
-      owner node["username"]
-      group node["username"]
-      variables({
-        :ssl => node['ssl'],
-        :keymaster_pipeline => keymaster_pipeline,
-        :nvratelimit_pipeline => node['nvratelimit'] ? 'nvratelimit' : '',
-      })
-    end
+    keymaster_pipeline = 'keymaster'
+  end
+  template "/#{proxy_conf_dir}/20_settings.conf" do
+    source "#{proxy_conf_dir}/20_settings.conf.erb"
+    owner node["username"]
+    group node["username"]
+    variables({
+      :ssl => node['ssl'],
+      :keymaster_pipeline => keymaster_pipeline,
+      :nvratelimit_pipeline => node['nvratelimit'] ? 'nvratelimit' : '',
+      :statsd_exporter => node["statsd_exporter"],
+    })
   end
 end
 
@@ -248,8 +277,10 @@ end
     variables({
        :srv_path => "/srv/node#{i}",
        :bind_ip => "127.0.0.#{i}",
+       :statsd_port => "912#{i}",
        :recon_cache_path => "/var/cache/swift/node#{i}",
-    })
+       :statsd_exporter => node["statsd_exporter"],
+      })
   end
 end
 

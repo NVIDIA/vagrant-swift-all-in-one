@@ -1,0 +1,35 @@
+scrape_configs:
+  - job_name: 'saio'
+    scrape_interval: 10s
+    static_configs:
+      - targets:
+        - 'localhost:9100'
+        labels:
+          host: 'proxy'
+
+      # backend servers
+      - targets:
+        - 'localhost:9101'
+        labels:
+          host: 'node1'
+      - targets:
+        - 'localhost:9102'
+        labels:
+          host: 'node2'
+      - targets:
+        - 'localhost:9103'
+        labels:
+          host: 'node3'
+      - targets:
+        - 'localhost:9104'
+        labels:
+          host: 'node4'
+
+      # noauth proxy server
+      - targets:
+        - 'localhost:9105'
+        labels:
+          host: 'noauth'
+
+rule_files:
+  - /etc/prometheus/prometheus-rules.yaml
