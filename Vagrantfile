@@ -151,6 +151,7 @@ Vagrant.configure("2") do |global_config|
         chef.json = {
           "ip" => ip,
           "hostname" => hostname,
+          "arch" => if vagrant_box.include? "m1" then "arm64" else "amd64" end,
         }
         chef.json.merge! local_config
         if chef.json['ssl'] then

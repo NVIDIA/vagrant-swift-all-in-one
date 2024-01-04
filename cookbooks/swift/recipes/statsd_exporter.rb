@@ -1,11 +1,10 @@
 STATSD_EXPORTER_VERSION="0.24.0"
 PROMETHEUS_VERSION="2.47.0"
 #GRAFANA_VERSION="10.1.1"
-# TODO: flip between amd64/arm64
 
 USER_HOME = "/home/#{node['username']}"
 
-STATSD_EXPORTER_DIRNAME = "statsd_exporter-#{STATSD_EXPORTER_VERSION}.linux-amd64"
+STATSD_EXPORTER_DIRNAME = "statsd_exporter-#{STATSD_EXPORTER_VERSION}.linux-#{node['arch']}"
 execute "download statsd_exporter" do
   cwd USER_HOME
   command "curl --fail -OL https://github.com/prometheus/statsd_exporter/releases/download/v#{STATSD_EXPORTER_VERSION}/#{STATSD_EXPORTER_DIRNAME}.tar.gz"
@@ -24,7 +23,7 @@ execute "install statsd_exporter" do
     action :run
 end
     
-PROMETHEUS_DIRNAME = "prometheus-#{PROMETHEUS_VERSION}.linux-amd64"
+PROMETHEUS_DIRNAME = "prometheus-#{PROMETHEUS_VERSION}.linux-#{node['arch']}"
 execute "download prometheus" do
   cwd USER_HOME
   command "curl --fail -OL https://github.com/prometheus/prometheus/releases/download/v#{PROMETHEUS_VERSION}/#{PROMETHEUS_DIRNAME}.tar.gz"
@@ -53,5 +52,5 @@ end
 end
 
 # TODO: do similar for grafana?
-#curl -OL https://dl.grafana.com/oss/release/grafana_{#GRAFANA_VERSION}_amd64.deb
+#curl -OL https://dl.grafana.com/oss/release/grafana_#{GRAFANA_VERSION}_#{node['arch']}.deb
 #sudo dpkg -i grafana_*.deb
