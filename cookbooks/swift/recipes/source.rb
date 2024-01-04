@@ -103,6 +103,14 @@ execute "python-swiftclient-install" do
   action :run
 end
 
+# since swiftclient forces cert reinstall; we do this now
+# N.B. the saio_crt_path is coupled with "create cert" task in configs.rb
+# yes, we this file exists even if you have node['ssl'] == false
+execute "fix certifi" do
+  only_if { ::File.exist?(node['saio_crt_path']) }
+  command "cat #{node['saio_crt_path']} >> $(python -m certifi)"
+end
+
 execute "swift-bench-install" do
   cwd "#{node['source_root']}/swift-bench"
   # swift-bench has an old version of hacking in the test requirements,
@@ -130,6 +138,17 @@ execute "install tox" do
     creates "/usr/local/lib/python2.7/dist-packages/tox"
   end
   action :run
+end
+
+# nvratelimit
+
+src_dir = "#{node['extra_source']}/swift-nvratelimit"
+
+execute "nvratelimit-middleware-install" do
+  cwd src_dir
+  command "pip install -e ."
+  action :run
+  only_if { ::File.directory?(src_dir) }
 end
 
 # add some helpful symlinks

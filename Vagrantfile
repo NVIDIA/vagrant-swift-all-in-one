@@ -15,8 +15,9 @@ vagrant_boxes = {
   "xenial" => "http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-vagrant.box",
   "bionic" => "http://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64-vagrant.box",
   "focal" => "http://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-vagrant.box",
-  "focal-m1" => "https://app.vagrantup.com/luminositylabsllc/boxes/ubuntu-20.04-arm64/versions/20211119.043850.01/providers/parallels.box",
+  "focal-m1" => "https://app.vagrantup.com/luminositylabsllc/boxes/ubuntu-20.04-arm64/versions/20230901.220110.01/providers/parallels.box",
   "jammy" => "http://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-vagrant.box",
+  "jammy-m1" => "https://app.vagrantup.com/luminositylabsllc/boxes/ubuntu-22.04-arm64/versions/20230901.222028.01/providers/parallels.box",
   "dummy" => "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box",
 }
 vagrant_box = (ENV['VAGRANT_BOX'] || DEFAULT_BOX)
@@ -79,6 +80,8 @@ local_config = {
   "pyeclib_repo_branch" => (ENV['PYECLIB_REPO_BRANCH'] || 'master'),
   "extra_key" => load_key(ENV['EXTRA_KEY'] || ''),
   "source_root" => (ENV['SOURCE_ROOT'] || '/vagrant'),
+  "extra_source" => (ENV['EXTRA_SOURCE'] || '/vagrant/.scratch'),
+  "nvratelimit" => (ENV['NVRATELIMIT'] || 'false').downcase == 'true',
 }
 
 
@@ -133,7 +136,7 @@ Vagrant.configure("2") do |global_config|
         v.tags = {'Name' => 'swift'}
       end
 
-      if vagrant_box != 'jammy' then
+      unless vagrant_box.start_with? 'jammy' then
         # Install libssl for Chef (https://github.com/hashicorp/vagrant/issues/10914)
         config.vm.provision "shell",
           inline: "sudo apt-get update -y -qq && "\
@@ -151,6 +154,7 @@ Vagrant.configure("2") do |global_config|
         chef.json = {
           "ip" => ip,
           "hostname" => hostname,
+          "saio_crt_path" =>  "/etc/ssl/private/saio.crt",
           "arch" => if vagrant_box.include? "m1" then "arm64" else "amd64" end,
         }
         chef.json.merge! local_config
