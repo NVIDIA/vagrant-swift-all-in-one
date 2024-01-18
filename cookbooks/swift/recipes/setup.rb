@@ -34,13 +34,6 @@ execute "add repo" do
   command "sudo add-apt-repository ppa:deadsnakes/ppa"
 end
 
-# backports seems to be enabled on xenial already?
-execute "enable backports" do
-  command "sudo sed -ie 's/# deb http:\\/\\/archive.ubuntu.com\\/ubuntu trusty-backports/deb http:\\/\\/archive.ubuntu.com\\/ubuntu trusty-backports/' /etc/apt/sources.list"
-  action :run
-  not_if "sudo grep -q '^deb .* trusty-backports' /etc/apt/sources.list"
-end
-
 execute "apt-get-update" do
   command "apt-get update && touch /tmp/.apt-get-update"
   if not node['full_reprovision']
@@ -62,7 +55,14 @@ required_packages = [
   "haproxy", "docker-compose",
 ]
 
-if node['platform_version'] == '22.04'
+if node['platform_version'] == '18.04' or
+   node['platform_version'] == '20.04' then
+  required_packages += [
+    "python-dev",
+    "python3.6", "python3.6-dev", "python3.7", "python3.7-dev",
+    "python3.8", "python3.8-dev",
+  ]
+elsif node['platform_version'] == '22.04' then
   required_packages += [
     "python2-dev", "python2", "python3", "python3-dev",
     "python3.7", "python3.7-dev", "python3.7-distutils",
@@ -71,9 +71,9 @@ if node['platform_version'] == '22.04'
   ]
 else
   required_packages += [
-    "python-dev",
-    "python3.6", "python3.6-dev", "python3.7", "python3.7-dev",
-    "python3.8", "python3.8-dev",
+    "python3", "python3-dev",
+    "python3.11", "python3.11-dev", "python3.11-distutils",
+    "python3.12", "python3.12-dev",
   ]
 end
 
@@ -84,40 +84,60 @@ extra_packages = node['extra_packages']
   end
 end
 
-# no-no packages (PIP is the bomb, system packages are OLD SKOOL)
-unrequired_packages = [
-  "python-requests",  "python-six", "python-urllib3",
-  "python-pbr", "python-pip",
-  "python3-requests",  "python3-six", "python3-urllib3",
-  "python3-pbr", "python3-pip",
-]
-unrequired_packages.each do |pkg|
-  package pkg do
-    action :purge
-  end
-end
-
-if node['use_python3']
-  default_python = 'python3'
-  pip_url = 'https://bootstrap.pypa.io/get-pip.py'
+if node['platform_version'] == '24.04' then
+    package "pip" do
+        action :install
+    end
+    package "python-is-python3" do
+        action :install
+    end
+    package "python3-colorama" do
+        action :remove
+    end
+    execute "live dangerously" do
+        command "echo '[global]' > /etc/pip.conf && echo 'break-system-packages = True' >> /etc/pip.conf"
+        creates "/etc/pip.conf"
+        action :run
+    end
 else
-  default_python = 'python2'
-  pip_url = 'https://bootstrap.pypa.io/pip/2.7/get-pip.py'
-end
+    # no-no packages (PIP is the bomb, system packages are OLD SKOOL)
+    unrequired_packages = [
+      "python-requests",  "python-six", "python-urllib3",
+      "python-pbr", "python-pip",
+      "python3-requests",  "python3-six", "python3-urllib3",
+      "python3-pbr", "python3-pip",
+    ]
+    unrequired_packages.each do |pkg|
+      package pkg do
+        action :purge
+      end
+    end
 
-execute "select default python version" do
-  command "ln -sf #{default_python} /usr/bin/python"
-end
+    if not node['use_python3'] then
+      default_python = 'python2'
+      pip_url = 'https://bootstrap.pypa.io/pip/2.7/get-pip.py'
+    elsif node['platform_version'] == '18.04' then
+      default_python = 'python3'
+      pip_url = 'https://bootstrap.pypa.io/pip/3.6/get-pip.py'
+    else
+      default_python = 'python3'
+      pip_url = 'https://bootstrap.pypa.io/get-pip.py'
+    end
 
-# it's a brave new world
-bash 'install pip' do
-  code <<-EOF
-    set -o pipefail
-    curl #{pip_url} | python
-    EOF
-  if not node['full_reprovision']
-    not_if "which pip"
-  end
+    execute "select default python version" do
+      command "ln -sf #{default_python} /usr/bin/python"
+    end
+
+    # it's a brave new world
+    bash 'install pip' do
+      code <<-EOF
+        set -o pipefail
+        curl #{pip_url} | python
+        EOF
+      if not node['full_reprovision']
+        not_if "which pip"
+      end
+    end
 end
 
 # pip 8.0 is more or less broken on trusty -> https://github.com/pypa/pip/issues/3384
