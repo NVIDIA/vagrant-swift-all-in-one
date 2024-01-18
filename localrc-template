@@ -1,4 +1,4 @@
-export VAGRANT_BOX=jammy  # precise, xenial, bionic, etc.
+export VAGRANT_BOX=jammy  # or focal
 export VAGRANT_DEFAULT_PROVIDER="virtualbox"
 export VAGRANT_USERNAME=vagrant # old boxes need user ubuntu
 export VAGRANT_HOSTNAME=saio
