@@ -70,7 +70,8 @@ end
 [
   "rsync",
   "memcached",
-  "rsyslog",
+# TODO: missing from /etc/init.d ???
+#   "rsyslog",
 ].each do |daemon|
   service daemon do
     action :start

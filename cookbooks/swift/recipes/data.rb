@@ -13,11 +13,12 @@
   end
 end
 
-if node['ec_policy'].empty? then
-  num_disks = node['disks']
-else
-  num_disks = [node['disks'], node['ec_disks']].max
-end
+# TODO: provisioning would fail when setting up the *8th* loop device ???
+# if node['ec_policy'].empty? then
+num_disks = node['disks']
+# else
+#   num_disks = [node['disks'], node['ec_disks']].max
+# end
 
 def make_disk(disk_file, mount_path, size="#{node['loopback_gb']}GB")
   execute "create sparse file #{disk_file}" do
@@ -48,6 +49,7 @@ def make_disk(disk_file, mount_path, size="#{node['loopback_gb']}GB")
   end
 
   execute "mount" do
+#     command "sudo mount #{mount_path}"
     command "mount #{mount_path}"
     not_if "mountpoint #{mount_path}"
   end
@@ -66,7 +68,7 @@ end
 end
 
 # for unittest xfs scratch
-make_disk "/var/lib/swift/tmp-disk", "/mnt/tmp", "400MB"
+# make_disk "/var/lib/swift/tmp-disk", "/mnt/tmp", "400MB"
 
 # run dirs
 
