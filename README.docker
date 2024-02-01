@@ -1,0 +1,61 @@
+
+Links:
+https://github.com/tknerr/vagrant-docker-baseimages/tree/master
+https://developer.hashicorp.com/vagrant/docs/providers/docker
+
+background:
+https://dev.to/mattdark/using-docker-as-provider-for-vagrant-10me
+https://sick.codes/how-to-mount-devices-inside-docker-containers-losetup-loopback-iso-files/
+
+On my M1 macbook I have
+
+colima version 0.5.5  (others use podman, note: do not use docker desktop without a paid-for license)
+Docker version 20.10.22, build 3a2c30b63a
+Vagrant 2.3.4
+
+Set in localrc:
+
+export VAGRANT_BOX="tknerr/baseimage-ubuntu-22.04" # precise, xenial, bionic, etc.
+export VAGRANT_DEFAULT_PROVIDER="docker"
+# TODO: the chef provisioner doesn't have root perms to modify the /vagrant shared folder,
+# so I used a different unshared folder to install repos
+export SOURCE_ROOT=/vagrant-unshared # clone git repositories at this location
+
+If/when provisioning fails, you can get into the container using
+
+vagrant ssh
+
+OR
+
+docker container list -a <__ find your container name
+docker exec -it <container name> bash
+
+'docker exec...' will get you in as root.
+
+
+** TODOS/ISSUES:
+
+* chef cannot modify /vagrant which is mounted host filesystem folder
+chef is running as vagrant user? needs to be root?
+workaround was to specify a different sources folder
+
+* FATAL: Errno::ENOENT: service[rsyslog] (swift::configs line 75) had an error: Errno::ENOENT: No such file or directory - /etc/init.d/rsyslog
+
+- workaround
+- adding rsyslog to the required packages
+- vagrant ssh
+  sudo rsyslogd
+
+* I had to override default EC policy because for some reason the 8th loop device would fail to mount
+* I have hacked Vagrantfile
+* some func tests fail - I think they are cross-policy and may still think there is an EC policy, but there isn't
+   - nodes are being error limited during the test
+
+
+* the mount tmp fs failed (needed for unit tests)
+
+* need to add saio to /etc/hosts:
+
+vagrant@864acf62ac3b:~$ sudo vi /etc/hosts
+vagrant@864acf62ac3b:~$ head -n 1 /etc/hosts
+127.0.0.1	localhost saio

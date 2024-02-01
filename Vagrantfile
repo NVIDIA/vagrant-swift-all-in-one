@@ -135,18 +135,25 @@ Vagrant.configure("2") do |global_config|
         v.tags = {'Name' => 'swift'}
       end
 
-      unless vagrant_box.start_with? 'jammy' then
-        # Install libssl for Chef (https://github.com/hashicorp/vagrant/issues/10914)
-        config.vm.provision "shell",
-          inline: "sudo apt-get update -y -qq && "\
-            "export DEBIAN_FRONTEND=noninteractive && "\
-            "sudo -E apt-get -q --option \"Dpkg::Options::=--force-confold\" --assume-yes install libssl1.1"
+      config.vm.provider "docker" do |d|
+          d.privileged = true
+#         d.image = "tknerr/baseimage-ubuntu:22.04"
+#         d.remains_running = true
+#         d.has_ssh = true
       end
 
+#       unless vagrant_box.start_with? 'jammy' then
+#         # Install libssl for Chef (https://github.com/hashicorp/vagrant/issues/10914)
+#         config.vm.provision "shell",
+#           inline: "sudo apt-get update -y -qq && "\
+#             "export DEBIAN_FRONTEND=noninteractive && "\
+#             "sudo -E apt-get -q --option \"Dpkg::Options::=--force-confold\" --assume-yes install libssl1.1"
+#       end
+
       config.vm.provision :chef_solo do |chef|
-        unless vagrant_box.include? "m1" then
-          chef.product = "chef-workstation"
-        end
+#         unless vagrant_box.include? "m1" then
+#           chef.product = "chef-workstation"
+#         end
         chef.arguments = "--chef-license accept"
         chef.provisioning_path = "/etc/chef"
         chef.add_recipe "swift"
