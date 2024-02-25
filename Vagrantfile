@@ -17,6 +17,7 @@ vagrant_boxes = {
   "focal" => "http://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-vagrant.box",
   "focal-m1" => "https://app.vagrantup.com/luminositylabsllc/boxes/ubuntu-20.04-arm64/versions/20230901.220110.01/providers/parallels.box",
   "jammy" => "http://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-vagrant.box",
+  "jammy-libvirt" => "https://vagrantcloud.com/generic/boxes/ubuntu2204/versions/4.3.12/providers/libvirt/amd64/vagrant.box",
   "jammy-m1" => "https://app.vagrantup.com/luminositylabsllc/boxes/ubuntu-22.04-arm64/versions/20230901.222028.01/providers/parallels.box",
   "dummy" => "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box",
 }
@@ -110,6 +111,15 @@ Vagrant.configure("2") do |global_config|
         if (ENV['GUI'] || '').nil?  # Why is my VM hung on boot? Find out!
           vb.gui = true
         end
+      end
+
+      config.vm.provider "libvirt" do |lv, override|
+        override.vm.hostname = hostname
+        override.vm.network :private_network, :ip => ip
+        lv.cpus = Integer(ENV['VAGRANT_CPUS'] || 1)
+        lv.memory = Integer(ENV['VAGRANT_RAM'] || 2048)
+        lv.memorybacking :access, :mode => "shared"
+        override.vm.synced_folder "./", "/vagrant", type: "virtiofs"
       end
 
       config.vm.provider "parallels" do |prl, override|

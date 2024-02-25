@@ -1,4 +1,7 @@
 export VAGRANT_BOX=jammy  # precise, xenial, bionic, etc.
+# for libvirt, you need to use a libvirt box
+#export VAGRANT_BOX=jammy-libvirt
+#export LIBVIRT_DEFAULT_URI="qemu:///system"
 export VAGRANT_DEFAULT_PROVIDER="virtualbox"
 export VAGRANT_USERNAME=vagrant # old boxes need user ubuntu
 export VAGRANT_HOSTNAME=saio
