@@ -227,6 +227,12 @@ template "/home/#{node['username']}/.aws/config" do
     :base_uri => node['base_uri'],
   })
 end
+template "/home/#{node['username']}/.aws/credentials" do
+  source "/home/aws/credentials.erb"
+  owner node['username']
+  group node['username']
+  mode 0700
+end
 
 execute "enable bash completer for awscli" do
   command "ln -s $(which aws_bash_completer) /etc/bash_completion.d/"
