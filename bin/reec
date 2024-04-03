@@ -6,7 +6,7 @@
 
 set -ex
 if [ -d $SOURCE_ROOT/isa-l ]; then
-    sudo apt install yasm
+    sudo apt install nasm
     cd $SOURCE_ROOT/isa-l
     ./autogen.sh
     ./configure
