@@ -97,9 +97,13 @@ group "adm" do
   append true
 end
 
-# make vagrant able to docker
-group "docker" do
-  action :modify
-  members node["username"]
-  append true
+# Still need to double check what needs to happen here for centos
+case node['platform']
+when 'ubuntu'
+  # make vagrant able to docker
+  group "docker" do
+    action :modify
+    members node["username"]
+    append true
+  end
 end

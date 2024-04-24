@@ -18,6 +18,9 @@ vagrant_boxes = {
   "focal-m1" => "https://app.vagrantup.com/luminositylabsllc/boxes/ubuntu-20.04-arm64/versions/20230901.220110.01/providers/parallels.box",
   "jammy" => "http://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-vagrant.box",
   "jammy-m1" => "https://app.vagrantup.com/luminositylabsllc/boxes/ubuntu-22.04-arm64/versions/20230901.222028.01/providers/parallels.box",
+  "centos8" => "https://vagrantcloud.com/generic/boxes/centos8/versions/3.6.14/providers/virtualbox.box",
+  "centos7" => "https://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7.box",
+  "centos7-arm" => "https://vagrantcloud.com/ppggff/boxes/centos-7-aarch64-2009-4K/versions/1.0.0/providers/libvirt.box",
   "dummy" => "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box",
 }
 vagrant_box = (ENV['VAGRANT_BOX'] || DEFAULT_BOX)
@@ -101,6 +104,10 @@ Vagrant.configure("2") do |global_config|
       end
 
       config.vm.provider :virtualbox do |vb, override|
+        if vagrant_box.include?('centos') then
+          config.vbguest.installer_options = { allow_kernel_upgrade: true }
+          override.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+        end
         override.vm.hostname = hostname
         override.vm.network :private_network, ip: ip
 
@@ -136,12 +143,14 @@ Vagrant.configure("2") do |global_config|
         v.tags = {'Name' => 'swift'}
       end
 
-      unless vagrant_box.start_with? 'jammy' then
-        # Install libssl for Chef (https://github.com/hashicorp/vagrant/issues/10914)
-        config.vm.provision "shell",
-          inline: "sudo apt-get update -y -qq && "\
-            "export DEBIAN_FRONTEND=noninteractive && "\
-            "sudo -E apt-get -q --option \"Dpkg::Options::=--force-confold\" --assume-yes install libssl1.1"
+      unless vagrant_box.start_with? 'jammy' then 
+        if ! vagrant_box.include?('centos') then
+          # Install libssl for Chef (https://github.com/hashicorp/vagrant/issues/10914)
+          config.vm.provision "shell",
+            inline: "sudo apt-get update -y -qq && "\
+              "export DEBIAN_FRONTEND=noninteractive && "\
+              "sudo -E apt-get -q --option \"Dpkg::Options::=--force-confold\" --assume-yes install libssl1.1"
+        end
       end
 
       config.vm.provision :chef_solo do |chef|
@@ -158,6 +167,13 @@ Vagrant.configure("2") do |global_config|
           "arch" => if vagrant_box.include? "m1" then "arm64" else "amd64" end,
         }
         chef.json.merge! local_config
+        if chef.json['use_python3'] then
+          chef.json['default_pip'] = 'pip3'
+          chef.json['default_python'] = 'python3'
+        else
+          chef.json['default_pip'] = 'pip2'
+          chef.json['default_python'] = 'python2'
+        end
         if chef.json['ssl'] then
           chef.json['base_uri'] = "https://#{hostname}"
         else

@@ -5,8 +5,9 @@
 [
   "ansible",
 ].each do |pkg|
-  execute "pip install #{pkg}" do
-    command "pip install #{pkg}"
+  execute "#{node['default_pip']} install #{pkg}" do
+    command "#{node['default_pip']} install #{pkg}"
+    default_env true
   end
 end
 
