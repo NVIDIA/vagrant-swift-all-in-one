@@ -1,0 +1,32 @@
+VSAIO using libvirt
+=======================
+
+VSAIO now supports running in libvirt/kvm. Be sure to pick a libvirt box in
+localrc and away you go. But you might need to make sure you have libvirt
+running for your user (unless you want to sudo everything).
+
+Install libvirtd etc. On fedora this is easy:
+	sudo dnf install @virtualization
+
+Let's make sure its running:
+	sudo systemctl start libvirtd
+	sudo systemctl enable libvirtd
+
+Make sure you're user is apart of the libvirt group:
+	sudo gpasswd -a matt libvirt
+
+We need to enable read write to domain socket for the libvirt group, uncomment
+and make sure these are set in /etc/libvirt/libvirtd.conf:
+	unix_sock_group = "libvirt"
+	auth_unix_rw = "none"
+	auth_unix_ro = "none"
+
+Then restart libvirtd
+	sudo systemctl restart libvirtd
+
+# Now we need to make sure we're looking at the default URI. There are many
+# ways to do this.. pass it in on command lines, adding it to Vagrant (which I
+# might also do) or just export a variable:
+	export LIBVIRT_DEFAULT_URI="qemu:///system"
+
+NOTE: I've added the above to my localrc
