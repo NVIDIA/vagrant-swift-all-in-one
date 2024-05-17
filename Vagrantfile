@@ -85,6 +85,18 @@ local_config = {
   "nvratelimit" => (ENV['NVRATELIMIT'] || 'false').downcase == 'true',
 }
 
+# This patch is to address [vagrant-aws#566](https://github.com/mitchellh/vagrant-aws/issues/566#issuecomment-580812210)
+
+class Hash
+  def slice(*keep_keys)
+    h = {}
+    keep_keys.each { |key| h[key] = fetch(key) if has_key?(key) }
+    h
+  end unless Hash.method_defined?(:slice)
+  def except(*less_keys)
+    slice(*keys - less_keys)
+  end unless Hash.method_defined?(:except)
+end
 
 Vagrant.configure("2") do |global_config|
   global_config.ssh.username = username
@@ -136,6 +148,7 @@ Vagrant.configure("2") do |global_config|
 
         v.access_key_id = ENV['AWS_ACCESS_KEY_ID']
         v.secret_access_key = ENV['AWS_SECRET_ACCESS_KEY']
+        v.session_token = ENV['AWS_SESSION_TOKEN']
         v.region = ENV['AWS_REGION']
         v.ami = ENV['AWS_AMI']
         v.instance_type = ENV['AWS_INSTANCE_TYPE']
@@ -149,9 +162,9 @@ Vagrant.configure("2") do |global_config|
       unless vagrant_box.start_with? 'jammy' then
         # Install libssl for Chef (https://github.com/hashicorp/vagrant/issues/10914)
         config.vm.provision "shell",
-          inline: "sudo apt-get update -y -qq && "\
-            "export DEBIAN_FRONTEND=noninteractive && "\
-            "sudo -E apt-get -q --option \"Dpkg::Options::=--force-confold\" --assume-yes install libssl1.1"
+           inline: "sudo apt-get update -y -qq && "\
+             "export DEBIAN_FRONTEND=noninteractive && "\
+             "sudo -E apt-get -q --option \"Dpkg::Options::=--force-confold\" --assume-yes install libssl1.1"
       end
 
       config.vm.provision :chef_solo do |chef|
@@ -174,6 +187,9 @@ Vagrant.configure("2") do |global_config|
           chef.json['base_uri'] = "http://#{hostname}:8080"
         end
         chef.json['auth_uri'] = "#{chef.json['base_uri']}/auth/v1.0"
+        if vagrant_box == 'dummy' then
+          chef.synced_folder_type = :rsync
+        end
       end
     end
   end

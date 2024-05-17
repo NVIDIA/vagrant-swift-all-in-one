@@ -28,8 +28,8 @@ end
 # per device rsync modules
 
 directory "/etc/rsyncd.d" do
-  owner "vagrant"
-  group "vagrant"
+  owner node['username']
+  group node['username']
   action :create
 end
 
@@ -39,8 +39,8 @@ end
     n = ((i - 1) % node['nodes']) + 1
     template "/etc/rsyncd.d/#{service}_#{dev}.conf" do
       source "/etc/rsyncd.d/rsync_disk.erb"
-      owner "vagrant"
-      group "vagrant"
+      owner node['username']
+      group node['username']
       variables({
         :service => service,
         :dev => dev,
@@ -55,8 +55,8 @@ end
   n = ((i - 1) % node['nodes']) + 1
   template "/etc/rsyncd.d/object_#{dev}.conf" do
     source "/etc/rsyncd.d/rsync_disk.erb"
-    owner "vagrant"
-    group "vagrant"
+    owner node['username']
+    group node['username']
     variables({
       :service => "object",
       :dev => "sdb#{i}",
@@ -211,7 +211,12 @@ end
     source "/etc/swift/#{filename}.erb"
     owner node["username"]
     group node["username"]
-    variables({}.merge(node))
+    variables({
+        :auth_uri => node['auth_uri'],
+        :storage_policies => node['storage_policies'],
+        :username => node['username'],
+        :base_uri => node['base_uri'],
+      })
   end
 end
 
