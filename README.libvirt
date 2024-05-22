@@ -2,18 +2,45 @@ VSAIO using libvirt
 =======================
 
 VSAIO now supports running in libvirt/kvm. Be sure to pick a libvirt box in
-localrc and away you go. But you might need to make sure you have libvirt
-running for your user (unless you want to sudo everything).
+localrc make sure you have the vagrant libvirt provider plugin installed and
+enabled and away you go.
+But you might need to make sure you have libvirt running for your user
+(unless you want to sudo everything).
 
-Install libvirtd etc. On fedora this is easy:
-	sudo dnf install @virtualization
+To install the vagrant libvirt provider plugin you can use have a couple of
+options:
+
+	- Use your package manager:
+		On fedora:
+			sudo dnf install vagrant-libvirt
+
+		On Ubuntu:
+			sudo apt-get install vagrant-libvirt
+
+	- Using vagrant's built-in plugin subcommand:
+		vagrant plugin install vagrant-libvirt
+
+And be sure to update localrc to use libvirt as the default provider:
+
+  export VAGRANT_DEFAULT_PROVIDER="libvirt"
+
+Libvirt installation
+-----------------------
+
+Install libvirtd:
+
+	On fedora:
+		sudo dnf install @virtualization
+
+	On Ubuntu:
+		sudo apt-get install libvirt-daemon-system
+
+Make sure you're user is apart of the libvirt group:
+	sudo gpasswd -a matt libvirt
 
 Let's make sure its running:
 	sudo systemctl start libvirtd
 	sudo systemctl enable libvirtd
-
-Make sure you're user is apart of the libvirt group:
-	sudo gpasswd -a matt libvirt
 
 We need to enable read write to domain socket for the libvirt group, uncomment
 and make sure these are set in /etc/libvirt/libvirtd.conf:
@@ -29,4 +56,5 @@ Then restart libvirtd
 # might also do) or just export a variable:
 	export LIBVIRT_DEFAULT_URI="qemu:///system"
 
-NOTE: I've added the above to my localrc
+NOTE: the localrc-template has the LIBVIRT_DEFAULT_URI line above commented out
+   so you can just uncomment that.
