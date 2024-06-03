@@ -1,0 +1,79 @@
+[admin]
+type = swift
+env_auth = false
+user = admin:admin
+key = admin
+auth = <%= @auth_uri %>
+auth_version = 1
+
+[admin-s3]
+type = s3
+env_auth = false
+access_key_id = admin:admin
+secret_access_key = admin
+region = us-east-1
+endpoint = <%= @base_uri %>
+
+[test-tester]
+type = swift
+env_auth = false
+user = test:tester
+key = testing
+auth = <%= @auth_uri %>
+auth_version = 1
+
+[test-tester-s3]
+type = s3
+env_auth = false
+access_key_id = test:tester
+secret_access_key = testing
+region = us-east-1
+endpoint = <%= @base_uri %>
+
+[test-tester2]
+type = swift
+env_auth = false
+user = test:tester2
+key = testing2
+auth = <%= @auth_uri %>
+auth_version = 1
+
+[test-tester2-s3]
+type = s3
+env_auth = false
+access_key_id = test:tester2
+secret_access_key = testing2
+region = us-east-1
+endpoint = <%= @base_uri %>
+
+[test-tester3]
+type = swift
+env_auth = false
+user = test:tester3
+key = testing3
+auth = <%= @auth_uri %>
+auth_version = 1
+
+[test-tester3-s3]
+type = s3
+env_auth = false
+access_key_id = test:tester3
+secret_access_key = testing3
+region = us-east-1
+endpoint = <%= @base_uri %>
+
+[test2-tester2]
+type = swift
+env_auth = false
+user = test2:tester2
+key = testing2
+auth = <%= @auth_uri %>
+auth_version = 1
+
+[test2-tester2-s3]
+type = s3
+env_auth = false
+access_key_id = test2:tester2
+secret_access_key = testing2
+region = us-east-1
+endpoint = <%= @base_uri %>
