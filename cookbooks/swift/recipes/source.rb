@@ -140,15 +140,19 @@ execute "install tox" do
   action :run
 end
 
-# nvratelimit
-
-src_dir = "#{node['extra_source']}/swift-nvratelimit"
-
-execute "nvratelimit-middleware-install" do
-  cwd src_dir
-  command "pip install -e ."
-  action :run
-  only_if { ::File.directory?(src_dir) }
+# extra source projects
+[
+  'swift-nvratelimit',
+  'nvsts-middleware',
+  'nvauth-middleware',
+].each do |project_name|
+  src_dir = "#{node['extra_source']}/#{project_name}"
+  execute "install #{project_name}" do
+    cwd src_dir
+    command "pip install -e ."
+    action :run
+    only_if { ::File.directory?(src_dir) }
+  end
 end
 
 # add some helpful symlinks

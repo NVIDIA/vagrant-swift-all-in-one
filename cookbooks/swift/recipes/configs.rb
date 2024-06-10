@@ -265,6 +265,7 @@ end
       :keymaster_pipeline => keymaster_pipeline,
       :nvratelimit_pipeline => node['nvratelimit'] ? 'nvratelimit' : '',
       :statsd_exporter => node["statsd_exporter"],
+      :nvauth_pipeline => node['nvauth'] ? 'nvsts nvauth' : '',
     })
   end
 end
