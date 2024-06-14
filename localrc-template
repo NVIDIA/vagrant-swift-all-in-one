@@ -1,4 +1,4 @@
-export VAGRANT_BOX=jammy  # precise, xenial, bionic, etc.
+export VAGRANT_BOX=jammy  # or bionic, focal or bento/ubuntu-24.04
 # for libvirt, you need to use a libvirt box
 #export VAGRANT_BOX=jammy-libvirt
 #export LIBVIRT_DEFAULT_URI="qemu:///system"
