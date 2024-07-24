@@ -18,7 +18,9 @@ extendedKeyUsage        = serverAuth
 [alt-names]
 DNS.1   = <%= @hostname %>
 DNS.2   = *.<%= @hostname %>
-DNS.3   = <%= @ip %>.xip.io
-DNS.4   = *.<%= @ip %>.xip.io
+DNS.3   = <%= @ip %>.nip.io
+DNS.4   = *.<%= @ip %>.nip.io
+DNS.5   = <%= @ip %>.sslip.io
+DNS.6   = *.<%= @ip %>.sslip.io
 IP.1    = <%= @ip %>
 
