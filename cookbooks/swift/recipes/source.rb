@@ -144,7 +144,6 @@ end
 [
   'swift-nvratelimit',
   'nvsts-middleware',
-  'nvauth-middleware',
 ].each do |project_name|
   src_dir = "#{node['extra_source']}/#{project_name}"
   execute "install #{project_name}" do
