@@ -7,7 +7,7 @@ Host setup or installations
     `xcode-select --install`
     `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
  2. Install Vagrant
-    `brew cask install vagrant`
+    `brew install --cask vagrant`
  3. Install Parallels
     Download and install from https://www.parallels.com/products/desktop/trial/
  4. Copy "localrc-template" file to your "localrc" file, and make changes to the below environment variables
@@ -19,4 +19,4 @@ Host setup or installations
  7. Install the vagrant plugin for parallels with `vagrant plugin install vagrant-parallels`
  8. `vagrant up`
 
-The above setup was verified on macOS Monterey on Apple M1 Pro.
+The above setup was verified on macOS Sonoma on Apple M3 Pro.
