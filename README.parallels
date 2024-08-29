@@ -1,4 +1,4 @@
-vagrant-swift-all-in-one setup on Macbook M1 aarch64 processor with Parallels
+vagrant-swift-all-in-one setup on Macbook M Series aarch64 processors with Parallels
 ========================
 
 Host setup or installations
@@ -7,16 +7,19 @@ Host setup or installations
     `xcode-select --install`
     `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
  2. Install Vagrant
-    `brew cask install vagrant`
+    `brew install --cask vagrant`
  3. Install Parallels
     Download and install from https://www.parallels.com/products/desktop/trial/
- 4. Copy "localrc-template" file to your "localrc" file, and make changes to the below environment variables
+ 4. Copy "localrc-template" file to your "localrc" file
+    `cp localrc-template localrc`
+ 5. Make changes to the below environment variables by modifying the localrc file
     export VAGRANT_BOX=jammy-m1
     export VAGRANT_DEFAULT_PROVIDER="parallels"
- 5. Make those environment variables to take effect
+ 6. Make those environment variables to take effect
     `source localrc`
- 6. Add "192.168.8.80    saio" into /etc/hosts
- 7. Install the vagrant plugin for parallels with `vagrant plugin install vagrant-parallels`
- 8. `vagrant up`
+ 7. Add "192.168.8.80    saio" into /etc/hosts
+   `sudo bash -c 'echo "192.168.8.80    saio" >> /etc/hosts'`
+ 8. Install the vagrant plugin for parallels with `vagrant plugin install vagrant-parallels`
+ 9.`vagrant up`
 
-The above setup was verified on macOS Monterey on Apple M1 Pro.
+The above setup was verified on macOS Sonoma on Apple M3 Pro.

@@ -11,14 +11,14 @@ DEFAULT_BOX = "jammy"
 
 # Note: 18.04/bionic requires Vagrant 2.02 or newer because 18.04 ships without ifup/ifdown by default.
 vagrant_boxes = {
-  "precise" => "https://hashicorp-files.hashicorp.com/precise64.box",
+  "precise" => "https://app.vagrantup.com/hashicorp/boxes/precise64/versions/1.1.0/providers/virtualbox/unknown/vagrant.box",
   "xenial" => "http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-vagrant.box",
   "bionic" => "http://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64-vagrant.box",
   "focal" => "http://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-vagrant.box",
-  "focal-m1" => "https://app.vagrantup.com/luminositylabsllc/boxes/ubuntu-20.04-arm64/versions/20230901.220110.01/providers/parallels.box",
+  "focal-m1" => "https://app.vagrantup.com/bento/boxes/ubuntu-20.04/versions/202404.23.0/providers/parallels/arm64/vagrant.box",
   "jammy" => "http://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-vagrant.box",
   "jammy-libvirt" => "https://vagrantcloud.com/generic/boxes/ubuntu2204/versions/4.3.12/providers/libvirt/amd64/vagrant.box",
-  "jammy-m1" => "https://app.vagrantup.com/luminositylabsllc/boxes/ubuntu-22.04-arm64/versions/20230901.222028.01/providers/parallels.box",
+  "jammy-m1" => "https://app.vagrantup.com/bento/boxes/ubuntu-22.04/versions/202407.22.0/providers/parallels/arm64/vagrant.box",
   "dummy" => "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box",
 }
 vagrant_box = (ENV['VAGRANT_BOX'] || DEFAULT_BOX)
