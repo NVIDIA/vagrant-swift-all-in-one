@@ -25,6 +25,15 @@ enable_by_default = true
 [filter:bulk]
 use = egg:swift#bulk
 
+[filter:copy]
+use = egg:swift#copy
+
+[filter:container-quotas]
+use = egg:swift#container_quotas
+
+[filter:account-quotas]
+use = egg:swift#account_quotas
+
 [filter:slo]
 use = egg:swift#slo
 
