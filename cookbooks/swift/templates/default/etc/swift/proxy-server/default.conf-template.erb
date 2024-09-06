@@ -61,6 +61,7 @@ storage_domain = saio
 use = egg:swift#proxy
 allow_account_management = true
 account_autocreate = true
+allow_open_expired = true
 
 [filter:kmip_keymaster]
 use = egg:swift#kmip_keymaster

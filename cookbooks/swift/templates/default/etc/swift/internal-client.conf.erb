@@ -29,6 +29,7 @@ pipeline = catch_errors proxy-logging cache symlink <%= @keymaster_pipeline %> e
 [app:proxy-server]
 use = egg:swift#proxy
 account_autocreate = True
+allow_open_expired = True
 
 [filter:symlink]
 use = egg:swift#symlink
