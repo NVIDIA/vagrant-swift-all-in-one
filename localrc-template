@@ -10,6 +10,7 @@ export VAGRANT_RAM=2048
 export FULL_REPROVISION=false
 export LOOPBACK_GB=4  # how much storage your swift has
 export IP=192.168.8.80
+#export EXTRA_PACKAGES=ipython,vim,screen,sysstat # centos7 and older ubuntu don't have ipython3
 export EXTRA_PACKAGES=ipython3,vim,screen,sysstat
 export EXTRA_VMS=0
 export PART_POWER=10
