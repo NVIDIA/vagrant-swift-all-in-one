@@ -6,7 +6,7 @@ log_statsd_port = 9120
 <% end -%>
 
 [pipeline:main]
-pipeline = catch_errors healthcheck proxy-logging domain_remap cache <%= @nvratelimit_pipeline %> etag-quoter container_sync bulk tempurl s3api tempauth ratelimit staticweb slo dlo versioned_writes symlink <%= @keymaster_pipeline %> encryption subrequest-logging proxy-server
+pipeline = catch_errors healthcheck <% if @tracing -%>trace <% end -%> proxy-logging domain_remap cache <%= @nvratelimit_pipeline %> etag-quoter container_sync bulk tempurl s3api tempauth ratelimit staticweb slo dlo versioned_writes symlink <%= @keymaster_pipeline %> encryption subrequest-logging proxy-server
 
 [app:proxy-server]
 require_proxy_protocol = <%= @ssl %>
