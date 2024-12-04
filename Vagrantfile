@@ -115,7 +115,9 @@ Vagrant.configure("2") do |global_config|
 
       config.vm.provider "libvirt" do |lv, override|
         override.vm.hostname = hostname
-        override.vm.network :private_network, :ip => ip
+        override.vm.network :private_network,
+          :ip => ip,
+          :libvirt__network_name => 'saio'
         lv.cpus = Integer(ENV['VAGRANT_CPUS'] || 1)
         lv.memory = Integer(ENV['VAGRANT_RAM'] || 2048)
         lv.memorybacking :access, :mode => "shared"
