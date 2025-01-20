@@ -45,3 +45,4 @@ export GUI=   # non-empty shows VirtualBox console window
 export SOURCE_ROOT=/vagrant # clone git repositories at this location
 export EXTRA_SOURCE=/vagrant/.scratch
 export NVRATELIMIT=false # or true
+export RING_VERSION=1 # or 2
