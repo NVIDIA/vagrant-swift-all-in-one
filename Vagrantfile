@@ -21,6 +21,9 @@ vagrant_boxes = {
   "jammy-m1" => "https://app.vagrantup.com/bento/boxes/ubuntu-22.04/versions/202407.22.0/providers/parallels/arm64/vagrant.box",
   "dummy" => "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box",
 }
+vagrant_box_aliases = {
+  "jammy-m1-vmware" => "bento/ubuntu22.04",
+}
 vagrant_box = (ENV['VAGRANT_BOX'] || DEFAULT_BOX)
 username = (ENV['VAGRANT_USERNAME'] || "vagrant")
 
@@ -99,6 +102,9 @@ Vagrant.configure("2") do |global_config|
       config.vm.box = vagrant_box
       if vagrant_boxes.key? vagrant_box
         config.vm.box_url = vagrant_boxes[vagrant_box]
+      end
+      if vagrant_box_aliases.key? vagrant_box
+        config.vm.box = vagrant_box_aliases[vagrant_box]
       end
 
       config.vm.provider :virtualbox do |vb, override|
