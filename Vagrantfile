@@ -21,6 +21,9 @@ vagrant_boxes = {
   "jammy-m1" => "https://app.vagrantup.com/bento/boxes/ubuntu-22.04/versions/202407.22.0/providers/parallels/arm64/vagrant.box",
   "dummy" => "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box",
 }
+vagrant_box_aliases = {
+  "jammy-m1-vmware" => "bento/ubuntu-22.04",
+}
 vagrant_box = (ENV['VAGRANT_BOX'] || DEFAULT_BOX)
 username = (ENV['VAGRANT_USERNAME'] || "vagrant")
 
@@ -100,6 +103,9 @@ Vagrant.configure("2") do |global_config|
       if vagrant_boxes.key? vagrant_box
         config.vm.box_url = vagrant_boxes[vagrant_box]
       end
+      if vagrant_box_aliases.key? vagrant_box
+        config.vm.box = vagrant_box_aliases[vagrant_box]
+      end
 
       config.vm.provider :virtualbox do |vb, override|
         if Vagrant::Util::Platform.wsl?
@@ -131,6 +137,16 @@ Vagrant.configure("2") do |global_config|
         override.vm.network :private_network, ip: ip
         prl.memory = Integer(ENV['VAGRANT_RAM'] || 2048)
         prl.cpus = Integer(ENV['VAGRANT_CPUS'] || 1)
+      end
+
+      config.vm.provider "vmware_desktop" do |vmware, override|
+        override.vm.network :private_network, :ip => ip
+        vmware.vmx["displayname"] = "vagrant-#{hostname}-#{current_datetime}"
+        # use a gui to get the vm to show up in the vmware management app,
+        # but they seem to stick around in the app after vagrant destroy
+        # vmware.gui = true
+        vmware.vmx["memsize"] = Integer(ENV['VAGRANT_RAM'] || 2048)
+        vmware.vmx["numvcpus"] = Integer(ENV['VAGRANT_CPUS'] || 1)
       end
 
       if Vagrant::Util::Platform.wsl?
