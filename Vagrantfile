@@ -18,14 +18,21 @@ vagrant_boxes = {
   "focal-m1" => "https://app.vagrantup.com/bento/boxes/ubuntu-20.04/versions/202404.23.0/providers/parallels/arm64/vagrant.box",
   "jammy" => "http://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-vagrant.box",
   "jammy-libvirt" => "https://vagrantcloud.com/generic/boxes/ubuntu2204/versions/4.3.12/providers/libvirt/amd64/vagrant.box",
-  "jammy-m1" => "https://app.vagrantup.com/bento/boxes/ubuntu-22.04/versions/202407.22.0/providers/parallels/arm64/vagrant.box",
   "dummy" => "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box",
 }
+# boxes are often provider agnostic, and ideally the latest version would be
+# fine, but it's also useful to keep a record of specific versions that have
+# actually been seen to work
 vagrant_box_aliases = {
-  "jammy-m1-vmware" => "bento/ubuntu-22.04",
+  "jammy-arm" => ["bento/ubuntu-22.04", ">=0"],
+  "jammy-arm-vmware" => ["bento/ubuntu-22.04", "202401.31.0"],
+  "jammy-arm-parallels" => ["bento/ubuntu-22.04", "202407.22.0"],
 }
 vagrant_box = (ENV['VAGRANT_BOX'] || DEFAULT_BOX)
 username = (ENV['VAGRANT_USERNAME'] || "vagrant")
+
+# maybe there is a way to query vagrant for the selected box architecture?
+if ((vagrant_box.include? "m1") || (vagrant_box.include? "-arm"))  then arch="arm64" else arch="amd64" end
 
 base_ip = IPAddr.new(ENV['IP'] || "192.168.8.80")
 hosts = {
@@ -104,7 +111,8 @@ Vagrant.configure("2") do |global_config|
         config.vm.box_url = vagrant_boxes[vagrant_box]
       end
       if vagrant_box_aliases.key? vagrant_box
-        config.vm.box = vagrant_box_aliases[vagrant_box]
+        config.vm.box = vagrant_box_aliases[vagrant_box][0]
+        config.vm.box_version = vagrant_box_aliases[vagrant_box][1]
       end
 
       config.vm.provider :virtualbox do |vb, override|
@@ -186,7 +194,7 @@ Vagrant.configure("2") do |global_config|
       end
 
       config.vm.provision :chef_solo do |chef|
-        unless vagrant_box.include? "m1" then
+        unless arch  == "arm64" then
           chef.product = "chef-workstation"
         end
         chef.arguments = "--chef-license accept"
@@ -196,7 +204,7 @@ Vagrant.configure("2") do |global_config|
           "ip" => ip,
           "hostname" => hostname,
           "saio_crt_path" =>  "/etc/ssl/private/saio.crt",
-          "arch" => if vagrant_box.include? "m1" then "arm64" else "amd64" end,
+          "arch" => arch,
         }
         chef.json.merge! local_config
         if chef.json['ssl'] then

@@ -13,7 +13,7 @@ Host setup or installations
  4. Copy "localrc-template" file to your "localrc" file
     `cp localrc-template localrc`
  5. Make changes to the below environment variables by modifying the localrc file
-    export VAGRANT_BOX=jammy-m1
+    export VAGRANT_BOX=jammy-arm-parallels
     export VAGRANT_DEFAULT_PROVIDER="parallels"
  6. Make those environment variables to take effect
     `source localrc`
