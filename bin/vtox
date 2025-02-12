@@ -5,14 +5,13 @@
 #SPDX-License-Identifier: Apache-2.0
 
 # tox wrapper for vagrant
-ARGS=${@:-"-e pep8,py27,py38"}
 set -e
 cd /vagrant/swift
 sed -i "/envlist/ a\
 toxworkdir = $HOME/.tox-swift
 " tox.ini
 set +e
-tox $ARGS
+tox $@
 error=$?
 sed -i '/toxworkdir/d' tox.ini
 cd -

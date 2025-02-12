@@ -34,13 +34,6 @@ execute "add repo" do
   command "sudo add-apt-repository ppa:deadsnakes/ppa"
 end
 
-# backports seems to be enabled on xenial already?
-execute "enable backports" do
-  command "sudo sed -ie 's/# deb http:\\/\\/archive.ubuntu.com\\/ubuntu trusty-backports/deb http:\\/\\/archive.ubuntu.com\\/ubuntu trusty-backports/' /etc/apt/sources.list"
-  action :run
-  not_if "sudo grep -q '^deb .* trusty-backports' /etc/apt/sources.list"
-end
-
 execute "apt-get-update" do
   command "apt-get update && touch /tmp/.apt-get-update"
   if not node['full_reprovision']
@@ -54,42 +47,40 @@ systemd_unit "multipathd" do
   action [:disable, :stop]
 end
 
-# packages
+# system packages
 required_packages = [
   "libssl-dev", # libssl-dev is required for building wheels from the cryptography package in swift.
-  "curl", "gcc", "memcached", "rsync", "sqlite3", "xfsprogs", "git-core", "build-essential",
+  "curl", "gcc", "memcached", "rsync", "sqlite3", "xfsprogs", "git", "build-essential",
   "libffi-dev",  "libxml2-dev", "libxml2", "libxslt1-dev", "zlib1g-dev", "autoconf", "libtool",
   "haproxy", "docker-compose", "rclone",
 ]
 
-if node['platform_version'] == '22.04'
+# common python versions
+required_packages += [
+  # most of time these come from deadsnakes
+  "python3.7", "python3.7-distutils",
+  "python3.8", "python3.8-distutils",
+  "python3.9", "python3.9-distutils",
+  "python3.10",
+  "python3.11",
+  "python3.12",
+  "python3.13",  # edge of technology!
+  # python3 will be redundant with distro version, -dev is needed for pyeclib
+  "python3", "python3-dev",
+]
+
+# only focal has the *really* old py3
+if node['platform_version'].to_i <= 20 then
   required_packages += [
-    "python2-dev", "python2", "python3", "python3-dev",
-    "python3.7", "python3.7-dev", "python3.7-distutils",
-    "python3.8", "python3.8-dev", "python3.8-distutils",
-    "python3.9", "python3.9-dev", "python3.9-distutils",
-  ]
-else
-  required_packages += [
-    "python-dev",
-    "python3.6", "python3.6-dev", "python3.7", "python3.7-dev",
-    "python3.8", "python3.8-dev",
+    "python3.6", "python3.6-distutils",
   ]
 end
 
-extra_packages = node['extra_packages']
-(required_packages + extra_packages).each do |pkg|
-  package pkg do
-    action :install
-  end
-end
-
-# no-no packages (PIP is the bomb, system packages are OLD SKOOL)
+# no-no packages (PIP rules this vm, most system packages are all out-of-date anyway)
 unrequired_packages = [
-  "python-requests",  "python-six", "python-urllib3",
-  "python-pbr", "python-pip",
-  "python3-requests",  "python3-six", "python3-urllib3",
-  "python3-pbr", "python3-pip",
+  "python3-pip", "python3-pbr", "python3-setuptools",
+  "python3-openssl", "python3-certifi",
+  "python3-requests",  "python3-urllib3",
 ]
 unrequired_packages.each do |pkg|
   package pkg do
@@ -97,41 +88,38 @@ unrequired_packages.each do |pkg|
   end
 end
 
-if node['use_python3']
-  default_python = 'python3'
-  pip_url = 'https://bootstrap.pypa.io/get-pip.py'
-else
-  default_python = 'python2'
-  pip_url = 'https://bootstrap.pypa.io/pip/2.7/get-pip.py'
+# good-good packages (do the install after purge)
+extra_packages = node['extra_packages']
+(required_packages + extra_packages).each do |pkg|
+  package pkg do
+    action :install
+  end
 end
 
-execute "select default python version" do
-  command "ln -sf #{default_python} /usr/bin/python"
+# see https://peps.python.org/pep-0668/
+file 'break system python' do
+  path "/etc/pip.conf"
+  content <<-EOF
+[global]
+root-user-action = ignore
+break-system-packages = true
+EOF
 end
 
-# it's a brave new world
+# the less system packages the better, we install all python stuff with pip
 bash 'install pip' do
   code <<-EOF
     set -o pipefail
-    curl #{pip_url} | python
+    curl "https://bootstrap.pypa.io/get-pip.py" | /usr/bin/env python3
     EOF
   if not node['full_reprovision']
     not_if "which pip"
   end
 end
 
-# pip 8.0 is more or less broken on trusty -> https://github.com/pypa/pip/issues/3384
+# latest pip is bestest pip!
 execute "upgrade pip" do
-  command "pip install --upgrade 'pip>=8.0.2'"
-end
-
-execute "fix pip warning 1" do
-  command "sed '/env_reset/a Defaults\talways_set_home' -i /etc/sudoers"
-  not_if "grep always_set_home /etc/sudoers"
-end
-
-execute "fix pip warning 2" do
-  command "pip install --upgrade ndg-httpsclient"
+  command "pip install --upgrade pip"
 end
 
 # install pip packages
@@ -139,7 +127,6 @@ end
 [
   "s3cmd",
   "awscli-plugin-endpoint",
-  "bandit==1.5.1",  # pin bandit to avoid pyyaml issues on bionic (at least)
 ].each do |pkg|
   execute "pip install #{pkg}" do
     command "pip install #{pkg}"

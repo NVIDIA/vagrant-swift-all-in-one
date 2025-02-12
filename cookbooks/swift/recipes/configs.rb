@@ -111,8 +111,11 @@ execute "install cert" do
   creates "/usr/local/share/ca-certificates/extra/saio_ca.crt"
 end
 
+# fix certifi (again?); we do this in the source.rb recipe (but only for the
+# benefit of bin/reinstall), during normal bring-up this is our first
+# opportunity to fix certifi
 execute "fix certifi" do
-  command "cat #{node['saio_crt_path']} >> $(python -m certifi)"
+  command "cat #{node['saio_crt_path']} >> $(python3 -m certifi)"
 end
 
 execute "create pem" do

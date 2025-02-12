@@ -80,35 +80,21 @@ end
 execute "python-pyeclib-install" do
   cwd "#{node['source_root']}/pyeclib"
   command "pip install -e . && pip install -r test-requirements.txt"
-  if not node['full_reprovision']
-    creates "/usr/local/lib/python2.7/dist-packages/pyeclib.egg-link"
-  end
   action :run
-end
-
-if not node['use_python3']
-  execute "python-swiftclient-rollback" do
-    cwd "#{node['source_root']}/python-swiftclient"
-    command "git checkout 3.13.1"
-    action :run
-  end
 end
 
 execute "python-swiftclient-install" do
   cwd "#{node['source_root']}/python-swiftclient"
   command "pip install -e . && pip install --ignore-installed -r test-requirements.txt"
-  if not node['full_reprovision']
-    creates "/usr/local/lib/python2.7/dist-packages/python-swiftclient.egg-link"
-  end
   action :run
 end
 
 # since swiftclient forces cert reinstall; we do this now
 # N.B. the saio_crt_path is coupled with "create cert" task in configs.rb
-# yes, we this file exists even if you have node['ssl'] == false
+# yes, we create this file even if you have node['ssl'] == false
 execute "fix certifi" do
   only_if { ::File.exist?(node['saio_crt_path']) }
-  command "cat #{node['saio_crt_path']} >> $(python -m certifi)"
+  command "cat #{node['saio_crt_path']} >> $(python3 -m certifi)"
 end
 
 execute "swift-bench-install" do
@@ -117,26 +103,39 @@ execute "swift-bench-install" do
   # seems to pull back pbr to 0.11 and break everything; not installing
   # swift-bench's test-requirements is probably better than that
   command "pip install -e ."
-  if not node['full_reprovision']
-    creates "/usr/local/lib/python2.7/dist-packages/swift-bench.egg-link"
-  end
   action :run
 end
 
 execute "python-swift-install" do
   cwd "#{node['source_root']}/swift"
-  command "pip install #{if not node['use_python3'] then '-c py2-constraints.txt' end} -e .[kmip_keymaster] -r test-requirements.txt"
-  if not node['full_reprovision']
-    creates "/usr/local/lib/python2.7/dist-packages/swift.egg-link"
-  end
+  command "pip install -e .[kmip_keymaster] -r test-requirements.txt"
   action :run
+end
+
+# ignore this, apparently ohai doesn't support explicit python3
+# https://github.com/chef/ohai/blob/main/lib/ohai/plugins/python.rb#L26
+py3_ver_str = shell_out('python3 -c "import sys; print(sys.version)"').stdout
+old_py3 = py3_ver_str.split[0].split('.')[1].to_i < 10
+
+# ubuntu has a patched distutils that does egg-link/editable *installs* to
+# /usr/local/lib/../site-packages; but won't look in that path unless
+# VIRTUAL_ENV=1 (I mean who installs editable python packages as root!?)
+
+# N.B. the "correct" answer on ubuntu is actually "dist-packages"
+site_packages = shell_out('python3 -c "import site; print(site.getsitepackages()[0])"').stdout
+
+# N.B. swift-bench has this same problem; but it goes away when the project
+# grows a pyproject.toml
+# 899958: add pyproject.toml to support pip 23.1 | https://review.opendev.org/c/openstack/swift/+/899958
+execute "legacy-python-swift-install" do
+  cwd "#{node['source_root']}/swift"
+  command "sudo python3 setup.py develop --script-dir /usr/local/bin --install-dir=#{site_packages}"
+  action :run
+  only_if { old_py3 }
 end
 
 execute "install tox" do
   command "pip install tox"
-  if not node['full_reprovision']
-    creates "/usr/local/lib/python2.7/dist-packages/tox"
-  end
   action :run
 end
 
