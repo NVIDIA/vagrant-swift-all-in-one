@@ -1,8 +1,8 @@
 # Any vagrantup box alias *should* work, but who knows
 #export VAGRANT_BOX=...
-# Expect to have to get fancy with non-vbox providers; see various README's
-export VAGRANT_DEFAULT_PROVIDER="virtualbox"
-export VAGRANT_USERNAME=vagrant # old boxes need user ubuntu
+# Expect to have to get fancy with non-virtualbox providers; see various README's
+#export VAGRANT_DEFAULT_PROVIDER=...
+export VAGRANT_USERNAME=vagrant # most vagrant boxes should use this
 export VAGRANT_HOSTNAME=saio
 export VAGRANT_CPUS=1
 export VAGRANT_RAM=2048
