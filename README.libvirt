@@ -24,9 +24,7 @@ and make sure these are set in /etc/libvirt/libvirtd.conf:
 Then restart libvirtd
 	sudo systemctl restart libvirtd
 
-# Now we need to make sure we're looking at the default URI. There are many
-# ways to do this.. pass it in on command lines, adding it to Vagrant (which I
-# might also do) or just export a variable:
+Add this to your localrc
+
 	export LIBVIRT_DEFAULT_URI="qemu:///system"
 
-NOTE: I've added the above to my localrc

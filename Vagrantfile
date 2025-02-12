@@ -7,20 +7,8 @@
 
 require 'ipaddr'
 
-DEFAULT_BOX = "jammy"
+DEFAULT_BOX = "bento/ubuntu-24.04"
 
-# Note: 18.04/bionic requires Vagrant 2.02 or newer because 18.04 ships without ifup/ifdown by default.
-vagrant_boxes = {
-  "precise" => "https://app.vagrantup.com/hashicorp/boxes/precise64/versions/1.1.0/providers/virtualbox/unknown/vagrant.box",
-  "xenial" => "http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-vagrant.box",
-  "bionic" => "http://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64-vagrant.box",
-  "focal" => "http://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-vagrant.box",
-  "focal-m1" => "https://app.vagrantup.com/bento/boxes/ubuntu-20.04/versions/202404.23.0/providers/parallels/arm64/vagrant.box",
-  "jammy" => "http://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-vagrant.box",
-  "jammy-libvirt" => "https://vagrantcloud.com/generic/boxes/ubuntu2204/versions/4.3.12/providers/libvirt/amd64/vagrant.box",
-  "jammy-m1" => "https://app.vagrantup.com/bento/boxes/ubuntu-22.04/versions/202407.22.0/providers/parallels/arm64/vagrant.box",
-  "dummy" => "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box",
-}
 vagrant_box = (ENV['VAGRANT_BOX'] || DEFAULT_BOX)
 username = (ENV['VAGRANT_USERNAME'] || "vagrant")
 
@@ -53,7 +41,6 @@ local_config = {
   "replication_servers" => (ENV['REPLICATION_SERVERS'] || 'false').downcase == 'true',
   "container_auto_shard" => (ENV['CONTAINER_AUTO_SHARD'] || 'true').downcase == 'true',
   "object_sync_method" => (ENV['OBJECT_SYNC_METHOD'] || 'rsync'),
-  "use_python3" => (ENV['USE_PYTHON3'] || 'true').downcase == 'true',
   "encryption" => (ENV['ENCRYPTION'] || 'false').downcase == 'true',
   "ssl" => (ENV['SSL'] || 'false').downcase == 'true',
   "kmip" => (ENV['KMIP'] || 'false').downcase == 'true',
@@ -97,9 +84,6 @@ Vagrant.configure("2") do |global_config|
       end
 
       config.vm.box = vagrant_box
-      if vagrant_boxes.key? vagrant_box
-        config.vm.box_url = vagrant_boxes[vagrant_box]
-      end
 
       config.vm.provider :virtualbox do |vb, override|
         if Vagrant::Util::Platform.wsl?
@@ -161,18 +145,7 @@ Vagrant.configure("2") do |global_config|
         v.tags = {'Name' => 'swift'}
       end
 
-      unless vagrant_box.start_with? 'jammy' then
-        # Install libssl for Chef (https://github.com/hashicorp/vagrant/issues/10914)
-        config.vm.provision "shell",
-          inline: "sudo apt-get update -y -qq && "\
-            "export DEBIAN_FRONTEND=noninteractive && "\
-            "sudo -E apt-get -q --option \"Dpkg::Options::=--force-confold\" --assume-yes install libssl1.1"
-      end
-
       config.vm.provision :chef_solo do |chef|
-        unless vagrant_box.include? "m1" then
-          chef.product = "chef-workstation"
-        end
         chef.arguments = "--chef-license accept"
         chef.provisioning_path = "/etc/chef"
         chef.add_recipe "swift"
@@ -180,7 +153,6 @@ Vagrant.configure("2") do |global_config|
           "ip" => ip,
           "hostname" => hostname,
           "saio_crt_path" =>  "/etc/ssl/private/saio.crt",
-          "arch" => if vagrant_box.include? "m1" then "arm64" else "amd64" end,
         }
         chef.json.merge! local_config
         if chef.json['ssl'] then
