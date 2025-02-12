@@ -1,6 +1,5 @@
 #!/bin/bash
 set -ex
-. localrc-template
 export SSL=true
 export ENCRYPTION=true
 export STATSD_EXPORTER=true
