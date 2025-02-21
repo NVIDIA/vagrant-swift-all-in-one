@@ -1,7 +1,7 @@
 # Any vagrantup box alias *should* work, but who knows
-#export VAGRANT_BOX=...
+#export VAGRANT_BOX=bento/ubuntu-24.04
 # Expect to have to get fancy with non-virtualbox providers; see various README's
-#export VAGRANT_DEFAULT_PROVIDER=...
+#export VAGRANT_DEFAULT_PROVIDER=
 export VAGRANT_USERNAME=vagrant # most vagrant boxes should use this
 export VAGRANT_HOSTNAME=saio
 export VAGRANT_CPUS=1

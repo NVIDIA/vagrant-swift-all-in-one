@@ -111,13 +111,27 @@ Vagrant.configure("2") do |global_config|
       end
 
       config.vm.provider "parallels" do |prl, override|
+        override.vm.hostname = hostname
         prl.name = "vagrant-#{hostname}-#{current_datetime}"
         override.vm.network :private_network, ip: ip
         prl.memory = Integer(ENV['VAGRANT_RAM'] || 2048)
         prl.cpus = Integer(ENV['VAGRANT_CPUS'] || 1)
       end
 
-      if Vagrant::Util::Platform.wsl?
+      config.vm.provider "vmware_desktop" do |vmware, override|
+        override.vm.hostname = hostname
+        override.vm.network :private_network, :ip => ip
+        vmware.vmx["displayname"] = "vagrant-#{hostname}-#{current_datetime}"
+        unless (ENV['GUI'] || '').empty?
+          # use a gui to get the vm to show up in the vmware management app,
+          # but they seem to stick around in the app after vagrant destroy
+          vmware.gui = true
+        end
+        vmware.vmx["memsize"] = Integer(ENV['VAGRANT_RAM'] || 2048)
+        vmware.vmx["numvcpus"] = Integer(ENV['VAGRANT_CPUS'] || 1)
+      end
+
+     if Vagrant::Util::Platform.wsl?
         hostpath = File.dirname(__FILE__)
         if !Vagrant::Util::Platform.wsl_drvfs_path? hostpath
           puts "/vagrant will be one-way-synced! Consider using a "\
