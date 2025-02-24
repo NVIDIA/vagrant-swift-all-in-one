@@ -1,5 +1,4 @@
-VSAIO using libvirt
-=======================
+# VSAIO using libvirt
 
 VSAIO now supports running in libvirt/kvm. Be sure to pick a libvirt box in
 localrc and away you go. But you might need to make sure you have libvirt
@@ -28,3 +27,16 @@ Add this to your localrc
 
 	export LIBVIRT_DEFAULT_URI="qemu:///system"
 
+
+## Supported Boxes
+
+We currently [test](tests/test-libvirt.sh) the libvirt provider with the
+following `VAGRANT_BOX` options:
+
+ * bento/ubuntu-24.04
+ * bento/ubuntu-22.04
+
+FWIW libvirt bringup works perfectly reliably for me, but the unittests seem to
+fail with hard to reproduce "timing issues" more frequently than they do for
+the vmware or vbox providers OMM.  AFAIK no one has seen the test-libvirt.sh
+script complete without error.

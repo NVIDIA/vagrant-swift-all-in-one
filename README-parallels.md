@@ -23,3 +23,8 @@ Host setup or installations
  9.`vagrant up`
 
 The above setup was verified on macOS Sonoma on Apple M3 Pro.
+
+## Supported Boxes
+
+We do not currently [test](tests/test-paralles.sh) the Parallels provider, it
+used to work with some jammy box from somewhere.
