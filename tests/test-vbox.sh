@@ -1,5 +1,7 @@
 #!/bin/bash
 set -ex
+source localrc-template
+export VAGRANT_DEFAULT_PROVIDER=virtualbox
 export SSL=true
 export ENCRYPTION=true
 export STATSD_EXPORTER=true

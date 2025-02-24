@@ -1,6 +1,7 @@
 #!/bin/bash
 set -ex
-export VAGRANT_DEFAULT_PROVIDER=${VAGRANT_DEFAULT_PROVIDER:-libvirt}
+source localrc-template
+export VAGRANT_DEFAULT_PROVIDER=vmware_desktop
 export SSL=true
 export ENCRYPTION=true
 export STATSD_EXPORTER=true
@@ -14,8 +15,8 @@ for box in 22.04 24.04; do
   # functtests only work if you downgarde boto, that's just how swift is right now
   vagrant ssh -c 'sudo pip install "boto3<1.36" awscli s3transfer --upgrade'
   vagrant ssh -c '.functests'
-  # you can go as low as 3.7
-  vagrant ssh -c 'vtox -e py37'
+  # allegedly on arm this fails to install netifaces?
+  # vagrant ssh -c 'vtox -e py37'
   # stock py3 works fine
   vagrant ssh -c 'vtox -e py3'
   # you can reinstall and swift still works

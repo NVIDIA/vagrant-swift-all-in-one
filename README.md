@@ -1,18 +1,35 @@
 vagrant-swift-all-in-one
 ========================
 
-A Swift-All-In-One in a few easy steps.
+A virtualization toolchain for building an [OpenStack Swift-All-In-One](https://docs.openstack.org/swift/latest/development_saio.html).
 
- 1. `vagrant up`
+This project relies on [vagrant](http://www.vagrantup.com/downloads.html),
+you'll need to install vagrant and setup one of the supported virtualization
+providers:
+
+| Provider                           | Host OS       | Arch  |
+| ---------------------------------- | ------------- | ----- |
+| [VirtualBox](README-vbox.md)       | Linux         | amd64 |
+| [libvirt](README-libvirt.md)       | Linux         | amd64 |
+| [VMware](README-vmware.md)         | Mac           | arm   |
+| [VMware](README-vmware-linux.md)   | Linux         | amd64 |
+| [Parallels](README-parallels.md)   | Mac           | arm   |
+
+localrc-template
+================
+
+Most providers will recommend you set some environ vars via your `localrc`
+
+ 1. `cp localrc-template localrc`
+ 1. `vi localrc`
+
+Additionally chef provisioning exposes some optional configuration for the vm,
+see `localrc-template`.
+
+ 1. `source localrc`
+ 1. `vagrant provision`
  1. `vagrant ssh`
- 1. `echo "awesome" > test`
- 1. `swift upload test test`
- 1. `swift download test test -o -`
-
-This project assumes you have Virtualbox and Vagrant.
-
- * https://www.virtualbox.org/wiki/Downloads
- * http://www.vagrantup.com/downloads.html
+ 1. `rebuildswift`
 
 running-tests
 =============
@@ -26,19 +43,6 @@ VM.
  1. `vtox -e pep8`
  1. `vtox -e py38`
  1. `vtox  # run all gate checks`
-
-localrc-template
-================
-
-A few things are configurable, see `localrc-template`.
-
- 1. `cp localrc-template localrc`
- 1. `vi localrc`
- 1. `source localrc`
- 1. `vagrant provision`
- 1. `vagrant ssh`
- 1. `rebuildswift`
-
 
 s3cmd
 =====
