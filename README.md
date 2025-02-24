@@ -24,7 +24,7 @@ VM.
  1. `.functests`
  1. `.probetests`
  1. `vtox -e pep8`
- 1. `vtox -e py27`
+ 1. `vtox -e py38`
  1. `vtox  # run all gate checks`
 
 localrc-template
