@@ -117,11 +117,6 @@ bash 'install pip' do
   end
 end
 
-# latest pip is bestest pip!
-execute "upgrade pip" do
-  command "pip install --upgrade pip"
-end
-
 # install pip packages
 
 [
