@@ -6,7 +6,7 @@ log_statsd_port = 9125
 <% end -%>
 
 [pipeline:main]
-pipeline = catch_errors gatekeeper healthcheck proxy-logging cache list-endpoints bulk tempurl slo dlo versioned_writes symlink proxy-logging proxy-server
+pipeline = catch_errors gatekeeper healthcheck <% if @tracing -%>trace <% end -%> proxy-logging cache list-endpoints bulk tempurl slo dlo versioned_writes symlink proxy-logging proxy-server
 
 [filter:gatekeeper]
 use = egg:swift#gatekeeper
