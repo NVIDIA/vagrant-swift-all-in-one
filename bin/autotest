@@ -1,0 +1,10 @@
+#!/bin/bash
+swift post autotest -r .r:*,.rlistings \
+    -m web-listings:true -m web-index:index.html
+.unittests --with-html-output --html-out-file /vagrant/swift/cover/result.html
+cd /vagrant/swift
+swift upload autotest cover/ > /dev/null
+swift upload autotest cover/result.html --object-name result/index.html > /dev/null
+echo 'DONE!'
+echo
+swift stat -v autotest | grep -i url
