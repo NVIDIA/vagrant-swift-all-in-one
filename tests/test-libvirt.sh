@@ -1,6 +1,7 @@
 #!/bin/bash
 set -ex
 source localrc-template
+export IP=192.168.58.8
 export VAGRANT_DEFAULT_PROVIDER=libvirt
 export LIBVIRT_DEFAULT_URI=qemu:///system
 export SSL=true
