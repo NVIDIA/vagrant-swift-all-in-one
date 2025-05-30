@@ -1,6 +1,7 @@
 #!/bin/bash
 set -ex
 source localrc-template
+export IP=192.168.56.8
 export VAGRANT_DEFAULT_PROVIDER=virtualbox
 export SSL=true
 export ENCRYPTION=true
