@@ -1,0 +1,13 @@
+#!/bin/bash -e
+if [ "$(id -u)" != "0" ]; then
+    exec sudo "$0"
+fi
+
+rm \
+    /etc/ssl/private/saio.key \
+    /etc/ssl/private/saio.conf \
+    /etc/ssl/private/saio.crt \
+    /etc/ssl/private/saio.pem \
+    /usr/local/share/ca-certificates/extra/saio_ca.crt
+chef-solo -c /etc/chef/solo.rb -j /etc/chef/dna.json -o swift::configs
+systemctl restart haproxy
