@@ -419,8 +419,8 @@ mappings:
           name: "$2"
           type: "timer"
 
-      ### new metrics we're missing that aren't prefixed with a '*.net' hostname
-      - match: (.*)
+      ### new "legacy" metrics that use the "dotted label" format
+      - match: (^.*\..*$)
         match_type: regex
         match_metric_type: counter
         name: "unknown_raw_metric_counter"
@@ -428,7 +428,7 @@ mappings:
           name: "$1"
           type: "counter"
 
-      - match: (.*)
+      - match: (^.*\..*$)
         match_type: regex
         match_metric_type: gauge
         name: "unknown_raw_metric_gauge"
@@ -436,7 +436,7 @@ mappings:
           name: "$1"
           type: "gauge"
 
-      - match: (.*)
+      - match: (^.*\..*$)
         match_type: regex
         match_metric_type: timer
         name: "unknown_raw_metric_timer"
@@ -444,7 +444,7 @@ mappings:
           name: "$1"
           type: "timer"
 
-      - match: (.*)
+      - match: (^.*\..*$)
         match_type: regex
         name: "unknown_raw_metric_other"
         labels:
