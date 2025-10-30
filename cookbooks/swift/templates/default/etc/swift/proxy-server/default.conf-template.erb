@@ -90,3 +90,18 @@ use = egg:swift#ratelimit
 # container_listing_ratelimit_0 = 100
 # container_listing_ratelimit_10 = 50
 # container_listing_ratelimit_50 = 20
+
+<% if @tracing -%>
+[filter:trace]
+use = egg:swift#trace
+trace_exporter_module = egg:swift#jaeger_exporter
+trace_exporter_config = /etc/swift/jaeger_exporter.json
+trace_name = Swift proxy-server
+
+# The trace_key is the secret used when creating the trace_sig HMAC.
+trace_key = some_secret_key
+#
+# If you want to trace every n'th request then you can use the trace_every_x parameter. The default is 0
+# which is disabled.
+trace_every_x = 1
+<% end -%>

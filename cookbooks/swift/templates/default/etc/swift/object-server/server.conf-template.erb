@@ -6,7 +6,7 @@ log_facility = LOG_LOCAL2
 servers_per_port = <%= @servers_per_port %>
 
 [pipeline:main]
-pipeline = recon object-server
+pipeline = <% if @tracing -%>trace <% end -%> recon object-server
 
 [app:object-server]
 use = egg:swift#object
@@ -16,3 +16,11 @@ replication_server = false
 
 [filter:recon]
 use = egg:swift#recon
+
+<% if @tracing -%>
+[filter:trace]
+use = egg:swift#trace
+trace_exporter_module = egg:swift#jaeger_exporter
+trace_exporter_config = /etc/swift/jaeger_exporter.json
+trace_name = Swift object-server
+<% end -%>

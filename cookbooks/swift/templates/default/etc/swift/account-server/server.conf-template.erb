@@ -3,7 +3,7 @@ disable_fallocate = true
 workers = 1
 
 [pipeline:main]
-pipeline = recon account-server
+pipeline = <% if @tracing -%>trace <% end -%> recon account-server
 
 [app:account-server]
 use = egg:swift#account
@@ -13,3 +13,11 @@ replication_server = false
 
 [filter:recon]
 use = egg:swift#recon
+
+<% if @tracing -%>
+[filter:trace]
+use = egg:swift#trace
+trace_exporter_module = egg:swift#jaeger_exporter
+trace_exporter_config = /etc/swift/jaeger_exporter.json
+trace_name = Swift account-server
+<% end -%>
