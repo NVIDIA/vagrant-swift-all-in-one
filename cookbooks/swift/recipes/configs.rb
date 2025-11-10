@@ -195,6 +195,7 @@ end
 [
   'bench.conf',
   'keymaster.conf',
+  'backend-ratelimit.conf',
 ].each do |filename|
   cookbook_file "/etc/swift/#{filename}" do
     source "etc/swift/#{filename}"
