@@ -28,6 +28,7 @@ see `localrc-template`.
 
  1. `source localrc`
  1. `vagrant provision`
+ 1. `vagrant up`
  1. `vagrant ssh`
  1. `rebuildswift`
 
