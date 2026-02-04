@@ -70,6 +70,7 @@ local_config = {
   "source_root" => (ENV['SOURCE_ROOT'] || '/vagrant'),
   "extra_source" => (ENV['EXTRA_SOURCE'] || '/vagrant/.scratch'),
   "nvratelimit" => (ENV['NVRATELIMIT'] || 'false').downcase == 'true',
+  "nvauth" => (ENV['NVAUTH'] || 'false').downcase == 'true',
 }
 
 
