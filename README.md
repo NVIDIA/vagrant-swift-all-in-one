@@ -72,6 +72,55 @@ These will expose /metrics endpoints on ports 9100-9105 which you can check dire
 
  * http://saio:9090/graph
 
+Request Tracing
+===============
+You can enable request tracing by:
+```
+export TRACING=true
+```
+
+When tracing has been enabled a Jaeger all-in-one will be started in the
+vagrant environment. It was started with the bin/reset_jaeger tool.  You can
+view all your traces at: http://saio:16686/search
+
+The reset_jaeger.sh script basically runs:
+
+```
+docker run -d --name jaeger \\
+-e COLLECTOR_ZIPKIN_HOST_PORT=:9411 \\
+-p 5775:5775/udp \\
+-p 6831:6831/udp \\
+-p 6832:6832/udp \\
+-p 5778:5778 \\
+-p 16686:16686 \\
+-p 14268:14268 \\
+-p 14250:14250 \\
+-p 9411:9411 \\
+jaegertracing/all-in-one:1.27
+```
+
+See: https://www.jaegertracing.io/docs/1.27/getting-started/
+
+If you want to reset and clear the traces just run:
+```
+reset_jaeger.sh
+```
+
+NOTE: We should go via OTel collector, but I havn't implemented that yet. But there are some notes on that below
+
+For the OTel collector we should be able to run something like:
+```
+docker pull otel/opentelemetry-collector:latest
+docker run -d otel/opentelemetry-collector:latest
+```
+See: https://opentelemetry.io/docs/collector/getting-started/
+
+NOTE: of course you can also specify a version. We should probably pick whatever we use for prod (when we get that far)
+
+If you want to have a custom config, volume mount in a config:
+```
+docker run -v $(pwd)/config.yaml:/etc/otelcol/config.yaml otel/opentelemetry-collector
+```
 
 ninja-dev-tricks
 ================
