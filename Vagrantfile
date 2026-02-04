@@ -70,6 +70,7 @@ local_config = {
   "source_root" => (ENV['SOURCE_ROOT'] || '/vagrant'),
   "extra_source" => (ENV['EXTRA_SOURCE'] || '/vagrant/.scratch'),
   "nvratelimit" => (ENV['NVRATELIMIT'] || 'false').downcase == 'true',
+  "ring_version" => (ENV['RING_VERSION'] || '1'),
 }
 
 

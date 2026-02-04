@@ -35,7 +35,7 @@
     end
   end
   execute "#{service}.builder-rebalance" do
-    command "swift-ring-builder /etc/swift/#{service}.builder rebalance -f"
+    command "swift-ring-builder /etc/swift/#{service}.builder rebalance -f --format-version=#{node['ring_version']}"
     user node['username']
     group node["username"]
     cwd "/etc/swift"
@@ -92,7 +92,7 @@ node['storage_policies'].each_with_index do |name, p|
     end
   end
   execute "#{service}.builder-rebalance" do
-    command "swift-ring-builder /etc/swift/#{service}.builder rebalance -f"
+    command "swift-ring-builder /etc/swift/#{service}.builder rebalance -f --format-version=#{node['ring_version']}"
     user node['username']
     group node["username"]
     cwd "/etc/swift"
