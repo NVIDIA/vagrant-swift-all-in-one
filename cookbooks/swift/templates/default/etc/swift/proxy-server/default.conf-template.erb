@@ -90,3 +90,18 @@ use = egg:swift#ratelimit
 # container_listing_ratelimit_0 = 100
 # container_listing_ratelimit_10 = 50
 # container_listing_ratelimit_50 = 20
+
+[filter:gatekeeper]
+use = egg:swift#gatekeeper
+
+[filter:listing_formats]
+use = egg:swift#listing_formats
+
+[filter:copy]
+use = egg:swift#copy
+
+[filter:container-quotas]
+use = egg:swift#container_quotas
+
+[filter:account-quotas]
+use = egg:swift#account_quotas
