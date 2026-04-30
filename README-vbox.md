@@ -36,7 +36,7 @@ It's recommened you configure `/etc/vbox/networks.conf` to allow your required
 networks, e.g. `192.168.8.0/24`
 
 ```
-$ cat /etc/vbox/networks.conf 
+$ cat /etc/vbox/networks.conf
 * 192.168.8.0/24
 
 ```
@@ -47,7 +47,7 @@ Alternatively, you can change the network associated with the vagrant vm by
 changing the `IP` in your `localrc`.
 
 ```
-$ diff localrc-template localrc.vbox-default-network 
+$ diff localrc-template localrc.vbox-default-network
 11c11
 < export IP=192.168.8.80
 ---
@@ -93,4 +93,3 @@ $ modprobe -r kvm_intel kvm
 Now re-run `vagrant up` to boot the VM. Note that by default the KVM kernel
 modules are reloaded after a system reboot. You can prevent that behavior
 permanently by e.g. updating `/etc/modprobe.d/blacklist.conf`.
-
