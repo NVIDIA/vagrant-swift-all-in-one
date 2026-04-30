@@ -1,3 +1,19 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2015-2026 NVIDIA CORPORATION All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 STATSD_EXPORTER_VERSION="0.26.0"
 PROMETHEUS_VERSION="2.48.1"
 #GRAFANA_VERSION="10.1.1"
@@ -23,7 +39,7 @@ execute "install statsd_exporter" do
     creates "/usr/local/bin/statsd_exporter"
     action :run
 end
-    
+
 PROMETHEUS_DIRNAME = "prometheus-#{PROMETHEUS_VERSION}.linux-#{ARCH}"
 execute "download prometheus" do
   cwd USER_HOME
