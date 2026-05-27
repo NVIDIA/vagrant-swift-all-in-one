@@ -1,0 +1,16 @@
+[DEFAULT]
+swift_dir = /etc/swift
+user = <%= @username %>
+log_facility = LOG_LOCAL1
+eventlet_debug = true
+
+[ring-manager-agent]
+ring_manager_urls = http://127.0.0.1:6205
+shuffle_ring_manager_urls = false
+admin_key = changeme
+interval = 300
+jitter = 0
+request_timeout = 30
+swift_dir = /etc/swift
+recon_cache_path = /var/cache/swift
+state_file = /var/cache/swift/ring-manager-agent-state.json

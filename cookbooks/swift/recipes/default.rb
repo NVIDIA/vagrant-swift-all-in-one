@@ -18,3 +18,9 @@ execute "startmain" do
   user node['username']
   group node["username"]
 end
+
+execute "start control plane" do
+  command "swift-init start control"
+  user node['username']
+  group node["username"]
+end

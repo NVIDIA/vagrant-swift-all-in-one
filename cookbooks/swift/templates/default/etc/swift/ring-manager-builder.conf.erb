@@ -1,0 +1,15 @@
+[DEFAULT]
+swift_dir = /etc/swift
+user = <%= @username %>
+log_facility = LOG_LOCAL1
+eventlet_debug = true
+
+[ring-manager-builder]
+interval = 5
+concurrency = 1
+ring_manager_state_dir = /etc/swift/ring-manager-state
+ring_artifact_dir = /etc/swift/ring-manager-artifacts
+ring_builder_dir = /etc/swift
+builder_lock_timeout = 600
+# ring_manager_state_change_hook =
+# ring_manager_state_change_hook_timeout = 30

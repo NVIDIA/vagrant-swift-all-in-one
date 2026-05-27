@@ -218,6 +218,22 @@ end
   end
 end
 
+# control
+[
+  'ring-manager-server.conf',
+  'ring-manager-agent.conf',
+  'ring-manager-builder.conf',
+].each do |filename|
+  template "/etc/swift/#{filename}" do
+    source "etc/swift/#{filename}.erb"
+    owner node["username"]
+    group node["username"]
+    variables({
+      :username => node['username'],
+    })
+  end
+end
+
 # proxies
 
 directory "/etc/swift/proxy-server" do

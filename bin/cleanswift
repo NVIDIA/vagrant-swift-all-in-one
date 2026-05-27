@@ -16,6 +16,8 @@ for d in $(ls -d /srv/node*/*); do
 done
 sudo rm -rf /srv/node*
 sudo rm -f /var/lib/swift/disk*
+sudo rm -rf /etc/swift/ring-manager-state /etc/swift/ring-manager-artifacts
+sudo rm -f /var/cache/swift/ring-manager-agent-state.json
 
 for fname in /var/log/debug /var/log/messages /var/log/rsyncd.log /var/log/syslog; do
     sudo truncate --size 0 $fname

@@ -170,6 +170,8 @@ end
   "OS_AUTH_URL" => "http://#{node['hostname']}:8080/auth/v1.0",
   "OS_USERNAME" => "test:tester",
   "OS_PASSWORD" => "testing",
+  "SWIFT_RING_MANAGER_URL" => "http://#{node['hostname']}:6205",
+  "SWIFT_RING_MANAGER_ADMIN_KEY" => "changeme",
 }.each do |var, value|
   execute "swift-env-#{var}" do
     command "echo 'export #{var}=#{value}' >> #{profile_file}"

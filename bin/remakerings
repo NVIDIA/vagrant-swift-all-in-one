@@ -8,3 +8,23 @@ rm -f /etc/swift/*.builder /etc/swift/*.ring.gz \
   /etc/swift/backups/*.builder /etc/swift/backups/*.ring.gz
 
 sudo chef-solo -c /etc/chef/solo.rb -j /etc/chef/dna.json -o swift::rings
+
+ring_manager_url="${SWIFT_RING_MANAGER_URL:-${RING_MANAGER_URL:-http://127.0.0.1:6205}}"
+ring_manager_admin_key="${SWIFT_RING_MANAGER_ADMIN_KEY:-${RING_MANAGER_ADMIN_KEY:-changeme}}"
+
+if command -v swift-ring-manager >/dev/null 2>&1; then
+    if swift-ring-manager --url "$ring_manager_url" \
+            --admin-key "$ring_manager_admin_key" status >/dev/null 2>&1; then
+        swift-ring-manager --url "$ring_manager_url" \
+            --admin-key "$ring_manager_admin_key" rings import \
+            --version saio-baseline \
+            --set-latest \
+            --force \
+            --ring account:/etc/swift/account.builder:/etc/swift/account.ring.gz \
+            --ring container:/etc/swift/container.builder:/etc/swift/container.ring.gz \
+            --ring object-0:/etc/swift/object.builder:/etc/swift/object.ring.gz \
+            --ring object-1:/etc/swift/object-1.builder:/etc/swift/object-1.ring.gz
+    else
+        echo "ring-manager service is not reachable; skipping ring import"
+    fi
+fi
