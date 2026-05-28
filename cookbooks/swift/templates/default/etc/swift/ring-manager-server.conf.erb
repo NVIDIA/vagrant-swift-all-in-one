@@ -6,7 +6,7 @@ log_facility = LOG_LOCAL1
 eventlet_debug = true
 
 [pipeline:main]
-pipeline = catch_errors healthcheck proxy-logging recon ring-manager-auth ring-manager-server
+pipeline = catch_errors healthcheck recon ring-manager-auth ring-manager-server
 
 [app:ring-manager-server]
 use = egg:swift#ring_manager
@@ -33,6 +33,3 @@ recon_cache_path = /var/cache/swift
 
 [filter:catch_errors]
 use = egg:swift#catch_errors
-
-[filter:proxy-logging]
-use = egg:swift#proxy_logging
