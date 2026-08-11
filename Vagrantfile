@@ -45,6 +45,7 @@ end
 local_config = {
   "username" => username,
   "full_reprovision" => (ENV['FULL_REPROVISION'] || 'false').downcase == 'true',
+  "skip_deadsnakes" => (ENV['SKIP_DEADSNAKES'] || 'false').downcase == 'true',
   "loopback_gb" => Integer(ENV['LOOPBACK_GB'] || 4),
   "extra_packages" => (ENV['EXTRA_PACKAGES'] || '').split(','),
   "storage_policies" => (ENV['STORAGE_POLICIES'] || 'default,ec').split(','),
