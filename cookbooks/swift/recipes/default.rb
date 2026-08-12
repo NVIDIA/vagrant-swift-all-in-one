@@ -15,7 +15,7 @@
 # limitations under the License.
 
 include_recipe "swift::setup"
-include_recipe "swift::statsd_exporter"
+include_recipe "swift::statsd_exporter" if node["statsd_exporter"]
 include_recipe "swift::source"
 include_recipe "swift::data"
 include_recipe "swift::configs"
