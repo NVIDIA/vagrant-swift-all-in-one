@@ -209,7 +209,7 @@ end
   'container-sync-realms.conf',
   'test.conf',
   'swift.conf',
-  'jaeger_exporter.json',
+  'otel_trace_exporter.json',
 ].each do |filename|
   template "/etc/swift/#{filename}" do
     source "/etc/swift/#{filename}.erb"

@@ -17,7 +17,7 @@ use = egg:swift#recon
 <% if @tracing -%>
 [filter:trace]
 use = egg:swift#trace
-trace_exporter_module = egg:swift#jaeger_exporter
-trace_exporter_config = /etc/swift/jaeger_exporter.json
+trace_exporter_module = egg:swift#otel_exporter
+trace_exporter_config = /etc/swift/otel_trace_exporter.json
 trace_name = Swift account-server
 <% end -%>

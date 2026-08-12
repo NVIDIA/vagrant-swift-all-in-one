@@ -24,6 +24,27 @@ end
 
 current_datetime = Time.now.strftime("%Y%m%d-%H%M%S")
 
+# When ./swift is a git worktree rather than a clone, its .git is a file
+# pointing at the shared repository, which lives outside this directory and
+# so is not under /vagrant. Without it there is no usable git inside the
+# guest, pbr cannot work out a version, and the editable install of Swift
+# fails outright. Find the shared repository so it can be mounted at the
+# same path the pointer names; nil for an ordinary clone, which needs none.
+def swift_shared_git_dir(root)
+  dot_git = File.join(root, "swift", ".git")
+  return nil unless File.file?(dot_git)
+  pointer = File.read(dot_git)[/\Agitdir:\s*(.+)\s*\z/m, 1]
+  return nil if pointer.nil?
+  pointer = File.expand_path(pointer.strip, File.join(root, "swift"))
+  # the worktree's admin directory lives inside the shared repository
+  common = File.expand_path(File.join(pointer, "..", ".."))
+  File.directory?(common) ? common : nil
+rescue SystemCallError
+  nil
+end
+
+swift_git_dir = swift_shared_git_dir(File.dirname(__FILE__))
+
 def load_key(path_or_contents)
   File.open(path_or_contents).read
 rescue Errno::ENOENT, Errno::ENAMETOOLONG
@@ -109,6 +130,10 @@ Vagrant.configure("2") do |global_config|
         lv.memory = Integer(ENV['VAGRANT_RAM'] || 2048)
         lv.memorybacking :access, :mode => "shared"
         override.vm.synced_folder "./", "/vagrant", type: "virtiofs"
+        unless swift_git_dir.nil?
+          override.vm.synced_folder swift_git_dir, swift_git_dir,
+                                    type: "virtiofs"
+        end
       end
 
       config.vm.provider "parallels" do |prl, override|
