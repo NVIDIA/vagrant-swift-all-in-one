@@ -1,0 +1,20 @@
+version: "1.0"
+project: "vagrant-swift-all-in-one"
+last_updated: "2026-09-02T15:41:04Z"
+
+repository_exposure_classification:
+  visibility: "Public"
+  basis: "Publicly readable NVIDIA GitHub repository."
+  confirmed_by: "Clay Gerrard"
+  date: "2026-09-02"
+
+service_exposure_classification:
+  tier: "External / Regulated"
+  confidence: "high"
+  basis: "Externally distributed developer tooling that provisions network services and can consume operator cloud credentials; repository evidence identifies development and test use rather than a production deployment."
+  confirmed_by: "Clay Gerrard"
+  date: "2026-09-02"
+
+false_positives: []
+accepted_risks: []
+suppressed_cves: []
