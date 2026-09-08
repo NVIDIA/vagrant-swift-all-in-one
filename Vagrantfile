@@ -23,6 +23,7 @@ DEFAULT_BOX = "bento/ubuntu-24.04"
 
 vagrant_box = (ENV['VAGRANT_BOX'] || DEFAULT_BOX)
 username = (ENV['VAGRANT_USERNAME'] || "vagrant")
+bootstrap_cinc = (ENV['BOOTSTRAP_CINC'] || 'false').downcase == 'true'
 
 base_ip = IPAddr.new(ENV['IP'] || "192.168.8.80")
 hosts = {
@@ -171,7 +172,22 @@ Vagrant.configure("2") do |global_config|
         v.tags = {'Name' => 'swift'}
       end
 
+      if bootstrap_cinc
+        # Vagrant's Chef provisioner only recognizes Chef in its built-in
+        # installer path. Install Cinc first and provide the chef-solo command
+        # that the provisioner invokes after its installer is disabled below.
+        config.vm.provision "shell", privileged: true, inline: <<~SHELL
+          set -e
+          curl -fsSL https://omnitruck.cinc.sh/install.sh \
+            --output /tmp/install-cinc.sh
+          bash /tmp/install-cinc.sh -P cinc-client
+          rm -f /tmp/install-cinc.sh
+          ln -sf /opt/cinc/bin/cinc-solo /usr/local/bin/chef-solo
+        SHELL
+      end
+
       config.vm.provision :chef_solo do |chef|
+        chef.install = false if bootstrap_cinc
         chef.arguments = "--chef-license accept"
         chef.provisioning_path = "/etc/chef"
         chef.add_recipe "swift"
