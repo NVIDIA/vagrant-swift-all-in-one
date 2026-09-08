@@ -30,20 +30,22 @@ if node['extra_key'] then
   end
 end
 
-# deadsnakes for all the pythons
-package "software-properties-common" do
-  action :install
-  not_if "which add-apt-repository"
-end
+unless node['skip_deadsnakes']
+  # deadsnakes for all the pythons
+  package "software-properties-common" do
+    action :install
+    not_if "which add-apt-repository"
+  end
 
-execute "deadsnakes key" do
-  command "sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys"
-  action :run
-  not_if "sudo apt-key list | grep 'Launchpad PPA for deadsnakes'"
-end
+  execute "deadsnakes key" do
+    command "sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys"
+    action :run
+    not_if "sudo apt-key list | grep 'Launchpad PPA for deadsnakes'"
+  end
 
-execute "add repo" do
-  command "sudo add-apt-repository ppa:deadsnakes/ppa"
+  execute "add repo" do
+    command "sudo add-apt-repository ppa:deadsnakes/ppa"
+  end
 end
 
 execute "apt-get-update" do
@@ -65,27 +67,28 @@ required_packages = [
   "curl", "gcc", "memcached", "rsync", "sqlite3", "xfsprogs", "git", "build-essential",
   "libffi-dev",  "libxml2-dev", "libxml2", "libxslt1-dev", "zlib1g-dev", "autoconf", "libtool",
   "haproxy", "docker-compose", "rclone",
-]
-
-# common python versions
-required_packages += [
-  # most of time these come from deadsnakes
-  "python3.7", "python3.7-distutils",
-  "python3.8", "python3.8-distutils",
-  "python3.9", "python3.9-distutils",
-  "python3.10",
-  "python3.11",
-  "python3.12",
-  "python3.13",  # edge of technology!
   # python3 will be redundant with distro version, -dev is needed for pyeclib
   "python3", "python3-dev",
 ]
 
-# only focal has the *really* old py3
-if node['platform_version'].to_i <= 20 then
+unless node['skip_deadsnakes']
+  # common python versions; most of these come from deadsnakes
   required_packages += [
-    "python3.6", "python3.6-distutils",
+    "python3.7", "python3.7-distutils",
+    "python3.8", "python3.8-distutils",
+    "python3.9", "python3.9-distutils",
+    "python3.10",
+    "python3.11",
+    "python3.12",
+    "python3.13",  # edge of technology!
   ]
+
+  # only focal has the *really* old py3
+  if node['platform_version'].to_i <= 20 then
+    required_packages += [
+      "python3.6", "python3.6-distutils",
+    ]
+  end
 end
 
 # no-no packages (PIP rules this vm, most system packages are all out-of-date anyway)
