@@ -18,6 +18,6 @@
 
 set -e
 sed 's/"full_reprovision": false/"full_reprovision": true/g' /etc/chef/dna.json > /tmp/reload.json
-sudo chef-solo -c /etc/chef/solo.rb -j /tmp/reload.json -o swift::source
+sudo /opt/cinc/bin/cinc-solo -c /etc/chef/solo.rb -j /tmp/reload.json -o swift::source
 swift-init restart main
 echo "READY!"

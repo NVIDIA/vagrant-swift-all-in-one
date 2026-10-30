@@ -23,7 +23,7 @@ Most providers will recommend you set some environ vars via your `localrc`
  1. `cp localrc-template localrc`
  1. `vi localrc`
 
-Additionally chef provisioning exposes some optional configuration for the vm,
+Additionally [cinc](https://cinc.sh/) provisioning exposes some optional configuration for the vm,
 see `localrc-template`.
 
  1. `source localrc`
@@ -92,10 +92,8 @@ A few scripts are available to make your dev life easier.
 
  1. `vagrant up --provision` will bring up your VM in working order (useful
     when your VM is halted)
- 1. `source localrc; vagrant provision` on your host to push the new Chef bits
-    in place (useful if you change localrc)
- 1. `rebuildswift` to reapply everything like it would be at the end of Chef
-    time (useful to revert local config changes)
+ 1. `source localrc; vagrant provision` on your host to push the new Cinc provisioning bits in place (useful if you change localrc)
+ 1. `rebuildswift` to reapply everything like it would be at the end of provisioning (useful to revert local config changes)
  1. `resetswift` will wipe the drives and leave any local config changes in
     place (useful just to clean out Swift data)
  1. `reinstallswift` will make sure all of the bin scripts are installed

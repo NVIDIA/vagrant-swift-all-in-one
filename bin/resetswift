@@ -18,6 +18,6 @@
 
 set -e
 /vagrant/bin/cleanswift
-sudo chef-solo -c /etc/chef/solo.rb -j /etc/chef/dna.json -o swift::data
+sudo /opt/cinc/bin/cinc-solo -c /etc/chef/solo.rb -j /etc/chef/dna.json -o swift::data
 sudo service rsyslog restart
 sudo service memcached restart
