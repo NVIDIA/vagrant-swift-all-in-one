@@ -20,4 +20,4 @@
 sudo rm -fr /etc/swift/* /var/run/swift/* /var/cache/swift/* /etc/pykmip/* \
             /etc/rsyncd.* /etc/ssl/private/saio.* /etc/haproxy/haproxy.cfg
 sed 's/"full_reprovision": false/"full_reprovision": true/g' /etc/chef/dna.json > /tmp/reload.json
-sudo chef-solo -c /etc/chef/solo.rb -j /tmp/reload.json
+sudo /opt/cinc/bin/cinc-solo -c /etc/chef/solo.rb -j /tmp/reload.json

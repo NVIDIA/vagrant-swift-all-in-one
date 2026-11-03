@@ -171,8 +171,18 @@ Vagrant.configure("2") do |global_config|
         v.tags = {'Name' => 'swift'}
       end
 
+      config.vm.provision :shell, inline: <<-SHELL
+        #!/bin/bash
+        set -e -o pipefail
+        if [ ! -x /opt/cinc/bin/cinc-solo ]; then
+          curl -fsSL https://omnitruck.cinc.sh/install.sh | bash -s -- -v 18
+        fi
+      SHELL
+
       config.vm.provision :chef_solo do |chef|
-        chef.arguments = "--chef-license accept"
+        # Vagrant's installer checks /opt/chef even when using a custom URL.
+        chef.install = false
+        chef.binary_path = "/opt/cinc/bin"
         chef.provisioning_path = "/etc/chef"
         chef.add_recipe "swift"
         chef.json = {

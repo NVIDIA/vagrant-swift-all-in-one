@@ -19,4 +19,4 @@
 rm -f /etc/swift/*.builder /etc/swift/*.ring.gz \
   /etc/swift/backups/*.builder /etc/swift/backups/*.ring.gz
 
-sudo chef-solo -c /etc/chef/solo.rb -j /etc/chef/dna.json -o swift::rings
+sudo /opt/cinc/bin/cinc-solo -c /etc/chef/solo.rb -j /etc/chef/dna.json -o swift::rings
